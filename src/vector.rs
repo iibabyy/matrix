@@ -4,19 +4,19 @@ mod macros;
 
 #[derive(Debug)]
 pub struct Vector<T = f32> {
-    content: Vec<T>,
+    scalars: Vec<T>,
 }
 
 impl<T: std::fmt::Display> std::fmt::Display for Vector<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.content.iter().try_for_each(|c| writeln!(f, "[{c}]"))
+        self.scalars.iter().try_for_each(|c| writeln!(f, "[{c}]"))
     }
 }
 
 /* Utils functions */
 impl<T> Vector<T> {
     pub fn new() -> Self {
-        Self { content: vec![] }
+        Self { scalars: vec![] }
     }
 
     fn from_elem(elem: T, n: usize) -> Self
@@ -24,12 +24,12 @@ impl<T> Vector<T> {
         T: Clone,
     {
         Self {
-            content: vec![elem; n],
+            scalars: vec![elem; n],
         }
     }
 
     pub const fn len(&self) -> usize {
-        self.content.len()
+        self.scalars.len()
     }
 }
 
@@ -42,8 +42,8 @@ impl<T> Vector<T> {
     {
         assert_eq!(self.len(), other.len());
 
-        for i in 0..self.content.len() {
-            self.content[i] += other.content[i];
+        for i in 0..self.scalars.len() {
+            self.scalars[i] += other.scalars[i];
         }
     }
 
@@ -54,8 +54,8 @@ impl<T> Vector<T> {
     {
         assert_eq!(self.len(), other.len());
 
-        for i in 0..self.content.len() {
-            self.content[i] -= other.content[i];
+        for i in 0..self.scalars.len() {
+            self.scalars[i] -= other.scalars[i];
         }
     }
 
@@ -64,8 +64,8 @@ impl<T> Vector<T> {
         T: std::ops::MulAssign<K>,
         K: Copy,
     {
-        for i in 0..self.content.len() {
-            self.content[i] *= scale;
+        for i in 0..self.scalars.len() {
+            self.scalars[i] *= scale;
         }
     }
 }
@@ -75,7 +75,7 @@ impl<T> Vector<T> {
 impl<T> FromIterator<T> for Vector<T> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         Self {
-            content: Vec::from_iter(iter),
+            scalars: Vec::from_iter(iter),
         }
     }
 }
@@ -101,7 +101,7 @@ mod tests {
             let mut v1 = vector!(1.0, 2.0);
             let v2 = vector![3.0, 4.0];
             v1.add(&v2);
-            assert_eq!(v1.content, [4.0, 6.0]);
+            assert_eq!(v1.scalars, [4.0, 6.0]);
         }
 
         #[test]
@@ -121,7 +121,7 @@ mod tests {
             let mut v1 = vector![10, 20];
             let v2 = vector![2, 5];
             v1.sub(&v2);
-            assert_eq!(v1.content, [8, 15]);
+            assert_eq!(v1.scalars, [8, 15]);
         }
 
         #[test]
@@ -140,14 +140,14 @@ mod tests {
         fn test_scl_basic() {
             let mut v = vector![1.0, -2.0, 3.5];
             v.scl(2.0);
-            assert_eq!(v.content, [2.0, -4.0, 7.0]);
+            assert_eq!(v.scalars, [2.0, -4.0, 7.0]);
         }
 
         #[test]
         fn test_scl_zero() {
             let mut v = vector![10, 20];
             v.scl(0);
-            assert_eq!(v.content, [0, 0]);
+            assert_eq!(v.scalars, [0, 0]);
         }
     }
 }
