@@ -9,6 +9,9 @@ use std::ops::{Add, Mul, Neg, Sub};
 mod linear_combination;
 mod macros;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Debug)]
 pub struct Vector<K = f32>
 where
