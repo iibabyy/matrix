@@ -1,3 +1,3 @@
 use super::*;
 
-mod vector;
+mod arithmetics;
