@@ -7,12 +7,13 @@
 use std::ops::{Add, Mul, Neg, Sub};
 
 mod linear_combination;
+mod arithmetics;
 mod macros;
 
 #[cfg(test)]
 mod tests;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Vector<K = f32>
 where
     K: Copy + Neg,
@@ -57,6 +58,7 @@ where
         K: Add<T, Output = K> + From<T>,
         T: Copy + Neg,
     {
+        // for details, go to src/vector/arithmetics.rs
         *self += other;
     }
 
@@ -65,6 +67,7 @@ where
         K: Sub<T, Output = K> + From<T>,
         T: Copy + Neg,
     {
+        // for details, go to src/vector/arithmetics.rs
         *self -= other
     }
 
@@ -73,98 +76,13 @@ where
         K: Mul<T, Output = K>,
         T: Copy + Neg,
     {
+        // for details, go to src/vector/arithmetics.rs
         *self *= scale
     }
 }
 
 // -----------------------------------------------------------------------------
-// ARITHMETIC TRAITS
-// -----------------------------------------------------------------------------
-
-/* ADD */
-impl<T, K> std::ops::AddAssign<&Vector<T>> for Vector<K>
-where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    fn add_assign(&mut self, other: &Vector<T>) {
-        assert_eq!(self.len(), other.len());
-
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] + other.scalars[i];
-        }
-    }
-}
-
-impl<T, K> std::ops::Add<&Vector<T>> for Vector<K>
-where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    type Output = Self;
-
-    fn add(mut self, other: &Vector<T>) -> Self::Output {
-        self += other;
-        self
-    }
-}
-
-/* SUB */
-impl<T, K> std::ops::SubAssign<&Vector<T>> for Vector<K>
-where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    fn sub_assign(&mut self, other: &Vector<T>) {
-        assert_eq!(self.len(), other.len());
-
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] - other.scalars[i];
-        }
-    }
-}
-
-impl<T, K> std::ops::Sub<&Vector<T>> for Vector<K>
-where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    type Output = Self;
-
-    fn sub(mut self, other: &Vector<T>) -> Self::Output {
-        self -= other;
-        self
-    }
-}
-
-/* MUL */
-impl<T, K> std::ops::MulAssign<T> for Vector<K>
-where
-    K: Copy + Neg + Mul<T, Output = K>,
-    T: Copy,
-{
-    fn mul_assign(&mut self, scale: T) {
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] * scale;
-        }
-    }
-}
-
-impl<T, K> std::ops::Mul<T> for Vector<K>
-where
-    K: Copy + Neg + Mul<T, Output = K>,
-    T: Copy,
-{
-    type Output = Self;
-
-    fn mul(mut self, scale: T) -> Self::Output {
-        self *= scale;
-        self
-    }
-}
-
-// -----------------------------------------------------------------------------
-// OTHER TRAITS
+// TRAITS Implementation
 // -----------------------------------------------------------------------------
 impl<K> std::fmt::Display for Vector<K>
 where
