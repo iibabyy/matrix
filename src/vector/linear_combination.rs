@@ -24,7 +24,7 @@ mod tests {
     use super::*;
 
     // Helper to create vectors easily for testing
-    fn v(vals: Vec<i32>) -> Vector<i32> {
+    fn v(vals: impl IntoIterator<Item = i32>) -> Vector<i32> {
         Vector::from(vals)
     }
 
@@ -34,7 +34,7 @@ mod tests {
         let e2 = Vector::from([0., 1., 0.]);
         let e3 = Vector::from([0., 0., 1.]);
 
-        assert_eq!(Vector::from(vec![10., -2., 0.5]), linear_combination::<f32>(&[e1, e2, e3], &[10., -2., 0.5]));
+        assert_eq!(Vector::from([10., -2., 0.5]), linear_combination::<f32>(&[e1, e2, e3], &[10., -2., 0.5]));
     }
 
     #[test]
@@ -42,14 +42,14 @@ mod tests {
         let v1 = Vector::from([1., 2., 3.]);
         let v2 = Vector::from([0., 10., -100.]);
 
-        assert_eq!(Vector::from(vec![10., 0., 230.]), linear_combination::<f32>(&[v1, v2], &[10., -2.]));
+        assert_eq!(Vector::from([10., 0., 230.]), linear_combination::<f32>(&[v1, v2], &[10., -2.]));
     }
 
     #[test]
     fn test_simple() {
         // Test av + bw where a=2, b=3, v=[1, 0], w=[0, 1]
-        let v1 = v(vec![1, 0]);
-        let v2 = v(vec![0, 1]);
+        let v1 = v([1, 0]);
+        let v2 = v([0, 1]);
         let vectors = vec![v1, v2];
         let coefficients = vec![2, 3];
 
@@ -128,8 +128,8 @@ mod tests {
     #[test]
     fn test_floating_point() {
         // Test with floating point values
-        let v1 = Vector::from(vec![1.0, 0.0]);
-        let v2 = Vector::from(vec![0.0, 1.0]);
+        let v1 = Vector::from([1.0, 0.0]);
+        let v2 = Vector::from([0.0, 1.0]);
         let vectors = vec![v1, v2];
         let coefficients = vec![2.5, -1.5];
 

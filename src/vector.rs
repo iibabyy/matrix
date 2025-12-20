@@ -25,8 +25,8 @@ impl<K> Vector<K>
 where
     K: Copy + Neg,
 {
-    pub fn new() -> Self {
-        Self::from(vec![])
+    pub fn new(scalars: Vec<K>) -> Self {
+        Self { scalars }
     }
 
     fn from_elem(elem: K, n: usize) -> Self
@@ -92,7 +92,7 @@ where
     T: Copy + Neg,
 {
     fn default() -> Self {
-        Self::new()
+        Self::new(vec![])
     }
 }
 
@@ -110,7 +110,7 @@ where
     T: IntoIterator<Item = K>,
     K: Copy + Neg,
 {
-    fn from(value: T) -> Self {
-        Self::from_iter(value.into_iter())
+    fn from(iter: T) -> Self {
+        Self::from_iter(iter)
     }
 }

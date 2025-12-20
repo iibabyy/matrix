@@ -8,7 +8,7 @@ macro_rules! vector {
         $crate::vector::Vector::from_elem($elem, $n)
     );
     ($($x:expr),+ $(,)?) => (
-        $crate::vector::Vector::from([$($x),+])
+        $crate::vector::Vector::new(vec![$($x),+])
     );
 }
 

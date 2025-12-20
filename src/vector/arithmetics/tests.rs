@@ -1,7 +1,7 @@
 use super::*;
 
 // Helper to create vectors easily for testing
-fn v(vals: Vec<i32>) -> Vector<i32> {
+fn v(vals: impl IntoIterator<Item = i32>) -> Vector<i32> {
     Vector::from(vals)
 }
 

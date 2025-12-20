@@ -19,26 +19,25 @@
 //! ```rust,ignore
 //! use crate::vector::Vector;
 //!
-//! // Assuming Vector::from(vec![...]) is available
-//! let v1 = Vector::from(vec![1.0, 2.0, 3.0]);
-//! let v2 = Vector::from(vec![4.0, 5.0, 6.0]);
+//! let v1 = Vector::new(vec![1.0, 2.0, 3.0]);
+//! let v2 = Vector::new(vec![4.0, 5.0, 6.0]);
 //!
 //! // 1. Addition (Component-wise)
 //! let sum = &v1 + &v2;
-//! assert_eq!(sum, Vector::from(vec![5.0, 7.0, 9.0]));
+//! assert_eq!(sum, Vector::new(vec![5.0, 7.0, 9.0]));
 //!
 //! // 2. Subtraction (Component-wise)
 //! let diff = &v2 - &v1;
-//! assert_eq!(diff, Vector::from(vec![3.0, 3.0, 3.0]));
+//! assert_eq!(diff, Vector::new(vec![3.0, 3.0, 3.0]));
 //!
 //! // 3. Scalar Multiplication
 //! let scaled = v1 * 2.0;
-//! assert_eq!(scaled, Vector::from(vec![2.0, 4.0, 6.0]));
+//! assert_eq!(scaled, Vector::new(vec![2.0, 4.0, 6.0]));
 //!
 //! // 4. Compound Assignment
-//! let mut v_mut = Vector::from(vec![10.0, 10.0]);
-//! v_mut += Vector::from(vec![5.0, 5.0]);
-//! assert_eq!(v_mut, Vector::from(vec![15.0, 15.0]));
+//! let mut v_mut = Vector::new(vec![10.0, 10.0]);
+//! v_mut += Vector::new(vec![5.0, 5.0]);
+//! assert_eq!(v_mut, Vector::new(vec![15.0, 15.0]));
 //! ```
 
 use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -184,7 +183,7 @@ where
     type Output = Vector<K>;
 
     fn sub(self, other: Vector<K>) -> Self::Output {
-        Vector::from(sub_inner(&self.scalars, &other.scalars))
+        Vector::new(sub_inner(&self.scalars, &other.scalars))
     }
 }
 
@@ -271,6 +270,6 @@ where
     type Output = Vector<K>;
 
     fn mul(self, coeff: K) -> Self::Output {
-        Vector::from(mul_inner(&self.scalars, coeff))
+        Vector::new(mul_inner(&self.scalars, coeff))
     }
 }
