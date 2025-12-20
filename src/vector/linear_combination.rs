@@ -89,7 +89,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "assertion failed: vectors.len() > 0")]
+    #[should_panic(expected = "assertion failed: !vectors.is_empty()")]
     fn test_empty_vectors_should_panic() {
         let vectors: Vec<Vector<i32>> = vec![];
         let coefficients: Vec<i32> = vec![];
