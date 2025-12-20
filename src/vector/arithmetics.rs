@@ -1,6 +1,6 @@
 //! Arithmetic operations for `Vector`.
 //!
-//! This module implements standard arithmetic traits (`Add`, `Sub`, `Mul`, `Div`) 
+//! This module implements standard arithmetic traits (`Add`, `Sub`, `Mul`, `Div`)
 //! and their assigning counterparts (`+=`, `-=`, etc.) for `Vector`.
 //!
 //! # Behavior
@@ -19,7 +19,7 @@
 //! let v2 = Vector::new(5, 5);
 //!
 //! // Component-wise addition
-//! let sum = &v1 + &v2; 
+//! let sum = &v1 + &v2;
 //! assert_eq!(sum, Vector::new(15, 25));
 //!
 //! // Scalar multiplication
@@ -32,10 +32,8 @@
 //! assert_eq!(v3, Vector::new(3, 3));
 //! ```
 
-
-
-use std::ops::{Add, Mul, Neg, Sub};
 use crate::vector::Vector;
+use std::ops::{Add, Mul, Neg, Sub};
 
 // -----------------------------------------------------------------------------
 // Addition

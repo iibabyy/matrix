@@ -16,6 +16,5 @@
 // 		vec += vectors[i] * coefs[i];
 // 	}
 
-
 // 	todo!()
 // }

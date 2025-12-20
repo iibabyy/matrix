@@ -6,8 +6,8 @@
 
 use std::ops::{Add, Mul, Neg, Sub};
 
-mod linear_combination;
 mod arithmetics;
+mod linear_combination;
 mod macros;
 
 #[cfg(test)]
@@ -26,7 +26,7 @@ where
 // -----------------------------------------------------------------------------
 impl<K> Vector<K>
 where
-    K: Copy + Neg
+    K: Copy + Neg,
 {
     pub fn new() -> Self {
         Self { scalars: vec![] }
