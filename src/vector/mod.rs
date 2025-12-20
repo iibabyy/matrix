@@ -29,7 +29,7 @@ where
     K: Copy + Neg,
 {
     pub fn new() -> Self {
-        Self { scalars: vec![] }
+        Self::from(vec![])
     }
 
     fn from_elem(elem: K, n: usize) -> Self
@@ -39,6 +39,7 @@ where
         Self {
             scalars: vec![elem; n],
         }
+
     }
 
     pub const fn len(&self) -> usize {
@@ -53,28 +54,25 @@ impl<K> Vector<K>
 where
     K: Copy + Neg,
 {
-    fn add<T>(&mut self, other: &Vector<T>)
+    fn add(&mut self, other: &Vector<K>)
     where
-        K: Add<T, Output = K> + From<T>,
-        T: Copy + Neg,
+        K: Add<Output = K>,
     {
         // for details, go to src/vector/arithmetics.rs
         *self += other;
     }
 
-    fn sub<T>(&mut self, other: &Vector<T>)
+    fn sub(&mut self, other: &Vector<K>)
     where
-        K: Sub<T, Output = K> + From<T>,
-        T: Copy + Neg,
+        K: Sub<Output = K>,
     {
         // for details, go to src/vector/arithmetics.rs
         *self -= other
     }
 
-    fn scl<T>(&mut self, scale: T)
+    fn scl(&mut self, scale: K)
     where
-        K: Mul<T, Output = K>,
-        T: Copy + Neg,
+        K: Mul<Output = K>,
     {
         // for details, go to src/vector/arithmetics.rs
         *self *= scale
@@ -98,7 +96,7 @@ where
     T: Copy + Neg,
 {
     fn default() -> Self {
-        Self { scalars: vec![] }
+        Self::new()
     }
 }
 
@@ -107,18 +105,15 @@ where
     K: Copy + Neg,
 {
     fn from_iter<I: IntoIterator<Item = K>>(iter: I) -> Self {
-        Self {
-            scalars: Vec::from_iter(iter),
-        }
+        Self::from(Vec::from_iter(iter))
     }
 }
 
-impl<K, I> From<I> for Vector<K>
+impl<K> From<Vec<K>> for Vector<K>
 where
     K: Copy + Neg,
-    I: IntoIterator<Item = K>,
 {
-    fn from(iter: I) -> Self {
-        Self::from_iter(iter)
+    fn from(scalars: Vec<K>) -> Self {
+        Self { scalars }
     }
 }
