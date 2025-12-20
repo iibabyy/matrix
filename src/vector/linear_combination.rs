@@ -29,6 +29,24 @@ mod tests {
     }
 
     #[test]
+    fn test_subject_case() {
+        let e1 = Vector::from([1., 0., 0.]);
+        let e2 = Vector::from([0., 1., 0.]);
+        let e3 = Vector::from([0., 0., 1.]);
+        let v1 = Vector::from([1., 2., 3.]);
+        let v2 = Vector::from([0., 10., -100.]);
+        println!("{}", linear_combination<Vector<f32>, f32>([e1, e2, e3], [10., -2.,
+0.5]));
+        // [10.]
+        // [-2.]
+        // [0.5]
+        println!("{}", linear_combination<Vector<f32>, f32>([v1, v2], [10., -2.]));
+        // [10.]
+        // [0.]
+        // [230.]
+    }
+
+    #[test]
     fn test_simple() {
         // Test av + bw where a=2, b=3, v=[1, 0], w=[0, 1]
         let v1 = v(vec![1, 0]);

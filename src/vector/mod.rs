@@ -101,15 +101,16 @@ where
     K: Copy + Neg,
 {
     fn from_iter<I: IntoIterator<Item = K>>(iter: I) -> Self {
-        Self::from(Vec::from_iter(iter))
+        Self { scalars: Vec::from_iter(iter) }
     }
 }
 
-impl<K> From<Vec<K>> for Vector<K>
+impl<T, K> From<T> for Vector<K>
 where
+    T: IntoIterator<Item = K>,
     K: Copy + Neg,
 {
-    fn from(scalars: Vec<K>) -> Self {
-        Self { scalars }
+    fn from(value: T) -> Self {
+        Self::from_iter(value.into_iter())
     }
 }
