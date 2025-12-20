@@ -10,9 +10,6 @@ mod arithmetics;
 mod linear_combination;
 mod macros;
 
-#[cfg(test)]
-mod tests;
-
 #[derive(Debug, Clone)]
 pub struct Vector<K = f32>
 where
@@ -39,7 +36,6 @@ where
         Self {
             scalars: vec![elem; n],
         }
-
     }
 
     pub const fn len(&self) -> usize {

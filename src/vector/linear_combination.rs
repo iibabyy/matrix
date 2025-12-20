@@ -7,16 +7,16 @@ pub fn linear_combination<K>(vectors: &[Vector<K>], coefs: &[K]) -> Vector<K>
 where
     K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
 {
-	assert!(!vectors.is_empty());
+    assert!(!vectors.is_empty());
     assert_eq!(vectors.len(), coefs.len());
 
-	let mut vector = &vectors[0] * coefs[0];
+    let mut vector = &vectors[0] * coefs[0];
 
-	for i in 1..vectors.len() {
-		vector += &vectors[i] * coefs[i];
-	}
+    for i in 1..vectors.len() {
+        vector += &vectors[i] * coefs[i];
+    }
 
-	vector
+    vector
 }
 
 #[cfg(test)]
@@ -105,7 +105,7 @@ mod tests {
         let vectors = vec![v1, v2];
         let coefficients = vec![1]; // Mismatched length
 
-		let _ = linear_combination(&vectors, &coefficients);
+        let _ = linear_combination(&vectors, &coefficients);
     }
 
     #[test]

@@ -12,7 +12,7 @@ mod addition {
     use super::*;
 
     #[test]
-    fn test_add_owned_owned() {
+    fn test_owned_owned() {
         let v1 = v(vec![1, 2, 3]);
         let v2 = v(vec![4, 5, 6]);
         let result = v1 + v2;
@@ -20,7 +20,7 @@ mod addition {
     }
 
     #[test]
-    fn test_add_owned_ref() {
+    fn test_owned_ref() {
         let v1 = v(vec![10, 20]);
         let v2 = v(vec![1, 2]);
         let result = v1 + &v2;
@@ -28,7 +28,7 @@ mod addition {
     }
 
     #[test]
-    fn test_add_ref_ref() {
+    fn test_ref_ref() {
         let v1 = v(vec![1, 1]);
         let v2 = v(vec![2, 2]);
         let result = &v1 + &v2;
@@ -39,14 +39,14 @@ mod addition {
     }
 
     #[test]
-    fn test_add_assign_owned() {
+    fn test_assign_owned() {
         let mut v1 = v(vec![0, 10]);
         v1 += v(vec![1, 1]);
         assert_eq!(v1.scalars, vec![1, 11]);
     }
 
     #[test]
-    fn test_add_assign_ref() {
+    fn test_assign_ref() {
         let mut v1 = v(vec![5, 5]);
         let v2 = v(vec![1, 2]);
         v1 += &v2;
@@ -55,7 +55,7 @@ mod addition {
 
     #[test]
     #[should_panic]
-    fn test_add_panic_dim_mismatch() {
+    fn test_panic_dim_mismatch() {
         let v1 = v(vec![1, 2]);
         let v2 = v(vec![1, 2, 3]);
         let _ = v1 + v2; // Should panic
@@ -69,7 +69,7 @@ mod subtraction {
     use super::*;
 
     #[test]
-    fn test_sub_owned_owned() {
+    fn test_owned_owned() {
         let v1 = v(vec![10, 20]);
         let v2 = v(vec![1, 2]);
         let result = v1 - v2;
@@ -77,7 +77,7 @@ mod subtraction {
     }
 
     #[test]
-    fn test_sub_ref_ref() {
+    fn test_ref_ref() {
         let v1 = v(vec![5, 5, 5]);
         let v2 = v(vec![1, 1, 1]);
         let result = &v1 - &v2;
@@ -85,7 +85,7 @@ mod subtraction {
     }
 
     #[test]
-    fn test_sub_assign() {
+    fn test_assign() {
         let mut v1 = v(vec![10, 10]);
         let v2 = v(vec![3, 4]);
         v1 -= v2;
@@ -102,7 +102,7 @@ mod subtraction {
 
     #[test]
     #[should_panic]
-    fn test_sub_panic_dim_mismatch() {
+    fn test_panic_dim_mismatch() {
         let v1 = v(vec![1]);
         let v2 = v(vec![1, 2]);
         let _ = &v1 - &v2; // Should panic
@@ -116,14 +116,14 @@ mod multiplication {
     use super::*;
 
     #[test]
-    fn test_mul_owned_scalar() {
+    fn test_owned_scalar() {
         let v1 = v(vec![1, -2, 3]);
         let result = v1 * 2;
         assert_eq!(result.scalars, vec![2, -4, 6]);
     }
 
     #[test]
-    fn test_mul_ref_scalar() {
+    fn test_ref_scalar() {
         let v1 = v(vec![10, 20]);
         let result = &v1 * 3;
         assert_eq!(result.scalars, vec![30, 60]);
@@ -132,14 +132,14 @@ mod multiplication {
     }
 
     #[test]
-    fn test_mul_assign() {
+    fn test_assign() {
         let mut v1 = v(vec![2, 4]);
         v1 *= 2;
         assert_eq!(v1.scalars, vec![4, 8]);
     }
 
     #[test]
-    fn test_mul_zero() {
+    fn test_zero() {
         let v1 = v(vec![1, 2, 3]);
         let result = v1 * 0;
         assert_eq!(result.scalars, vec![0, 0, 0]);

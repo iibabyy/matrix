@@ -5,8 +5,8 @@
 //!
 //! # Supported Operations
 //!
-//! * **Addition (`+`) & Subtraction (`-`):** Performed **component-wise**.
-//!     Both vectors must have the same dimension (length).
+//! * **Addition (`+`) & Subtraction (`-`):** Performed **component-wise**. \
+//!   Both vectors must have the same dimension (length).
 //! * **Scalar Multiplication (`*`):** Scales every component of the vector by a scalar value `K`.
 //!
 //! # Panics
@@ -41,15 +41,18 @@
 //! assert_eq!(v_mut, Vector::from(vec![15.0, 15.0]));
 //! ```
 
-use std::ops::{Neg, Add, AddAssign, Sub, SubAssign, Mul, MulAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use crate::vector::Vector;
+
+#[cfg(test)]
+mod tests;
 
 // -----------------------------------------------------------------------------
 // Addition
 // -----------------------------------------------------------------------------
 
-fn add_assign_inner<K>(self_scalars: &mut Vec<K>, other_scalars: &Vec<K>)
+fn add_assign_inner<K>(self_scalars: &mut [K], other_scalars: &[K])
 where
     K: Copy + Neg + Add<Output = K>,
 {
@@ -60,11 +63,11 @@ where
     }
 }
 
-fn add_inner<K>(self_scalars: &Vec<K>, other_scalars: &Vec<K>) -> Vec<K>
+fn add_inner<K>(self_scalars: &[K], other_scalars: &[K]) -> Vec<K>
 where
     K: Copy + Neg + Add<Output = K>,
 {
-    let mut new = self_scalars.clone();
+    let mut new = self_scalars.to_owned();
     add_assign_inner(&mut new, other_scalars);
     new
 }
@@ -133,7 +136,7 @@ where
 // Substraction
 // -----------------------------------------------------------------------------
 
-fn sub_assign_inner<K>(self_scalars: &mut Vec<K>, other_scalars: &Vec<K>)
+fn sub_assign_inner<K>(self_scalars: &mut [K], other_scalars: &[K])
 where
     K: Copy + Neg + Sub<Output = K>,
 {
@@ -144,11 +147,11 @@ where
     }
 }
 
-fn sub_inner<K>(self_scalars: &Vec<K>, other_scalars: &Vec<K>) -> Vec<K>
+fn sub_inner<K>(self_scalars: &[K], other_scalars: &[K]) -> Vec<K>
 where
     K: Copy + Neg + Sub<Output = K>,
 {
-    let mut new = self_scalars.clone();
+    let mut new = self_scalars.to_owned();
     sub_assign_inner(&mut new, other_scalars);
     new
 }
@@ -216,29 +219,29 @@ where
 // Multiplication
 // -----------------------------------------------------------------------------
 
-/// Since Vector<K> is only multipliable by K, and K implements Copy,
-/// we don't need to implement the traits for &K
+// Since Vector<K> is only multipliable by K, and K implements Copy,
+// we don't need to implement the traits for &K
 
-fn mul_assign_inner<K>(self_scalars: &mut Vec<K>, coeff: K)
+fn mul_assign_inner<K>(self_scalars: &mut [K], coeff: K)
 where
     K: Copy + Neg + Mul<Output = K>,
 {
-    for i in 0..self_scalars.len() {
-        self_scalars[i] = self_scalars[i] * coeff;
+    for scalar in self_scalars {
+        *scalar = *scalar * coeff;
     }
 }
 
-fn mul_inner<K>(self_scalars: &Vec<K>, coeff: K) -> Vec<K>
+fn mul_inner<K>(self_scalars: &[K], coeff: K) -> Vec<K>
 where
     K: Copy + Neg + Mul<Output = K>,
 {
-    let mut new = self_scalars.clone();
+    let mut new = self_scalars.to_owned();
     mul_assign_inner(&mut new, coeff);
     new
 }
 
 // Vector *= coeff
-impl<K> MulAssign<K> for Vector<K> 
+impl<K> MulAssign<K> for Vector<K>
 where
     K: Copy + Neg + Mul<Output = K>,
 {
