@@ -114,3 +114,36 @@ where
         Self::from_iter(value.into_iter())
     }
 }
+
+impl<K> PartialEq for Vector<K>
+where
+    K: Copy + Neg + PartialEq
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.scalars.eq(&other.scalars)
+    }
+}
+
+impl<K> Eq for Vector<K>
+where
+    Self: PartialEq,
+    K: Copy + Neg
+{}
+
+impl<K> PartialOrd for Vector<K>
+where
+    K: Copy + Neg + PartialOrd
+{
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.scalars.partial_cmp(&other.scalars)
+    }
+}
+
+impl<K> Ord for Vector<K>
+where
+    K: Copy + Neg + Ord
+{
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.scalars.cmp(&other.scalars)
+    }
+}
