@@ -1,149 +1,131 @@
-//! Arithmetic operations for `Vector`.
+//! Arithmetic trait implementations for `Vector`.
 //!
-//! This module implements standard arithmetic traits (`Add`, `Sub`, `Mul`, `Div`)
-//! and their assigning counterparts (`+=`, `-=`, etc.) for `Vector`.
+//! This module provides implementations for standard Rust arithmetic traits
+//! (`Add`, `Sub`, `Mul`) and their assignment counterparts (`AddAssign`, `SubAssign`, `MulAssign`).
 //!
-//! # Behavior
+//! # Supported Operations
 //!
-//! * **Addition/Subtraction:** Performed **component-wise**. Both vectors must have the same dimension.
-//! * **Multiplication:** Performed as **scalar** operations (Vector * Scalar).
+//! * **Addition (`+`) & Subtraction (`-`):** Performed **component-wise**.
+//!     Both vectors must have the same dimension (length).
+//! * **Scalar Multiplication (`*`):** Scales every component of the vector by a scalar value `K`.
+//!
+//! # Panics
+//!
+//! Binary operations acting on two vectors (Addition and Subtraction) will **panic**
+//! if the vectors do not have the same number of scalars (dimensions).
 //!
 //! # Examples
 //!
-//! You can use standard operators on both owned `Vector`s and references:
+//! ```rust,ignore
+//! use crate::vector::Vector;
 //!
-//! ```
-//! use my_crate::Vector;
+//! // Assuming Vector::from(vec![...]) is available
+//! let v1 = Vector::from(vec![1.0, 2.0, 3.0]);
+//! let v2 = Vector::from(vec![4.0, 5.0, 6.0]);
 //!
-//! let v1 = Vector::new(10, 20);
-//! let v2 = Vector::new(5, 5);
-//!
-//! // Component-wise addition
+//! // 1. Addition (Component-wise)
 //! let sum = &v1 + &v2;
-//! assert_eq!(sum, Vector::new(15, 25));
+//! assert_eq!(sum, Vector::from(vec![5.0, 7.0, 9.0]));
 //!
-//! // Scalar multiplication
-//! let scaled = v1 * 2;
-//! assert_eq!(scaled, Vector::new(20, 40));
+//! // 2. Subtraction (Component-wise)
+//! let diff = &v2 - &v1;
+//! assert_eq!(diff, Vector::from(vec![3.0, 3.0, 3.0]));
 //!
-//! // Mutable assignment
-//! let mut v3 = Vector::new(1, 1);
-//! v3 += Vector::new(2, 2);
-//! assert_eq!(v3, Vector::new(3, 3));
+//! // 3. Scalar Multiplication
+//! let scaled = v1 * 2.0;
+//! assert_eq!(scaled, Vector::from(vec![2.0, 4.0, 6.0]));
+//!
+//! // 4. Compound Assignment
+//! let mut v_mut = Vector::from(vec![10.0, 10.0]);
+//! v_mut += Vector::from(vec![5.0, 5.0]);
+//! assert_eq!(v_mut, Vector::from(vec![15.0, 15.0]));
 //! ```
 
+use std::ops::{Neg, Add, AddAssign, Sub, SubAssign, Mul, MulAssign};
+
 use crate::vector::Vector;
-use std::ops::{Add, Mul, Neg, Sub};
 
 // -----------------------------------------------------------------------------
 // Addition
 // -----------------------------------------------------------------------------
 
-impl<T, K> std::ops::AddAssign<Vector<T>> for Vector<K>
+fn add_assign_inner<K>(self_scalars: &mut Vec<K>, other_scalars: &Vec<K>)
 where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
+    K: Copy + Neg + Add<Output = K>,
 {
-    fn add_assign(&mut self, other: Vector<T>) {
-        assert_eq!(self.len(), other.len());
+    assert_eq!(self_scalars.len(), other_scalars.len());
 
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] + other.scalars[i];
-        }
+    for i in 0..self_scalars.len() {
+        self_scalars[i] = self_scalars[i] + other_scalars[i];
     }
 }
 
-impl<T, K> std::ops::Add<Vector<T>> for Vector<K>
+fn add_inner<K>(self_scalars: &Vec<K>, other_scalars: &Vec<K>) -> Vec<K>
 where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
+    K: Copy + Neg + Add<Output = K>,
 {
-    type Output = Self;
+    let mut new = self_scalars.clone();
+    add_assign_inner(&mut new, other_scalars);
+    new
+}
 
-    fn add(mut self, other: Vector<T>) -> Self::Output {
+// Vector += Vector
+impl<K> AddAssign<Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Add<Output = K>,
+{
+    fn add_assign(&mut self, other: Vector<K>) {
+        add_assign_inner(&mut self.scalars, &other.scalars);
+    }
+}
+
+// Vector += &Vector
+impl<K> AddAssign<&Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Add<Output = K>,
+{
+    fn add_assign(&mut self, other: &Vector<K>) {
+        add_assign_inner(&mut self.scalars, &other.scalars);
+    }
+}
+
+// Vector + Vector
+impl<K> Add for Vector<K>
+where
+    K: Copy + Neg + Add<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn add(mut self, other: Vector<K>) -> Self::Output {
         self += other;
         self
     }
 }
 
-impl<T, K> std::ops::AddAssign<&Vector<T>> for Vector<K>
+// Vector + &Vector
+impl<K> Add<&Vector<K>> for Vector<K>
 where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
+    K: Copy + Neg + Add<Output = K>,
 {
-    fn add_assign(&mut self, other: &Vector<T>) {
-        assert_eq!(self.len(), other.len());
+    type Output = Vector<K>;
 
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] + other.scalars[i];
-        }
-    }
-}
-
-impl<T, K> std::ops::Add<&Vector<T>> for Vector<K>
-where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    type Output = Self;
-
-    fn add(mut self, other: &Vector<T>) -> Self::Output {
+    fn add(mut self, other: &Vector<K>) -> Self::Output {
         self += other;
         self
     }
 }
 
-impl<T, K> std::ops::AddAssign<Vector<T>> for &mut Vector<K>
+// &Vector + &Vector
+impl<K> Add<&Vector<K>> for &Vector<K>
 where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
+    K: Copy + Neg + Add<Output = K>,
 {
-    fn add_assign(&mut self, other: Vector<T>) {
-        assert_eq!(self.len(), other.len());
+    type Output = Vector<K>;
 
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] + other.scalars[i];
-        }
-    }
-}
-
-impl<T, K> std::ops::Add<Vector<T>> for &mut Vector<K>
-where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    type Output = Self;
-
-    fn add(mut self, other: Vector<T>) -> Self::Output {
-        self += other;
-        self
-    }
-}
-
-impl<T, K> std::ops::AddAssign<&Vector<T>> for &mut Vector<K>
-where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    fn add_assign(&mut self, other: &Vector<T>) {
-        assert_eq!(self.len(), other.len());
-
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] + other.scalars[i];
-        }
-    }
-}
-
-impl<T, K> std::ops::Add<&Vector<T>> for &mut Vector<K>
-where
-    K: Copy + Neg + Add<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    type Output = Self;
-
-    fn add(mut self, other: &Vector<T>) -> Self::Output {
-        self += other;
-        self
+    fn add(self, other: &Vector<K>) -> Self::Output {
+        let mut new: Vector<K> = self.clone();
+        new += other;
+        new
     }
 }
 
@@ -151,111 +133,82 @@ where
 // Substraction
 // -----------------------------------------------------------------------------
 
-impl<T, K> std::ops::SubAssign<Vector<T>> for Vector<K>
+fn sub_assign_inner<K>(self_scalars: &mut Vec<K>, other_scalars: &Vec<K>)
 where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
+    K: Copy + Neg + Sub<Output = K>,
 {
-    fn sub_assign(&mut self, other: Vector<T>) {
-        assert_eq!(self.len(), other.len());
+    assert_eq!(self_scalars.len(), other_scalars.len());
 
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] - other.scalars[i];
-        }
+    for i in 0..self_scalars.len() {
+        self_scalars[i] = self_scalars[i] - other_scalars[i];
     }
 }
 
-impl<T, K> std::ops::Sub<Vector<T>> for Vector<K>
+fn sub_inner<K>(self_scalars: &Vec<K>, other_scalars: &Vec<K>) -> Vec<K>
 where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
+    K: Copy + Neg + Sub<Output = K>,
 {
-    type Output = Self;
+    let mut new = self_scalars.clone();
+    sub_assign_inner(&mut new, other_scalars);
+    new
+}
 
-    fn sub(mut self, other: Vector<T>) -> Self::Output {
+// Vector -= Vector
+impl<K> SubAssign<Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Sub<Output = K>,
+{
+    fn sub_assign(&mut self, other: Vector<K>) {
+        sub_assign_inner(&mut self.scalars, &other.scalars);
+    }
+}
+
+// Vector -= &Vector
+impl<K> SubAssign<&Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Sub<Output = K>,
+{
+    fn sub_assign(&mut self, other: &Vector<K>) {
+        sub_assign_inner(&mut self.scalars, &other.scalars);
+    }
+}
+
+// Vector - Vector
+impl<K> Sub for Vector<K>
+where
+    K: Copy + Neg + Sub<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn sub(self, other: Vector<K>) -> Self::Output {
+        Vector::from(sub_inner(&self.scalars, &other.scalars))
+    }
+}
+
+// Vector - &Vector
+impl<K> Sub<&Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Sub<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn sub(mut self, other: &Vector<K>) -> Self::Output {
         self -= other;
         self
     }
 }
 
-impl<T, K> std::ops::SubAssign<&Vector<T>> for Vector<K>
+// &Vector - &Vector
+impl<K> Sub<&Vector<K>> for &Vector<K>
 where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
+    K: Copy + Neg + Sub<Output = K>,
 {
-    fn sub_assign(&mut self, other: &Vector<T>) {
-        assert_eq!(self.len(), other.len());
+    type Output = Vector<K>;
 
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] - other.scalars[i];
-        }
-    }
-}
-
-impl<T, K> std::ops::Sub<&Vector<T>> for Vector<K>
-where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    type Output = Self;
-
-    fn sub(mut self, other: &Vector<T>) -> Self::Output {
-        self -= other;
-        self
-    }
-}
-
-impl<T, K> std::ops::SubAssign<Vector<T>> for &mut Vector<K>
-where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    fn sub_assign(&mut self, other: Vector<T>) {
-        assert_eq!(self.len(), other.len());
-
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] - other.scalars[i];
-        }
-    }
-}
-
-impl<T, K> std::ops::Sub<Vector<T>> for &mut Vector<K>
-where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    type Output = Self;
-
-    fn sub(mut self, other: Vector<T>) -> Self::Output {
-        self -= other;
-        self
-    }
-}
-
-impl<T, K> std::ops::SubAssign<&Vector<T>> for &mut Vector<K>
-where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    fn sub_assign(&mut self, other: &Vector<T>) {
-        assert_eq!(self.len(), other.len());
-
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] - other.scalars[i];
-        }
-    }
-}
-
-impl<T, K> std::ops::Sub<&Vector<T>> for &mut Vector<K>
-where
-    K: Copy + Neg + Sub<T, Output = K> + From<T>,
-    T: Copy + Neg,
-{
-    type Output = Self;
-
-    fn sub(mut self, other: &Vector<T>) -> Self::Output {
-        self -= other;
-        self
+    fn sub(self, other: &Vector<K>) -> Self::Output {
+        let mut new: Vector<K> = self.clone();
+        new -= other;
+        new
     }
 }
 
@@ -263,52 +216,58 @@ where
 // Multiplication
 // -----------------------------------------------------------------------------
 
-impl<T, K> std::ops::MulAssign<T> for Vector<K>
+/// Since Vector<K> is only multipliable by K, and K implements Copy,
+/// we don't need to implement the traits for &K
+
+fn mul_assign_inner<K>(self_scalars: &mut Vec<K>, coeff: K)
 where
-    K: Copy + Neg + Mul<T, Output = K>,
-    T: Copy,
+    K: Copy + Neg + Mul<Output = K>,
 {
-    fn mul_assign(&mut self, scale: T) {
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] * scale;
-        }
+    for i in 0..self_scalars.len() {
+        self_scalars[i] = self_scalars[i] * coeff;
     }
 }
 
-impl<T, K> std::ops::Mul<T> for Vector<K>
+fn mul_inner<K>(self_scalars: &Vec<K>, coeff: K) -> Vec<K>
 where
-    K: Copy + Neg + Mul<T, Output = K>,
-    T: Copy,
+    K: Copy + Neg + Mul<Output = K>,
 {
-    type Output = Self;
+    let mut new = self_scalars.clone();
+    mul_assign_inner(&mut new, coeff);
+    new
+}
 
-    fn mul(mut self, scale: T) -> Self::Output {
-        self *= scale;
+// Vector *= coeff
+impl<K> MulAssign<K> for Vector<K> 
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    fn mul_assign(&mut self, coeff: K) {
+        mul_assign_inner(&mut self.scalars, coeff);
+    }
+}
+
+// Vector * coeff
+impl<K> Mul<K> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn mul(mut self, coeff: K) -> Self::Output {
+        self *= coeff;
         self
     }
 }
 
-impl<T, K> std::ops::MulAssign<T> for &mut Vector<K>
+// &Vector * coeff
+impl<K> Mul<K> for &Vector<K>
 where
-    K: Copy + Neg + Mul<T, Output = K>,
-    T: Copy,
+    K: Copy + Neg + Mul<Output = K>,
 {
-    fn mul_assign(&mut self, scale: T) {
-        for i in 0..self.len() {
-            self.scalars[i] = self.scalars[i] * scale;
-        }
-    }
-}
+    type Output = Vector<K>;
 
-impl<T, K> std::ops::Mul<T> for &mut Vector<K>
-where
-    K: Copy + Neg + Mul<T, Output = K>,
-    T: Copy,
-{
-    type Output = Self;
-
-    fn mul(mut self, scale: T) -> Self::Output {
-        self *= scale;
-        self
+    fn mul(self, coeff: K) -> Self::Output {
+        Vector::from(mul_inner(&self.scalars, coeff))
     }
 }
