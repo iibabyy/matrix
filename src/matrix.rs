@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 mod arithmetics;
-mod macros;
 
 use std::ops::Neg;
 use crate::vector::Vector;
@@ -11,7 +10,7 @@ pub struct Matrix<K = f32>
 where
     K: Copy + Neg,
 {
-    vectors: Vec<Vector<K>>,
+    pub(crate) vectors: Vec<Vector<K>>,
 }
 
 // -----------------------------------------------------------------------------

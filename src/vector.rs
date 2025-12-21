@@ -15,7 +15,7 @@ pub struct Vector<K = f32>
 where
     K: Copy + Neg,
 {
-    scalars: Vec<K>,
+    pub(crate) scalars: Vec<K>,
 }
 
 // -----------------------------------------------------------------------------
