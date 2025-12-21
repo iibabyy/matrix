@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 mod arithmetics;
+mod macros;
 
 use std::ops::Neg;
 use crate::vector::Vector;
