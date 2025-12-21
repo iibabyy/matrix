@@ -41,6 +41,10 @@ where
     pub const fn len(&self) -> usize {
         self.scalars.len()
     }
+
+    pub const fn scalars(&self) -> &Vec<K> {
+        &self.scalars
+    }
 }
 
 // -----------------------------------------------------------------------------

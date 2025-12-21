@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 mod arithmetics;
+mod macros;
 
 use std::ops::Neg;
 use crate::vector::Vector;
@@ -52,6 +53,10 @@ where
         }
 
         assert_eq!(self.vectors[0].len(), vector.len());
+    }
+
+    pub const fn vectors(&self) -> &Vec<Vector<K>> {
+        &self.vectors
     }
 }
 
