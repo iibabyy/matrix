@@ -50,27 +50,27 @@ impl<K> Vector<K>
 where
     K: Copy + Neg,
 {
+    /// for details, go to [crate::vector::arithmetics]
     fn add(&mut self, other: &Vector<K>)
     where
         K: Add<Output = K>,
     {
-        // for details, go to src/vector/arithmetics.rs
         *self += other;
     }
 
+    /// for details, go to [crate::vector::arithmetics]
     fn sub(&mut self, other: &Vector<K>)
     where
         K: Sub<Output = K>,
     {
-        // for details, go to src/vector/arithmetics.rs
         *self -= other
     }
 
+    /// for details, go to [crate::vector::arithmetics]
     fn scl(&mut self, scale: K)
     where
         K: Mul<Output = K>,
     {
-        // for details, go to src/vector/arithmetics.rs
         *self *= scale
     }
 }
@@ -101,7 +101,9 @@ where
     K: Copy + Neg,
 {
     fn from_iter<I: IntoIterator<Item = K>>(iter: I) -> Self {
-        Self { scalars: Vec::from_iter(iter) }
+        Self {
+            scalars: Vec::from_iter(iter),
+        }
     }
 }
 
