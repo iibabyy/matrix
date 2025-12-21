@@ -22,34 +22,30 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    // Helper to create vectors easily for testing
-    fn v(vals: impl IntoIterator<Item = i32>) -> Vector<i32> {
-        Vector::from(vals)
-    }
+    use crate::vector::macros::vector;
 
     #[test]
     fn test_subject_case_1() {
-        let e1 = Vector::from([1., 0., 0.]);
-        let e2 = Vector::from([0., 1., 0.]);
-        let e3 = Vector::from([0., 0., 1.]);
+        let e1 = vector!(1., 0., 0.);
+        let e2 = vector!(0., 1., 0.);
+        let e3 = vector!(0., 0., 1.);
 
-        assert_eq!(Vector::from([10., -2., 0.5]), linear_combination::<f32>(&[e1, e2, e3], &[10., -2., 0.5]));
+        assert_eq!(vector!(10., -2., 0.5), linear_combination::<f32>(&[e1, e2, e3], &[10., -2., 0.5]));
     }
 
     #[test]
     fn test_subject_case_2() {
-        let v1 = Vector::from([1., 2., 3.]);
-        let v2 = Vector::from([0., 10., -100.]);
+        let v1 = vector!(1., 2., 3.);
+        let v2 = vector!(0., 10., -100.);
 
-        assert_eq!(Vector::from([10., 0., 230.]), linear_combination::<f32>(&[v1, v2], &[10., -2.]));
+        assert_eq!(vector!(10., 0., 230.), linear_combination::<f32>(&[v1, v2], &[10., -2.]));
     }
 
     #[test]
     fn test_simple() {
         // Test av + bw where a=2, b=3, v=[1, 0], w=[0, 1]
-        let v1 = v([1, 0]);
-        let v2 = v([0, 1]);
+        let v1 = vector![1, 0];
+        let v2 = vector![0, 1];
         let vectors = vec![v1, v2];
         let coefficients = vec![2, 3];
 
@@ -60,9 +56,9 @@ mod tests {
     #[test]
     fn test_three_vectors() {
         // Test av + bw + cu where a=1, b=2, c=3, v=[1, 0, 0], w=[0, 1, 0], u=[0, 0, 1]
-        let v1 = v(vec![1, 0, 0]);
-        let v2 = v(vec![0, 1, 0]);
-        let v3 = v(vec![0, 0, 1]);
+        let v1 = vector![1, 0, 0];
+        let v2 = vector![0, 1, 0];
+        let v3 = vector![0, 0, 1];
         let vectors = vec![v1, v2, v3];
         let coefficients = vec![1, 2, 3];
 
@@ -73,8 +69,8 @@ mod tests {
     #[test]
     fn test_with_negatives() {
         // Test av + bw where a=-1, b=2, v=[1, 2], w=[3, 4]
-        let v1 = v(vec![1, 2]);
-        let v2 = v(vec![3, 4]);
+        let v1 = vector![1, 2];
+        let v2 = vector![3, 4];
         let vectors = vec![v1, v2];
         let coefficients = vec![-1, 2];
 
@@ -85,8 +81,8 @@ mod tests {
     #[test]
     fn test_with_zeros() {
         // Test av + bw where a=0, b=5, v=[1, 2], w=[3, 4]
-        let v1 = v(vec![1, 2]);
-        let v2 = v(vec![3, 4]);
+        let v1 = vector![1, 2];
+        let v2 = vector![3, 4];
         let vectors = vec![v1, v2];
         let coefficients = vec![0, 5];
 
@@ -97,7 +93,7 @@ mod tests {
     #[test]
     fn test_single_vector() {
         // Test av where a=5, v=[2, 3, 4]
-        let v1 = v(vec![2, 3, 4]);
+        let v1 = vector![2, 3, 4];
         let vectors = vec![v1];
         let coefficients = vec![5];
 
@@ -117,8 +113,8 @@ mod tests {
     #[test]
     #[should_panic(expected = "assertion `left == right` failed\n  left: 2\n right: 1")]
     fn test_mismatched_lengths_should_panic() {
-        let v1 = v(vec![1, 2]);
-        let v2 = v(vec![3, 4]);
+        let v1 = vector![1, 2];
+        let v2 = vector![3, 4];
         let vectors = vec![v1, v2];
         let coefficients = vec![1]; // Mismatched length
 
@@ -128,8 +124,8 @@ mod tests {
     #[test]
     fn test_floating_point() {
         // Test with floating point values
-        let v1 = Vector::from([1.0, 0.0]);
-        let v2 = Vector::from([0.0, 1.0]);
+        let v1 = vector!(1.0, 0.0);
+        let v2 = vector!(0.0, 1.0);
         let vectors = vec![v1, v2];
         let coefficients = vec![2.5, -1.5];
 
