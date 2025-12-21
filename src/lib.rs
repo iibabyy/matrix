@@ -1,4 +1,4 @@
+mod linear_interpolation;
 mod macros;
 mod matrix;
 mod vector;
-mod linear_interpolation;
