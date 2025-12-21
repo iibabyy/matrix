@@ -1,6 +1,7 @@
 use std::ops::{Add, Mul, Sub};
 
-fn lerp<V>(u: V, v: V, t: f32) -> V
+#[allow(dead_code)]
+pub fn lerp<V>(u: V, v: V, t: f32) -> V
 where
 	V: PartialOrd + Mul<f32, Output = V> + Add<V, Output = V>,
 	for <'a> V: Sub<&'a V, Output = V>,

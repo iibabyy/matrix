@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 mod arithmetics;
-mod linear_interpolation;
 
 use crate::vector::Vector;
 use std::ops::Neg;
