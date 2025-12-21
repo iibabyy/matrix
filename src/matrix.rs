@@ -1,10 +1,10 @@
 #![allow(dead_code)]
 
 mod arithmetics;
-mod macros;
+mod linear_interpolation;
 
-use std::ops::Neg;
 use crate::vector::Vector;
+use std::ops::Neg;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Matrix<K = f32>
@@ -35,7 +35,9 @@ where
     where
         K: Clone,
     {
-        Self { vectors: vec![elem; n] }
+        Self {
+            vectors: vec![elem; n],
+        }
     }
 
     pub const fn len(&self) -> usize {
@@ -49,7 +51,7 @@ where
 
     fn assert_valid(&self, vector: &Vector<K>) {
         if self.vectors.is_empty() {
-            return
+            return;
         }
 
         assert_eq!(self.vectors[0].len(), vector.len());
@@ -68,8 +70,13 @@ where
     K: std::fmt::Display + Copy + Neg,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-		let vecs_fmt = self.vectors.iter().map(ToString::to_string).collect::<Vec<_>>().join("\n");
-		write!(f, "[{vecs_fmt}]")
+        let vecs_fmt = self
+            .vectors
+            .iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join("\n");
+        write!(f, "[{vecs_fmt}]")
     }
 }
 
@@ -106,8 +113,8 @@ where
 impl<K> Neg for Matrix<K>
 where
     K: Copy + Neg,
-	Vector<K>: Neg<Output = Vector<<K as Neg>::Output>>,
-	<K as Neg>::Output: Copy + Neg,
+    Vector<K>: Neg<Output = Vector<<K as Neg>::Output>>,
+    <K as Neg>::Output: Copy + Neg,
 {
     type Output = Matrix<<K as Neg>::Output>;
 

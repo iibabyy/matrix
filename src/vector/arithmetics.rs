@@ -273,7 +273,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::vector::macros::vector;
+    use crate::macros::vector;
 
     // -------------------------------------------------------------------------
     // TEST: ADDITION

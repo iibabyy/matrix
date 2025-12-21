@@ -1,2 +1,3 @@
-mod vector;
+mod macros;
 mod matrix;
+mod vector;

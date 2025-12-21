@@ -55,9 +55,9 @@
 //! // Result: [[15.0, 15.0], [15.0, 15.0]]
 //! ```
 
-use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
-use crate::vector::Vector;
 use crate::matrix::Matrix;
+use crate::vector::Vector;
+use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 // #[cfg(test)]
 // mod tests;
@@ -89,7 +89,7 @@ where
 // Matrix += Matrix
 impl<K> AddAssign<Matrix<K>> for Matrix<K>
 where
- K: Copy + Neg + Add<Output = K>,
+    K: Copy + Neg + Add<Output = K>,
 {
     fn add_assign(&mut self, other: Matrix<K>) {
         add_assign_inner(&mut self.vectors, &other.vectors);
@@ -239,7 +239,7 @@ where
 fn mul_assign_inner<K>(self_scalars: &mut [Vector<K>], coeff: K)
 where
     K: Copy + Neg,
-    Vector<K>: MulAssign<K>
+    Vector<K>: MulAssign<K>,
 {
     for scalar in self_scalars {
         *scalar *= coeff;
@@ -296,8 +296,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::vector::macros::vector;
-    use crate::matrix::macros::matrix;
+    use crate::macros::{matrix, vector};
 
     // -------------------------------------------------------------------------
     // TEST: ADDITION
@@ -310,7 +309,7 @@ mod tests {
             let m1 = matrix![vector![1, 2], vector![3, 4]];
             let m2 = matrix![vector![1, 1], vector![1, 1]];
             let result = m1 + m2;
-            
+
             // Check specific rows
             assert_eq!(result.vectors[0].scalars, vec![2, 3]);
             assert_eq!(result.vectors[1].scalars, vec![4, 5]);
@@ -321,7 +320,7 @@ mod tests {
             let m1 = matrix![vector![10, 20]];
             let m2 = matrix![vector![1, 2]];
             let result = m1 + &m2;
-            
+
             assert_eq!(result.vectors[0].scalars, vec![11, 22]);
         }
 
@@ -330,7 +329,7 @@ mod tests {
             let m1 = matrix![vector![1, 2], vector![3, 4]];
             let m2 = matrix![vector![4, 3], vector![2, 1]];
             let result = &m1 + &m2;
-            
+
             assert_eq!(result.vectors[0].scalars, vec![5, 5]);
             assert_eq!(result.vectors[1].scalars, vec![5, 5]);
 
@@ -343,9 +342,9 @@ mod tests {
         fn test_assign_owned() {
             let mut m1 = matrix![vector![0, 0], vector![10, 10]];
             let m2 = matrix![vector![1, 1], vector![1, 1]];
-            
+
             m1 += m2;
-            
+
             assert_eq!(m1.vectors[0].scalars, vec![1, 1]);
             assert_eq!(m1.vectors[1].scalars, vec![11, 11]);
         }
@@ -354,9 +353,9 @@ mod tests {
         fn test_assign_ref() {
             let mut m1 = matrix![vector![5, 5]];
             let m2 = matrix![vector![1, 1]];
-            
+
             m1 += &m2;
-            
+
             assert_eq!(m1.vectors[0].scalars, vec![6, 6]);
         }
 
@@ -366,7 +365,7 @@ mod tests {
             // Panic when adding matrices with different number of rows (vectors)
             let m1 = matrix![vector![1, 2]];
             let m2 = matrix![vector![1, 2], vector![3, 4]];
-            let _ = m1 + m2; 
+            let _ = m1 + m2;
         }
 
         #[test]
@@ -391,7 +390,7 @@ mod tests {
             let m1 = matrix![vector![10, 20], vector![30, 40]];
             let m2 = matrix![vector![1, 2], vector![3, 4]];
             let result = m1 - m2;
-            
+
             assert_eq!(result.vectors[0].scalars, vec![9, 18]);
             assert_eq!(result.vectors[1].scalars, vec![27, 36]);
         }
@@ -401,7 +400,7 @@ mod tests {
             let m1 = matrix![vector![5, 5]];
             let m2 = matrix![vector![1, 1]];
             let result = &m1 - &m2;
-            
+
             assert_eq!(result.vectors[0].scalars, vec![4, 4]);
         }
 
@@ -409,9 +408,9 @@ mod tests {
         fn test_assign() {
             let mut m1 = matrix![vector![10, 10]];
             let m2 = matrix![vector![3, 4]];
-            
+
             m1 -= m2;
-            
+
             assert_eq!(m1.vectors[0].scalars, vec![7, 6]);
         }
 
@@ -420,7 +419,7 @@ mod tests {
             let m1 = matrix![vector![0, 0]];
             let m2 = matrix![vector![1, 1]];
             let result = m1 - m2;
-            
+
             assert_eq!(result.vectors[0].scalars, vec![-1, -1]);
         }
 
@@ -429,7 +428,7 @@ mod tests {
         fn test_panic_dim_mismatch() {
             let m1 = matrix![vector![1, 2]];
             let m2 = matrix![vector![1, 2], vector![3, 4]];
-            let _ = &m1 - &m2; 
+            let _ = &m1 - &m2;
         }
     }
 
@@ -443,7 +442,7 @@ mod tests {
         fn test_owned_scalar() {
             let m1 = matrix![vector![1, -2], vector![3, 4]];
             let result = m1 * 2;
-            
+
             assert_eq!(result.vectors[0].scalars, vec![2, -4]);
             assert_eq!(result.vectors[1].scalars, vec![6, 8]);
         }
@@ -452,7 +451,7 @@ mod tests {
         fn test_ref_scalar() {
             let m1 = matrix![vector![10, 20]];
             let result = &m1 * 3;
-            
+
             assert_eq!(result.vectors[0].scalars, vec![30, 60]);
             // Ensure original is preserved
             assert_eq!(m1.vectors[0].scalars, vec![10, 20]);
@@ -462,7 +461,7 @@ mod tests {
         fn test_assign() {
             let mut m1 = matrix![vector![2, 4], vector![1, 1]];
             m1 *= 2;
-            
+
             assert_eq!(m1.vectors[0].scalars, vec![4, 8]);
             assert_eq!(m1.vectors[1].scalars, vec![2, 2]);
         }
@@ -471,7 +470,7 @@ mod tests {
         fn test_zero() {
             let m1 = matrix![vector![1, 2, 3], vector![4, 5, 6]];
             let result = m1 * 0;
-            
+
             assert_eq!(result.vectors[0].scalars, vec![0, 0, 0]);
             assert_eq!(result.vectors[1].scalars, vec![0, 0, 0]);
         }

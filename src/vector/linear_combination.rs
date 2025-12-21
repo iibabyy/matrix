@@ -22,7 +22,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::vector::macros::vector;
+    use crate::macros::vector;
 
     #[test]
     fn test_subject_case_1() {
@@ -30,7 +30,10 @@ mod tests {
         let e2 = vector!(0., 1., 0.);
         let e3 = vector!(0., 0., 1.);
 
-        assert_eq!(vector!(10., -2., 0.5), linear_combination::<f32>(&[e1, e2, e3], &[10., -2., 0.5]));
+        assert_eq!(
+            vector!(10., -2., 0.5),
+            linear_combination::<f32>(&[e1, e2, e3], &[10., -2., 0.5])
+        );
     }
 
     #[test]
@@ -38,7 +41,10 @@ mod tests {
         let v1 = vector!(1., 2., 3.);
         let v2 = vector!(0., 10., -100.);
 
-        assert_eq!(vector!(10., 0., 230.), linear_combination::<f32>(&[v1, v2], &[10., -2.]));
+        assert_eq!(
+            vector!(10., 0., 230.),
+            linear_combination::<f32>(&[v1, v2], &[10., -2.])
+        );
     }
 
     #[test]
