@@ -116,3 +116,16 @@ where
         Self::from_iter(iter)
     }
 }
+
+impl<K> Neg for Vector<K>
+where
+    K: Copy + Neg,
+    <K as Neg>::Output: Copy + Neg,
+{
+    type Output = Vector<<K as Neg>::Output>;
+
+    fn neg(self) -> Self::Output {
+        let vec: Vec<<K as Neg>::Output> = self.scalars.into_iter().map(Neg::neg).collect();
+        Vector::new(vec)
+    }
+}
