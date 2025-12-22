@@ -4,29 +4,29 @@ use crate::vector::Vector;
 
 impl<K> Vector<K>
 where
-	for<'a> K: Copy + Neg + AddAssign<&'a K>,
-	for<'a> Vector<K>: MulAssign<&'a Vector<K>>,
+    for<'a> K: Copy + Neg + AddAssign<&'a K>,
+    for<'a> Vector<K>: MulAssign<&'a Vector<K>>,
 {
-	fn dot(&self, mut v: Vector<K>) -> K {
-		assert_eq!(self.len(), v.len());
-		debug_assert!(!self.is_empty());
+    fn dot(&self, mut v: Vector<K>) -> K {
+        assert_eq!(self.len(), v.len());
+        debug_assert!(!self.is_empty());
 
-		v *= self;
+        v *= self;
 
-		let mut res = v.scalars[0];
+        let mut res = v.scalars[0];
 
-		for scalar in &v.scalars[1..] {
-			res += scalar;
-		}
+        for scalar in &v.scalars[1..] {
+            res += scalar;
+        }
 
-		res
-	}
+        res
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::macros::vector; 
+    use crate::macros::vector;
 
     // -------------------------------------------------------------------------
     // SUBJECT TESTS
@@ -81,11 +81,11 @@ mod tests {
         // u.dot(v) == v.dot(u)
         let u = vector![2., 3.];
         let v = vector![4., 5.];
-        
+
         // Note: We clone because your dot implementation consumes 'v'
         let res1 = u.dot(v.clone());
         let res2 = v.dot(u.clone());
-        
+
         assert_eq!(res1, res2);
         assert_eq!(res1, 23.0); // 2*4 + 3*5 = 8 + 15 = 23
     }
