@@ -212,13 +212,13 @@ where
 }
 
 // -----------------------------------------------------------------------------
-// Multiplication
+// Coeff Multiplication
 // -----------------------------------------------------------------------------
 
 // Since Vector<K> is only multipliable by K, and K implements Copy,
 // we don't need to implement the traits for &K
 
-fn mul_assign_inner<K>(self_scalars: &mut [K], coeff: K)
+fn coeff_mul_assign_inner<K>(self_scalars: &mut [K], coeff: K)
 where
     K: Copy + Neg + Mul<Output = K>,
 {
@@ -227,12 +227,12 @@ where
     }
 }
 
-fn mul_inner<K>(self_scalars: &[K], coeff: K) -> Vec<K>
+fn coeff_mul_inner<K>(self_scalars: &[K], coeff: K) -> Vec<K>
 where
     K: Copy + Neg + Mul<Output = K>,
 {
     let mut new = self_scalars.to_owned();
-    mul_assign_inner(&mut new, coeff);
+    coeff_mul_assign_inner(&mut new, coeff);
     new
 }
 
@@ -242,7 +242,7 @@ where
     K: Copy + Neg + Mul<Output = K>,
 {
     fn mul_assign(&mut self, coeff: K) {
-        mul_assign_inner(&mut self.scalars, coeff);
+        coeff_mul_assign_inner(&mut self.scalars, coeff);
     }
 }
 
@@ -267,9 +267,94 @@ where
     type Output = Vector<K>;
 
     fn mul(self, coeff: K) -> Self::Output {
-        Vector::new(mul_inner(&self.scalars, coeff))
+        Vector::new(coeff_mul_inner(&self.scalars, coeff))
     }
 }
+
+// -----------------------------------------------------------------------------
+// Vector Multiplication
+// -----------------------------------------------------------------------------
+
+fn vector_mul_assign_inner<K>(self_scalars: &mut [K], other_scalars: &[K])
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    assert_eq!(self_scalars.len(), other_scalars.len());
+
+    for i in 0..self_scalars.len() {
+        self_scalars[i] = self_scalars[i] * other_scalars[i];
+    }
+}
+
+fn vector_mul_inner<K>(self_scalars: &[K], other_scalars: &[K]) -> Vec<K>
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    let mut new = self_scalars.to_owned();
+    vector_mul_assign_inner(&mut new, other_scalars);
+    new
+}
+
+// Vector *= Vector
+impl<K> MulAssign<Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    fn mul_assign(&mut self, other: Vector<K>) {
+        vector_mul_assign_inner(&mut self.scalars, &other.scalars);
+    }
+}
+
+// Vector *= &Vector
+impl<K> MulAssign<&Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    fn mul_assign(&mut self, other: &Vector<K>) {
+        vector_mul_assign_inner(&mut self.scalars, &other.scalars);
+    }
+}
+
+// Vector * Vector
+impl<K> Mul<Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn mul(mut self, other: Vector<K>) -> Self::Output {
+        self *= other;
+        self
+    }
+}
+
+// &Vector * Vector
+impl<K> Mul<Vector<K>> for &Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn mul(self, other: Vector<K>) -> Self::Output {
+        Vector::new(vector_mul_inner(&self.scalars, &other.scalars))
+    }
+}
+
+// &Vector * &Vector
+impl<K> Mul<&Vector<K>> for &Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn mul(self, other: &Vector<K>) -> Self::Output {
+        Vector::new(vector_mul_inner(&self.scalars, &other.scalars))
+    }
+}
+
+// -----------------------------------------------------------------------------
+// TESTS
+// -----------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {

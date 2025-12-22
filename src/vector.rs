@@ -8,6 +8,7 @@ use std::ops::{Add, Mul, Neg, Sub};
 
 mod arithmetics;
 mod linear_combination;
+mod dot_product;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Vector<K = f32>
@@ -25,6 +26,7 @@ where
     K: Copy + Neg,
 {
     pub fn new(scalars: Vec<K>) -> Self {
+        assert!(scalars.len() > 0);
         Self { scalars }
     }
 
@@ -32,6 +34,7 @@ where
     where
         K: Clone,
     {
+        assert!(n > 0);
         Self {
             scalars: vec![elem; n],
         }
@@ -39,6 +42,10 @@ where
 
     pub const fn len(&self) -> usize {
         self.scalars.len()
+    }
+
+    pub const fn is_empty(&self) -> bool {
+        self.scalars.is_empty()
     }
 
     pub const fn scalars(&self) -> &Vec<K> {
