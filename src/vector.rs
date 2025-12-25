@@ -8,7 +8,6 @@ use std::ops::{Add, Mul, Neg, Sub};
 
 mod arithmetics;
 mod dot_product;
-mod linear_combination;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Vector<K = f32>
