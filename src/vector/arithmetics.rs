@@ -42,7 +42,7 @@
 
 use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-use crate::vector::Vector;
+use crate::{linear_combination::linear_combination, matrix::Matrix, vector::Vector};
 
 // -----------------------------------------------------------------------------
 // Addition
@@ -328,6 +328,18 @@ where
     }
 }
 
+// Vector * &Vector
+impl<K> Mul<&Vector<K>> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn mul(self, other: &Vector<K>) -> Self::Output {
+        Vector::new(vector_mul_inner(&self.scalars, &other.scalars))
+    }
+}
+
 // &Vector * Vector
 impl<K> Mul<Vector<K>> for &Vector<K>
 where
@@ -349,6 +361,87 @@ where
 
     fn mul(self, other: &Vector<K>) -> Self::Output {
         Vector::new(vector_mul_inner(&self.scalars, &other.scalars))
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Matrix Multiplication
+// -----------------------------------------------------------------------------
+
+fn matrix_mul_assign_inner<K>(self_scalars: &mut [K], matrix_vectors: &[Vector<K>])
+where
+    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+{
+    let combination = linear_combination(matrix_vectors, self_scalars).scalars;
+    debug_assert_eq!(combination.len(), self_scalars.len());
+    for i in 0..combination.len() {
+        self_scalars[i] = combination[i];
+    }
+}
+
+fn matrix_mul_inner<K>(scalars: &[K], matrix: &[Vector<K>]) -> Vector<K>
+where
+    K: Copy + Neg + Add<Output = K> + Mul<Output = K>,
+{
+    let combination = linear_combination(matrix, scalars).scalars;
+    debug_assert_eq!(combination.len(), scalars.len());
+    Vector::new(combination)
+}
+
+// Vector *= Matrix
+impl<K> MulAssign<Matrix<K>> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+{
+    fn mul_assign(&mut self, matrix: Matrix<K>) {
+        matrix_mul_assign_inner(&mut self.scalars, &matrix.vectors);
+    }
+}
+
+// Vector *= &Matrix
+impl<K> MulAssign<&Matrix<K>> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+{
+    fn mul_assign(&mut self, matrix: &Matrix<K>) {
+        matrix_mul_assign_inner(&mut self.scalars, &matrix.vectors);
+    }
+}
+
+// Vector * Matrix
+impl<K> Mul<Matrix<K>> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn mul(mut self, other: Matrix<K>) -> Self::Output {
+        self *= other;
+        self
+    }
+}
+
+// Vector * &Matrix
+impl<K> Mul<&Matrix<K>> for Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn mul(self, other: &Matrix<K>) -> Self::Output {
+        matrix_mul_inner(&self.scalars, &other.vectors)
+    }
+}
+
+// &Vector * &Matrix
+impl<K> Mul<&Matrix<K>> for &Vector<K>
+where
+    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+{
+    type Output = Vector<K>;
+
+    fn mul(self, matrix: &Matrix<K>) -> Self::Output {
+        matrix_mul_inner(&self.scalars, &matrix.vectors)
     }
 }
 
@@ -498,6 +591,84 @@ mod tests {
             let v1 = vector![1, 2, 3];
             let result = v1 * 0;
             assert_eq!(result.scalars, vec![0, 0, 0]);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // TEST: VECTOR MULTIPLICATION (COMPONENT-WISE)
+    // -------------------------------------------------------------------------
+    mod vector_multiplication {
+        use super::*;
+
+        #[test]
+        fn test_owned_owned() {
+            let v1 = vector![1, 2, 3];
+            let v2 = vector![4, 5, 6];
+            let result = v1 * v2;
+            assert_eq!(result.scalars, vec![4, 10, 18]);
+        }
+
+        #[test]
+        fn test_owned_ref() {
+            let v1 = vector![2, 3];
+            let v2 = vector![4, 5];
+            let result = v1 * &v2;
+            assert_eq!(result.scalars, vec![8, 15]);
+        }
+
+        #[test]
+        fn test_ref_owned() {
+            let v1 = vector![1, 2];
+            let v2 = vector![3, 4];
+            let result = &v1 * v2;
+            assert_eq!(result.scalars, vec![3, 8]);
+        }
+
+        #[test]
+        fn test_ref_ref() {
+            let v1 = vector![2, 3, 4];
+            let v2 = vector![5, 6, 7];
+            let result = &v1 * &v2;
+            assert_eq!(result.scalars, vec![10, 18, 28]);
+        }
+
+        #[test]
+        fn test_assign_owned() {
+            let mut v1 = vector![1, 2, 3];
+            v1 *= vector![2, 3, 4];
+            assert_eq!(v1.scalars, vec![2, 6, 12]);
+        }
+
+        #[test]
+        fn test_assign_ref() {
+            let mut v1 = vector![1, 2];
+            let v2 = vector![3, 4];
+            v1 *= &v2;
+            assert_eq!(v1.scalars, vec![3, 8]);
+        }
+
+        #[test]
+        fn test_with_negatives() {
+            let v1 = vector![-1, 2, -3];
+            let v2 = vector![2, -3, 4];
+            let result = v1 * v2;
+            assert_eq!(result.scalars, vec![-2, -6, -12]);
+        }
+
+        #[test]
+        fn test_with_zeros() {
+            let v1 = vector![0, 5, 10];
+            let v2 = vector![7, 0, 3];
+            let result = v1 * v2;
+            assert_eq!(result.scalars, vec![0, 0, 30]);
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_panic_dim_mismatch() {
+            let v1 = vector![1, 2];
+            let v2 = vector![1, 2, 3];
+            let _ = v1 * v2; // Should panic
         }
     }
 }
