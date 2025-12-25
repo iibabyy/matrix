@@ -1,10 +1,12 @@
+#![allow(unused)]
+
 use std::ops::{Add, Mul, Sub};
 
-#[allow(dead_code)]
-pub fn lerp<V>(u: V, v: V, t: f32) -> V
+pub fn lerp_generic<V, K>(u: V, v: V, t: K) -> V
 where
-    V: PartialOrd + Mul<f32, Output = V> + Add<V, Output = V>,
+    V: PartialOrd + Mul<K, Output = V> + Add<V, Output = V>,
     for<'a> V: Sub<&'a V, Output = V>,
+    K: std::cmp::PartialOrd<f32>
 {
     assert!(t >= 0.);
     assert!(t <= 1.);
@@ -13,7 +15,14 @@ where
     u + (diff * t)
 }
 
-#[cfg(test)]
+pub fn lerp<V>(u: V, v: V, t: f32) -> V
+where
+    V: PartialOrd + Mul<f32, Output = V> + Add<V, Output = V>,
+    for<'a> V: Sub<&'a V, Output = V>,
+{
+    lerp_generic(u, v, t)
+}
+
 mod tests {
     use super::*;
     use crate::macros::{matrix, vector};
@@ -65,7 +74,7 @@ mod tests {
     fn test_subject_case_6() {
         // lerp(Matrix::from([[2., 1.], [3., 4.]]), Matrix::from([[20., 10.], [30., 40.]]), 0.5)
         // Expected: [[11., 5.5], [16.5, 22.]]
-        let m1 = matrix![vector![2., 1.], vector![3., 4.]];
+        let m1 = matrix![vector![2. as f32, 1.], vector![3., 4.]];
         let m2 = matrix![vector![20., 10.], vector![30., 40.]];
         let result = lerp(m1, m2, 0.5);
 
