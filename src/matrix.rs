@@ -23,7 +23,8 @@ where
     pub fn new(vectors: Vec<Vector<K>>) -> Self {
         let mut matrix = Self::default();
         for vector in vectors {
-            // Matrix::push() asserts that the vector is valid
+            // no verifications needed:
+            // Matrix::push() already asserts that the vector is valid
             matrix.push(vector);
         }
 

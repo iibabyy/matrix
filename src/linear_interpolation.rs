@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     fn test_reverse_direction() {
-        // Validates that your implementation does NOT swap arguments anymore.
+        // Validates that it does not swap arguments.
         // Start at 42, go towards 21.
         // Formula: 42 + (21 - 42) * 0.3
         //        = 42 - 6.3

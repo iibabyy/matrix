@@ -82,7 +82,7 @@ mod tests {
         let u = vector![2., 3.];
         let v = vector![4., 5.];
 
-        // Note: We clone because your dot implementation consumes 'v'
+        // Note: We clone because dot() consumes 'v'
         let res1 = u.dot(v.clone());
         let res2 = v.dot(u.clone());
 
@@ -122,8 +122,7 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_panic_empty() {
-        // Your implementation accesses v.scalars[0], so this must panic
-        // It also has a debug_assert!(!self.is_empty())
+        // Empty vectors, so this must panic
         let u: Vector<f32> = Vector { scalars: vec![] };
         let v: Vector<f32> = Vector { scalars: vec![] };
         u.dot(v);
