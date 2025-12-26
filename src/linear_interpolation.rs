@@ -74,8 +74,8 @@ mod tests {
     fn test_subject_case_6() {
         // lerp(Matrix::from([[2., 1.], [3., 4.]]), Matrix::from([[20., 10.], [30., 40.]]), 0.5)
         // Expected: [[11., 5.5], [16.5, 22.]]
-        let m1 = matrix![vector![2. as f32, 1.], vector![3., 4.]];
-        let m2 = matrix![vector![20., 10.], vector![30., 40.]];
+        let m1 = matrix![[2. as f32, 1.], [3., 4.]];
+        let m2 = matrix![[20., 10.], [30., 40.]];
         let result = lerp(m1, m2, 0.5);
 
         assert_eq!(result.vectors[0].scalars, vec![11.0, 5.5]);
