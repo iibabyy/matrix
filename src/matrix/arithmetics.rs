@@ -55,7 +55,7 @@
 //! // Result: [[15.0, 15.0], [15.0, 15.0]]
 //! ```
 
-use crate::matrix::Matrix;
+use crate::{matrix::Matrix};
 use crate::vector::Vector;
 use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
@@ -66,22 +66,22 @@ use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 // Addition
 // -----------------------------------------------------------------------------
 
-fn add_assign_inner<K>(self_scalars: &mut [Vector<K>], other_scalars: &[Vector<K>])
+fn add_assign_inner<K>(self_vectors: &mut [Vector<K>], other_scalars: &[Vector<K>])
 where
     K: Copy + Neg + Add<Output = K>,
 {
-    assert_eq!(self_scalars.len(), other_scalars.len());
+    assert_eq!(self_vectors.len(), other_scalars.len());
 
-    for i in 0..self_scalars.len() {
-        self_scalars[i] = &self_scalars[i] + &other_scalars[i];
+    for i in 0..self_vectors.len() {
+        self_vectors[i] = &self_vectors[i] + &other_scalars[i];
     }
 }
 
-fn add_inner<K>(self_scalars: &[Vector<K>], other_scalars: &[Vector<K>]) -> Vec<Vector<K>>
+fn add_inner<K>(self_vectors: &[Vector<K>], other_scalars: &[Vector<K>]) -> Vec<Vector<K>>
 where
     K: Copy + Neg + Add<Output = K>,
 {
-    let mut new = self_scalars.to_owned();
+    let mut new = self_vectors.to_owned();
     add_assign_inner(&mut new, other_scalars);
     new
 }
@@ -150,22 +150,22 @@ where
 // Substraction
 // -----------------------------------------------------------------------------
 
-fn sub_assign_inner<K>(self_scalars: &mut [Vector<K>], other_scalars: &[Vector<K>])
+fn sub_assign_inner<K>(self_vectors: &mut [Vector<K>], other_scalars: &[Vector<K>])
 where
     K: Copy + Neg + Sub<Output = K>,
 {
-    assert_eq!(self_scalars.len(), other_scalars.len());
+    assert_eq!(self_vectors.len(), other_scalars.len());
 
-    for i in 0..self_scalars.len() {
-        self_scalars[i] = &self_scalars[i] - &other_scalars[i];
+    for i in 0..self_vectors.len() {
+        self_vectors[i] = &self_vectors[i] - &other_scalars[i];
     }
 }
 
-fn sub_inner<K>(self_scalars: &[Vector<K>], other_scalars: &[Vector<K>]) -> Vec<Vector<K>>
+fn sub_inner<K>(self_vectors: &[Vector<K>], other_scalars: &[Vector<K>]) -> Vec<Vector<K>>
 where
     K: Copy + Neg + Sub<Output = K>,
 {
-    let mut new = self_scalars.to_owned();
+    let mut new = self_vectors.to_owned();
     sub_assign_inner(&mut new, other_scalars);
     new
 }
@@ -230,29 +230,28 @@ where
 }
 
 // -----------------------------------------------------------------------------
-// Multiplication
+// Coeff Multiplication
 // -----------------------------------------------------------------------------
 
-// Since Matrix<K> is only multipliable by K, and K implements Copy,
-// we don't need to implement the traits for &K
+// Since K implements Copy, we don't need to implement the traits for &K
 
-fn mul_assign_inner<K>(self_scalars: &mut [Vector<K>], coeff: K)
+fn coef_mul_assign_inner<K>(self_vectors: &mut [Vector<K>], coeff: K)
 where
     K: Copy + Neg,
     Vector<K>: MulAssign<K>,
 {
-    for scalar in self_scalars {
+    for scalar in self_vectors {
         *scalar *= coeff;
     }
 }
 
-fn mul_inner<K>(self_scalars: &[Vector<K>], coeff: K) -> Vec<Vector<K>>
+fn coef_mul_inner<K>(self_vectors: &[Vector<K>], coeff: K) -> Vec<Vector<K>>
 where
     K: Copy + Neg,
     Vector<K>: Neg + MulAssign<K>,
 {
-    let mut new = self_scalars.to_owned();
-    mul_assign_inner(&mut new, coeff);
+    let mut new = self_vectors.to_owned();
+    coef_mul_assign_inner(&mut new, coeff);
     new
 }
 
@@ -263,7 +262,7 @@ where
     Vector<K>: Neg + MulAssign<K>,
 {
     fn mul_assign(&mut self, coeff: K) {
-        mul_assign_inner(&mut self.vectors, coeff);
+        coef_mul_assign_inner(&mut self.vectors, coeff);
     }
 }
 
@@ -290,7 +289,7 @@ where
     type Output = Matrix<K>;
 
     fn mul(self, coeff: K) -> Self::Output {
-        Matrix::new(mul_inner(&self.vectors, coeff))
+        Matrix::new(coef_mul_inner(&self.vectors, coeff))
     }
 }
 
