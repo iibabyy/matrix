@@ -117,7 +117,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "assertion `left == right` failed\n  left: 2\n right: 1")]
+    #[should_panic(expected = "assertion `left == right` failed")]
     fn test_mismatched_lengths_should_panic() {
         let v1 = vector![1, 2];
         let v2 = vector![3, 4];

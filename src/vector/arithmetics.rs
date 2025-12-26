@@ -671,4 +671,124 @@ mod tests {
             let _ = v1 * v2; // Should panic
         }
     }
+
+    // -------------------------------------------------------------------------
+    // TEST: MATRIX MULTIPLICATION
+    // -------------------------------------------------------------------------
+    mod matrix_multiplication {
+        use crate::macros::matrix;
+
+        use super::*;
+
+        #[test]
+        fn test_vector_matrix_multiplication() {
+            // Test: [1, 2] * [[1, 2], [3, 4]] = [1*1 + 2*3, 1*2 + 2*4] = [7, 10]
+            let vector = vector![1, 2];
+            let matrix = matrix![[1, 2], [3, 4]];
+            let result = vector * matrix;
+            assert_eq!(result.scalars, vec![7, 10]);
+        }
+
+        #[test]
+        fn test_vector_ref_matrix_multiplication() {
+            // Test: &[1, 2] * &[[1, 2], [3, 4]] = [7, 10]
+            let vector = vector![1, 2];
+            let matrix = matrix![[1, 2], [3, 4]];
+            let result = &vector * &matrix;
+            assert_eq!(result.scalars, vec![7, 10]);
+            // Ensure original values are preserved
+            assert_eq!(vector.scalars, vec![1, 2]);
+            assert_eq!(matrix.vectors[0].scalars, vec![1, 2]);
+            assert_eq!(matrix.vectors[1].scalars, vec![3, 4]);
+        }
+
+        #[test]
+        fn test_vector_matrix_multiplication_3x3() {
+            // Test 3x3 matrix multiplication
+            // [1, 2, 3] * [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+            // = [1*1 + 2*4 + 3*7, 1*2 + 2*5 + 3*8, 1*3 + 2*6 + 3*9]
+            // = [1 + 8 + 21, 2 + 10 + 24, 3 + 12 + 27] = [30, 36, 42]
+            let vector = vector![1, 2, 3];
+            let matrix = matrix![[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+            let result = vector * matrix;
+            assert_eq!(result.scalars, vec![30, 36, 42]);
+        }
+
+        #[test]
+        fn test_vector_matrix_multiplication_with_zeros() {
+            // Test with zero elements
+            let vector = vector![0, 1];
+            let matrix = matrix![[2, 3], [4, 5]];
+            let result = vector * matrix;
+            // [0, 1] * [[2, 3], [4, 5]] = [0*2 + 1*4, 0*3 + 1*5] = [4, 5]
+            assert_eq!(result.scalars, vec![4, 5]);
+        }
+
+        #[test]
+        fn test_vector_matrix_multiplication_with_negatives() {
+            // Test with negative numbers
+            let vector = vector![-1, 2];
+            let matrix = matrix![[-2, 3], [4, -5]];
+            let result = vector * matrix;
+            // [-1, 2] * [[-2, 3], [4, -5]] = [-1*(-2) + 2*4, -1*3 + 2*(-5)] = [2 + 8, -3 - 10] = [10, -13]
+            assert_eq!(result.scalars, vec![10, -13]);
+        }
+
+        #[test]
+        fn test_vector_assign_matrix_multiplication() {
+            // Test Vector *= Matrix assignment
+            let mut vector = vector![1, 2];
+            let matrix = matrix![[1, 2], [3, 4]];
+            vector *= matrix;
+            assert_eq!(vector.scalars, vec![7, 10]);
+        }
+
+        #[test]
+        fn test_vector_assign_ref_matrix_multiplication() {
+            // Test Vector *= &Matrix assignment
+            let mut vector = vector![1, 2];
+            let matrix = matrix![[1, 2], [3, 4]];
+            vector *= &matrix;
+            assert_eq!(vector.scalars, vec![7, 10]);
+        }
+
+        #[test]
+        fn test_identity_matrix_multiplication() {
+            // Test with identity matrix - should return the same vector
+            let vector = vector![5, 7, 2];
+            let identity_matrix = matrix![[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+            let result = vector * identity_matrix;
+            assert_eq!(result.scalars, vec![5, 7, 2]);
+        }
+
+        #[test]
+        fn test_simple_1x1_matrix_multiplication() {
+            // Test 1x1 matrix (essentially scalar multiplication)
+            let vector = vector![5];
+            let matrix = matrix![[3]];
+            let result = vector * matrix;
+            assert_eq!(result.scalars, vec![15]);
+        }
+
+        #[test]
+        fn test_matrix_vector_multiplication_linear_combination() {
+            // Test that matrix multiplication works as a linear combination
+            // Vector [a, b] * Matrix [[c, d], [e, f]] should equal a*[c, d] + b*[e, f]
+            let vector = vector![2, 3];
+            let matrix = matrix![[1, 4], [2, 5]];  // [[1, 4], [2, 5]]
+            // Result should be 2*[1, 4] + 3*[2, 5] = [2, 8] + [6, 15] = [8, 23]
+            let result = vector * matrix;
+            assert_eq!(result.scalars, vec![8, 23]);
+        }
+
+        #[test]
+        #[should_panic(expected = "assertion `left == right` failed")]
+        fn test_matrix_vector_dimension_mismatch() {
+            // Test that matrix and vector with incompatible dimensions cause a panic
+            // Vector has 2 elements but matrix has 3 column vectors - this should panic
+            let vector = vector![1, 2];
+            let matrix = matrix![[1, 2], [3, 4], [5, 6]];  // 3x2 matrix but vector has 2 elements
+            let _result = vector * matrix; // This should panic due to dimension mismatch in linear_combination
+        }
+    }
 }

@@ -295,7 +295,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::macros::{matrix, vector};
+    use crate::macros::matrix;
 
     // -------------------------------------------------------------------------
     // TEST: ADDITION
