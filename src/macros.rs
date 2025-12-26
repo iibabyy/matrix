@@ -15,7 +15,7 @@ macro_rules! matrix {
         $crate::matrix::Matrix::from_elem($elem, $n)
     };
     ($($x:expr),+ $(,)?) => {
-        $crate::matrix::Matrix::from([$($x),+])
+        $crate::matrix::Matrix::from([$($crate::vector::Vector::from($x)),+])
     };
 }
 
