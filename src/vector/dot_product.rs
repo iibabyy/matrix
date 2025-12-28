@@ -13,7 +13,7 @@ where
 
         v *= self;
 
-        let mut res = v.scalars[0];
+        let mut res = v[0];
 
         for scalar in &v.scalars[1..] {
             res += scalar;

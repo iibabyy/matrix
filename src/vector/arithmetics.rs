@@ -52,7 +52,7 @@ fn add_vector_vector<K: Copy + Neg + Add<Output = K>>(a: &Vector<K>, b: &Vector<
     let mut new = a.clone();
 
     for i in 0..new.len() {
-        new[i] = new[i] + b.scalars[i];
+        new[i] = new[i] + b[i];
     }
 
     new
@@ -69,12 +69,12 @@ impl_add_ops!(
 // -----------------------------------------------------------------------------
 
 fn sub_vector_vector<K: Copy + Neg + Sub<Output = K>>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
-    assert_eq!(a.scalars.len(), b.scalars.len());
+    assert_eq!(a.len(), b.len());
 
     let mut new = a.clone();
 
     for i in 0..new.len() {
-        new[i] = new[i] - b.scalars[i];
+        new[i] = new[i] - b[i];
     }
 
     new
@@ -95,7 +95,7 @@ fn mul_vector_vector<K: Copy + Neg + Mul<Output = K>>(a: &Vector<K>, b: &Vector<
     let mut new = a.clone();
 
     for i in 0..new.len() {
-        new[i] = new[i] * b.scalars[i];
+        new[i] = new[i] * b[i];
     }
 
     new

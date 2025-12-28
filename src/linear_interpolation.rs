@@ -65,9 +65,9 @@ mod tests {
 
         assert_eq!(vector!(2.6, 1.3), result);
         // 2.0 + (4.0 - 2.0) * 0.3 = 2.6
-        assert_eq!(2.6, result.scalars[0]);
+        assert_eq!(2.6, result[0]);
         // 1.0 + (2.0 - 1.0) * 0.3 = 1.3
-        assert_eq!(1.3, result.scalars[1]);
+        assert_eq!(1.3, result[1]);
     }
 
     #[test]
