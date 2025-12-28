@@ -2,7 +2,7 @@ use std::ops::Neg;
 
 use crate::vector::Vector;
 
-#[expect(unused)]
+#[allow(dead_code)]
 impl<K> Vector<K>
 where
     K: Copy + Neg + Into<f32>,
