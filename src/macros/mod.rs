@@ -1,6 +1,9 @@
 #![allow(unused_macros)]
 #![allow(unused_imports)]
 
+pub mod arithmetics;
+pub use arithmetics::*;
+
 macro_rules! vector {
     ($elem:expr; $n:expr) => {
         $crate::vector::Vector::from_elem($elem, $n)
