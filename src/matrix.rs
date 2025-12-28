@@ -65,6 +65,26 @@ where
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
+impl<K> std::ops::Index<usize> for Matrix<K>
+where
+    K: Copy + Neg,
+{
+    type Output = Vector<K>;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.vectors[index]
+    }
+}
+
+impl<K> std::ops::IndexMut<usize> for Matrix<K>
+where
+    K: Copy + Neg,
+{
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.vectors[index]
+    }
+}
+
 impl<K> std::fmt::Display for Matrix<K>
 where
     K: std::fmt::Display + Copy + Neg,

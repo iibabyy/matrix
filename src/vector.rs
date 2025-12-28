@@ -87,6 +87,26 @@ where
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
+impl<K> std::ops::Index<usize> for Vector<K>
+where
+    K: Copy + Neg,
+{
+    type Output = K;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.scalars[index]
+    }
+}
+
+impl<K> std::ops::IndexMut<usize> for Vector<K>
+where
+    K: Copy + Neg,
+{
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.scalars[index]
+    }
+}
+
 impl<K> std::fmt::Display for Vector<K>
 where
     K: std::fmt::Display + Copy + Neg,
