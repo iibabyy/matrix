@@ -24,7 +24,7 @@ impl<K> Vector<K>
 where
     K: Copy + Neg,
 {
-    pub fn new(scalars: Vec<K>) -> Self {
+    pub const fn new(scalars: Vec<K>) -> Self {
         assert!(!scalars.is_empty());
         Self { scalars }
     }
@@ -49,6 +49,10 @@ where
 
     pub const fn scalars(&self) -> &Vec<K> {
         &self.scalars
+    }
+
+    pub fn push(&mut self, value: K) {
+        self.scalars.push(value)
     }
 }
 
