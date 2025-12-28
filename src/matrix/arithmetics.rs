@@ -55,8 +55,8 @@
 //! // Result: [[15.0, 15.0], [15.0, 15.0]]
 //! ```
 
-use crate::macros::*;
 use crate::matrix::Matrix;
+use crate::{macros::*, vector::Vector};
 use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 // #[cfg(test)]
@@ -122,6 +122,31 @@ impl_mul_ops!(
     <K> Matrix<K>, K,
     with mul_matrix_coeff,
     where K: Copy + Neg + Mul<Output = K>,
+);
+
+// -----------------------------------------------------------------------------
+// Matrix Multiplication
+// -----------------------------------------------------------------------------
+
+fn mul_matrix_matrix<K>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K>
+where
+    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+{
+    assert_eq!(a.len(), b.len());
+
+    let mut new: Vec<Vector<K>> = Vec::with_capacity(a.len());
+
+    for i in 0..a.len() {
+        new.push(&b[i] * a);
+    }
+
+    Matrix::new(new)
+}
+
+impl_mul_ops!(
+    <K> Matrix<K>, Matrix<K>,
+    with mul_matrix_matrix,
+    where K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
 );
 
 #[cfg(test)]
