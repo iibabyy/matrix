@@ -25,7 +25,7 @@ where
     K: Copy + Neg,
 {
     pub fn new(scalars: Vec<K>) -> Self {
-        assert!(scalars.len() > 0);
+        assert!(!scalars.is_empty());
         Self { scalars }
     }
 

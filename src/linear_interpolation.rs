@@ -6,7 +6,7 @@ pub fn lerp_generic<V, K>(u: V, v: V, t: K) -> V
 where
     V: PartialOrd + Mul<K, Output = V> + Add<V, Output = V>,
     for<'a> V: Sub<&'a V, Output = V>,
-    K: std::cmp::PartialOrd<f32>
+    K: std::cmp::PartialOrd<f32>,
 {
     assert!(t >= 0.);
     assert!(t <= 1.);

@@ -40,8 +40,8 @@
 //! assert_eq!(v_mut, Vector::new(vec![15.0, 15.0]));
 //! ```
 
-use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use crate::{macros::*, matrix::Matrix, vector::Vector};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 // -----------------------------------------------------------------------------
 // Addition
@@ -132,7 +132,10 @@ impl_mul_ops!(
 // Matrix Multiplication
 // -----------------------------------------------------------------------------
 
-fn mul_vector_matrix<K: Copy + Neg + Mul<Output = K> + Add<Output = K>>(vec: &Vector<K>, matrix: &Matrix<K>) -> Vector<K> {
+fn mul_vector_matrix<K: Copy + Neg + Mul<Output = K> + Add<Output = K>>(
+    vec: &Vector<K>,
+    matrix: &Matrix<K>,
+) -> Vector<K> {
     let combination = crate::linear_combination(&matrix.vectors, &vec.scalars);
     debug_assert_eq!(combination.len(), vec.len());
     combination
@@ -474,7 +477,7 @@ mod tests {
             // Test that matrix multiplication works as a linear combination
             // Vector [a, b] * Matrix [[c, d], [e, f]] should equal a*[c, d] + b*[e, f]
             let vector = vector![2, 3];
-            let matrix = matrix![[1, 4], [2, 5]];  // [[1, 4], [2, 5]]
+            let matrix = matrix![[1, 4], [2, 5]]; // [[1, 4], [2, 5]]
             // Result should be 2*[1, 4] + 3*[2, 5] = [2, 8] + [6, 15] = [8, 23]
             let result = vector * matrix;
             assert_eq!(result.scalars, vec![8, 23]);
@@ -486,7 +489,7 @@ mod tests {
             // Test that matrix and vector with incompatible dimensions cause a panic
             // Vector has 2 elements but matrix has 3 column vectors - this should panic
             let vector = vector![1, 2];
-            let matrix = matrix![[1, 2], [3, 4], [5, 6]];  // 3x2 matrix but vector has 2 elements
+            let matrix = matrix![[1, 2], [3, 4], [5, 6]]; // 3x2 matrix but vector has 2 elements
             let _result = vector * matrix; // This should panic due to dimension mismatch in linear_combination
         }
     }
