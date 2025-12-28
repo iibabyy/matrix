@@ -32,11 +32,6 @@ jobs:
       - name: Retrieve Rust cache
         uses: Swatinem/rust-cache@v2
 
-      - name: Set up Rust
-        run: |
-          rustup update stable
-          rustup default stable
-
       - name: Check linting
         run: cargo clippy
 
@@ -47,14 +42,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Retrieve Rust cache
-        uses: Swatinem/rust-cache@v2
-
-      - name: Set up Rust
-        run: |
-          rustup update stable
-          rustup default stable
 
       - name: Run cargo fmt
         run: cargo fmt --check
