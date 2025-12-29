@@ -32,11 +32,23 @@ macro_rules! impl_add {
         <$($generic:ident),+> $for:ty, $with:ty,
         where $($rules:tt)+
     ) => {
+        impl_add!(
+            <$($generic),+> $for, $with,
+            Output = $for,
+            where $($rules)+
+        );
+    };
+
+    (
+        <$($generic:ident),+> $for:ty, $with:ty,
+        Output = $output:ty,
+        where $($rules:tt)+
+    ) => {
         impl<$($generic),*> Add<$with> for $for
         where
             $($rules)+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn add(mut self, other: $with) -> Self::Output {
                 self += other;
@@ -48,7 +60,7 @@ macro_rules! impl_add {
         where
             $($rules)+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn add(mut self, other: &$with) -> Self::Output {
                 self += other;
@@ -61,7 +73,7 @@ macro_rules! impl_add {
             Self: Clone,
             $($rules)+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn add(self, other: $with) -> Self::Output {
                 let mut new = self.clone();
@@ -75,7 +87,7 @@ macro_rules! impl_add {
             Self: Clone,
             $($rules)+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn add(self, other: &$with) -> Self::Output {
                 let mut new = self.clone();
@@ -138,11 +150,23 @@ macro_rules! impl_sub {
         <$($generic:ident),+> $for:ty, $with:ty,
         where $($rules:tt)+
     ) => {
+        impl_sub!(
+            <$($generic),+> $for, $with,
+            Output = $for,
+            where $($rules)+
+        );
+    };
+
+    (
+        <$($generic:ident),+> $for:ty, $with:ty,
+        Output = $output:ty,
+        where $($rules:tt)+
+    ) => {
         impl<$($generic),*> Sub<$with> for $for
         where
             $( $rules )+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn sub(mut self, other: $with) -> Self::Output {
                 self -= other;
@@ -154,7 +178,7 @@ macro_rules! impl_sub {
         where
             $( $rules )+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn sub(mut self, other: &$with) -> Self::Output {
                 self -= other;
@@ -167,7 +191,7 @@ macro_rules! impl_sub {
             Self: Clone,
             $( $rules )+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn sub(self, other: $with) -> Self::Output {
                 let mut new = self.clone();
@@ -181,7 +205,7 @@ macro_rules! impl_sub {
             Self: Clone,
             $( $rules )+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn sub(self, other: &$with) -> Self::Output {
                 let mut new = self.clone();
@@ -244,11 +268,23 @@ macro_rules! impl_mul {
         <$($generic:ident),+> $for:ty, $with:ty,
         where $($rules:tt)+
     ) => {
+        impl_mul!(
+            <$($generic),+> $for, $with,
+            Output = $for,
+            where $($rules)+
+        );
+    };
+
+    (
+        <$($generic:ident),+> $for:ty, $with:ty,
+        Output = $output:ty,
+        where $($rules:tt)+
+    ) => {
         impl<$($generic),*> Mul<$with> for $for
         where
             $( $rules )+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn mul(mut self, other: $with) -> Self::Output {
                 self *= other;
@@ -260,7 +296,7 @@ macro_rules! impl_mul {
         where
             $( $rules )+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn mul(mut self, other: &$with) -> Self::Output {
                 self *= other;
@@ -273,7 +309,7 @@ macro_rules! impl_mul {
             Self: Clone,
             $( $rules )+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn mul(self, other: $with) -> Self::Output {
                 let mut new = self.clone();
@@ -287,7 +323,7 @@ macro_rules! impl_mul {
             Self: Clone,
             $( $rules )+
         {
-            type Output = $for;
+            type Output = $output;
 
             fn mul(self, other: &$with) -> Self::Output {
                 let mut new = self.clone();
