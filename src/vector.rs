@@ -4,7 +4,7 @@
 
 #![allow(dead_code)]
 
-use std::ops::{Add, Mul, Neg, Sub};
+use std::ops::{Add, Index, IndexMut, Mul, Neg, Range, Sub};
 
 mod arithmetics;
 
@@ -81,7 +81,7 @@ impl<K: Copy> Vector<K> {
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
-impl<K: Copy> std::ops::Index<usize> for Vector<K> {
+impl<K: Copy> Index<usize> for Vector<K> {
     type Output = K;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -89,8 +89,22 @@ impl<K: Copy> std::ops::Index<usize> for Vector<K> {
     }
 }
 
-impl<K: Copy> std::ops::IndexMut<usize> for Vector<K> {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+impl<K: Copy> IndexMut<usize> for Vector<K> {
+    fn index_mut(&mut self, index: usize) -> &mut <Self as Index<usize>>::Output {
+        &mut self.scalars[index]
+    }
+}
+
+impl<K: Copy> Index<Range<usize>> for Vector<K> {
+    type Output = [K];
+
+    fn index(&self, index: Range<usize>) -> &Self::Output {
+        &self.scalars[index]
+    }
+}
+
+impl<K: Copy> std::ops::IndexMut<Range<usize>> for Vector<K> {
+    fn index_mut(&mut self, index: Range<usize>) -> &mut <Self as Index<Range<usize>>>::Output {
         &mut self.scalars[index]
     }
 }

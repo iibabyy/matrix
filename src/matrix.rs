@@ -3,7 +3,7 @@
 mod arithmetics;
 
 use crate::vector::Vector;
-use std::ops::{Add, Mul, Neg};
+use std::ops::{Add, Index, IndexMut, Mul, Neg, Range};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Matrix<K: Copy = f32> {
@@ -117,7 +117,7 @@ impl<K: Copy> Matrix<K> {
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
-impl<K: Copy> std::ops::Index<usize> for Matrix<K> {
+impl<K: Copy> Index<usize> for Matrix<K> {
     type Output = Vector<K>;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -125,8 +125,22 @@ impl<K: Copy> std::ops::Index<usize> for Matrix<K> {
     }
 }
 
-impl<K: Copy> std::ops::IndexMut<usize> for Matrix<K> {
+impl<K: Copy> IndexMut<usize> for Matrix<K> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.vectors[index]
+    }
+}
+
+impl<K: Copy> Index<Range<usize>> for Matrix<K> {
+    type Output = [Vector<K>];
+
+    fn index(&self, index: Range<usize>) -> &Self::Output {
+        &self.vectors[index]
+    }
+}
+
+impl<K: Copy> std::ops::IndexMut<Range<usize>> for Matrix<K> {
+    fn index_mut(&mut self, index: Range<usize>) -> &mut <Self as Index<Range<usize>>>::Output {
         &mut self.vectors[index]
     }
 }
