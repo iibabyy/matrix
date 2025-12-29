@@ -22,8 +22,12 @@
 // TODO: ```
 
 mod macros;
+
 mod matrix;
+pub use matrix::Matrix;
+
 mod vector;
+pub use vector::Vector;
 
 mod functions;
 pub use functions::*;

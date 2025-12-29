@@ -1,9 +1,7 @@
-#![allow(unused_macros)]
-#![allow(unused_imports)]
+pub(crate) mod arithmetics;
+pub(crate) use arithmetics::*;
 
-pub mod arithmetics;
-pub use arithmetics::*;
-
+#[macro_export]
 macro_rules! vector {
     ($elem:expr; $n:expr) => {
         $crate::vector::Vector::from_elem($elem, $n)
@@ -13,6 +11,7 @@ macro_rules! vector {
     };
 }
 
+#[macro_export]
 macro_rules! matrix {
     ($elem:expr; $n:expr) => {
         $crate::matrix::Matrix::from_elem($elem, $n)
@@ -21,6 +20,3 @@ macro_rules! matrix {
         $crate::matrix::Matrix::from([$($crate::vector::Vector::from($x)),+])
     };
 }
-
-pub(crate) use matrix;
-pub(crate) use vector;

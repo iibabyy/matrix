@@ -1,9 +1,7 @@
-pub mod linear_combination;
-pub use linear_combination::*;
+mod norm;
 
-pub mod linear_interpolation;
-pub use linear_interpolation::*;
+mod linear_combination;
+pub use linear_combination::linear_combination;
 
-pub mod norm;
-#[expect(unused)]
-pub use norm::*;
+mod linear_interpolation;
+pub use linear_interpolation::{lerp, lerp_generic};

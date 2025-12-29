@@ -26,7 +26,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::macros::vector;
+    use crate::vector;
 
     // -------------------------------------------------------------------------
     // SUBJECT TESTS

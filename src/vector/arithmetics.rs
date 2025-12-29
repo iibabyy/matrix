@@ -153,7 +153,7 @@ impl_mul_ops!(
 
 #[cfg(test)]
 mod tests {
-    use crate::macros::vector;
+    use crate::vector;
 
     // -------------------------------------------------------------------------
     // TEST: ADDITION
@@ -378,7 +378,7 @@ mod tests {
     // TEST: MATRIX MULTIPLICATION
     // -------------------------------------------------------------------------
     mod matrix_multiplication {
-        use crate::macros::matrix;
+        use crate::matrix;
 
         use super::*;
 

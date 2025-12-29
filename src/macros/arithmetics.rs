@@ -317,17 +317,6 @@ macro_rules! impl_mul_ops {
     };
 }
 
-macro_rules! use_arithmetic_macros {
-    () => {
-        use crate::macros::arithmetics::{
-            impl_add, impl_add_assign, impl_add_ops, impl_mul, impl_mul_assign, impl_mul_ops,
-            impl_sub, impl_sub_assign, impl_sub_ops,
-        };
-    };
-}
-
-pub(crate) use use_arithmetic_macros;
-
 pub(crate) use impl_add;
 pub(crate) use impl_add_assign;
 pub(crate) use impl_add_ops;

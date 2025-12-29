@@ -25,7 +25,7 @@ where
 
 mod tests {
     use super::*;
-    use crate::macros::{matrix, vector};
+    use crate::{matrix, vector};
 
     // -------------------------------------------------------------------------
     // SUBJECT TESTS

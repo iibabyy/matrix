@@ -148,7 +148,7 @@ impl_mul_ops!(
 );
 #[cfg(test)]
 mod tests {
-    use crate::macros::matrix;
+    use crate::matrix;
 
     // -------------------------------------------------------------------------
     // TEST: ADDITION (Element-wise)
