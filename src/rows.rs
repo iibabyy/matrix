@@ -6,7 +6,7 @@ where
     K: 'a + Copy,
     Self: 'a + Sized,
 {
-    fn rows(self) -> impl Iterator<Item = Vec<&'a K>> {
+    fn as_rows(self) -> impl Iterator<Item = Vec<&'a K>> {
         let mut col_iter: Vec<_> = self.map(|col| col.scalars.iter()).collect();
 
         std::iter::from_fn(move || {
@@ -23,7 +23,7 @@ where
     K: 'a + Copy,
     Self: 'a + Sized,
 {
-    fn rows(self) -> impl Iterator<Item = Vec<&'a mut K>> {
+    fn as_rows_mut(self) -> impl Iterator<Item = Vec<&'a mut K>> {
         let mut col_iter: Vec<_> = self.map(|col| col.scalars.iter_mut()).collect();
 
         std::iter::from_fn(move || {
