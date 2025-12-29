@@ -65,6 +65,18 @@ impl<K: Copy> Matrix<K> {
         self.vectors.len()
     }
 
+    pub fn rows(&self) -> usize {
+        if self.is_empty() {
+            0
+        } else {
+            self[0].dimension()
+        }
+    }
+
+    pub const fn cols(&self) -> usize {
+        self.size()
+    }
+
     pub const fn is_empty(&self) -> bool {
         self.size() == 0
     }
@@ -99,16 +111,16 @@ impl<K: Copy> Matrix<K> {
         }
     }
 
-    pub(crate) fn max_value_in_col(&self, col: usize, from_row: usize) -> usize
+    pub(crate) fn max_value_in_col(&self, col_index: usize, start_row_index: usize) -> usize
     where
         K: PartialOrd + Copy,
     {
-        let mut max_value = self[col][from_row];
-        let mut max_value_row = from_row;
+        let mut max_value = self[col_index][start_row_index];
+        let mut max_value_row = start_row_index;
 
-        for i in from_row + 1..self[0].dimension() {
-            if max_value < self[col][i] {
-                max_value = self[col][i];
+        for i in start_row_index + 1..self[0].dimension() {
+            if max_value < self[col_index][i] {
+                max_value = self[col_index][i];
                 max_value_row = i;
             }
         }
