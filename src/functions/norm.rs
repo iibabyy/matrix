@@ -18,7 +18,7 @@ where
                 val * val
             })
             .sum::<f32>()
-            .sqrt()
+            .powf(0.5)
     }
 
     pub fn norm_inf(&self) -> f32 {
