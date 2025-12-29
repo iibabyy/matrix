@@ -44,6 +44,10 @@ where
         self.vectors.len()
     }
 
+    pub const fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn push(&mut self, vector: Vector<K>) {
         self.assert_valid(&vector);
         self.vectors.push(vector);

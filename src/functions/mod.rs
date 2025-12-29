@@ -1,5 +1,5 @@
-mod norm;
 mod dot_product;
+mod norm;
 
 mod linear_combination;
 pub use linear_combination::linear_combination;

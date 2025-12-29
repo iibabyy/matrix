@@ -4,20 +4,20 @@ use crate::Vector;
 
 pub fn angle_cos<K>(u: &Vector<K>, v: &Vector<K>) -> f32
 where
-	K: Copy + Neg + AddAssign + Mul<Output = K> + Into<f32>
+    K: Copy + Neg + AddAssign + Mul<Output = K> + Into<f32>,
 {
-	assert!(u.len() > 0);
-	assert_eq!(u.len(), v.len());
+    assert!(!u.is_empty());
+    assert_eq!(u.len(), v.len());
 
-	let dot_product = u.dot(v.clone()).into();
+    let dot_product = u.dot(v.clone()).into();
 
-	let u_norm = u.norm();
-	let v_norm = v.norm();
+    let u_norm = u.norm();
+    let v_norm = v.norm();
 
-	assert!(u_norm > 0.);
-	assert!(v_norm > 0.);
+    assert!(u_norm > 0.);
+    assert!(v_norm > 0.);
 
-	dot_product / (u_norm * v_norm)
+    dot_product / (u_norm * v_norm)
 }
 
 #[cfg(test)]
