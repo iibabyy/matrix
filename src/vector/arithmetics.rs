@@ -137,7 +137,6 @@ fn mul_vector_matrix<K: Copy + Neg + Mul<Output = K> + Add<Output = K>>(
     matrix: &Matrix<K>,
 ) -> Vector<K> {
     let combination = crate::linear_combination(&matrix.vectors, &vec.scalars);
-    debug_assert_eq!(combination.dimension(), vec.dimension());
     combination
 }
 
@@ -491,6 +490,25 @@ mod tests {
             let vector = vector![1, 2];
             let matrix = matrix![[1, 2], [3, 4], [5, 6]]; // 3x2 matrix but vector has 2 elements
             let _result = vector * matrix; // This should panic due to dimension mismatch in linear_combination
+        }
+
+        #[test]
+        fn test_rectangular_vector_matrix() {
+            // Vector (1x2) * Matrix (2x3) -> Result (1x3)
+            // [1, 2] * [ [1, 2, 3],
+            //            [4, 5, 6] ]
+            //
+            // This is a linear combination of the rows:
+            // 1 * [1, 2, 3] + 2 * [4, 5, 6]
+            // = [1, 2, 3] + [8, 10, 12]
+            // = [9, 12, 15]
+
+            let vector = vector![1, 2];
+            let matrix = matrix![[1, 2, 3], [4, 5, 6]];
+
+            let result = vector * matrix;
+
+            assert_eq!(result.scalars, vec![9, 12, 15]);
         }
     }
 }

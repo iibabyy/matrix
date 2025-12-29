@@ -244,6 +244,18 @@ mod tests {
             let result = &m1 * 3;
             assert_eq!(result.vectors[0].scalars, vec![30, 60]);
         }
+
+        #[test]
+        fn test_scalar_multiplication_by_zero() {
+            // 0 * [1, 2] = [0, 0]
+            let m1 = matrix![[1, 2], [3, 4]];
+
+            // Assuming you implemented Mul<K> for Matrix
+            let result = m1 * 0;
+
+            assert_eq!(result.vectors[0].scalars, vec![0, 0]);
+            assert_eq!(result.vectors[1].scalars, vec![0, 0]);
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -386,6 +398,58 @@ mod tests {
             let m1 = matrix![[1, 2], [3, 4]]; // 2x2
             let m2 = matrix![[1, 2]]; // 1x2 (1 row)
             let _ = m1 * m2;
+        }
+
+        #[test]
+        fn test_rectangular_tall_by_wide() {
+            // (3x2) * (2x3) -> Result (3x3)
+            // [1, 2]   [7, 8, 9]
+            // [3, 4] * [1, 0, 1]
+            // [5, 6]
+            //
+            // R0: [1*7+2*1, 1*8+2*0, 1*9+2*1] = [9, 8, 11]
+            // R1: [3*7+4*1, 3*8+4*0, 3*9+4*1] = [25, 24, 31]
+            // R2: [5*7+6*1, 5*8+6*0, 5*9+6*1] = [41, 40, 51]
+            let m1 = matrix![[1, 2], [3, 4], [5, 6]];
+            let m2 = matrix![[7, 8, 9], [1, 0, 1]];
+
+            let result = m1 * m2;
+
+            assert_eq!(result.vectors[0].scalars, vec![9, 8, 11]);
+            assert_eq!(result.vectors[1].scalars, vec![25, 24, 31]);
+            assert_eq!(result.vectors[2].scalars, vec![41, 40, 51]);
+        }
+
+        #[test]
+        fn test_multiplication_by_zero_matrix() {
+            // A * 0 = 0
+            // [1, 2]   [0, 0]   [0, 0]
+            // [3, 4] * [0, 0] = [0, 0]
+            let m1 = matrix![[1, 2], [3, 4]];
+            let zero_matrix = matrix![[0, 0], [0, 0]];
+
+            let result = m1 * zero_matrix;
+
+            assert_eq!(result.vectors[0].scalars, vec![0, 0]);
+            assert_eq!(result.vectors[1].scalars, vec![0, 0]);
+        }
+
+        #[test]
+        fn test_rectangular_zero_multiplication() {
+            // (3x2) * (2x1) Zero Matrix -> Result (3x1) Zero Matrix
+            // [1, 2]   [0]   [0]
+            // [3, 4] * [0] = [0]
+            // [5, 6]         [0]
+            let m1 = matrix![[1, 2], [3, 4], [5, 6]];
+            let zero_col = matrix![[0], [0]];
+
+            let result = m1 * zero_col;
+
+            assert_eq!(result.vectors.len(), 3); // 3 rows
+            assert_eq!(result.vectors[0].scalars.len(), 1); // 1 column
+            assert_eq!(result.vectors[0].scalars[0], 0);
+            assert_eq!(result.vectors[1].scalars[0], 0);
+            assert_eq!(result.vectors[2].scalars[0], 0);
         }
     }
 }
