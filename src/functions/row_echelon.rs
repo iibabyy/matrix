@@ -5,7 +5,7 @@ use crate::Matrix;
 impl<K> Matrix<K>
 where
     K: Copy + PartialOrd + Default,
-	K: Div<Output = K> + Mul<Output = K> + Sub<Output = K>,
+    K: Div<Output = K> + Mul<Output = K> + Sub<Output = K>,
 {
     pub fn row_echelon(&self) -> Matrix<K> {
         let mut matrix = self.clone();
@@ -42,7 +42,7 @@ where
                 }
             }
 
-			pivot_row += 1;
+            pivot_row += 1;
         }
 
         matrix
@@ -57,7 +57,7 @@ mod tests {
     // Helper to compare two matrices with a small tolerance for floating point errors
     fn assert_matrix_approx_eq(m1: &Matrix<f32>, m2: &Matrix<f32>) {
         let epsilon = 1e-5;
-        
+
         assert_eq!(m1.rows(), m2.rows(), "Row count mismatch");
         assert_eq!(m1.cols(), m2.cols(), "Col count mismatch");
 
@@ -68,7 +68,9 @@ mod tests {
                 assert!(
                     (val1 - val2).abs() < epsilon,
                     "Mismatch at [{i}][{j}]: {} != {} (diff: {})",
-                    val1, val2, (val1 - val2).abs()
+                    val1,
+                    val2,
+                    (val1 - val2).abs()
                 );
             }
         }
@@ -80,11 +82,7 @@ mod tests {
 
     #[test]
     fn test_subject_rref_identity() {
-        let u = matrix!(
-            vec![1., 0., 0.],
-            vec![0., 1., 0.],
-            vec![0., 0., 1.],
-        );
+        let u = matrix!(vec![1., 0., 0.], vec![0., 1., 0.], vec![0., 0., 1.],);
         // Identity is already in RREF
         let res = u.row_echelon();
         assert_matrix_approx_eq(&res, &u);
@@ -94,15 +92,9 @@ mod tests {
     fn test_subject_rref_2x2_invertible() {
         // [1, 2]       [1, 0]
         // [3, 4]  -->  [0, 1]
-        let u = matrix!(
-            vec![1., 2.],
-            vec![3., 4.],
-        );
-        let expected = matrix!(
-            vec![1., 0.],
-            vec![0., 1.],
-        );
-        
+        let u = matrix!(vec![1., 2.], vec![3., 4.],);
+        let expected = matrix!(vec![1., 0.], vec![0., 1.],);
+
         let res = u.row_echelon();
         assert_matrix_approx_eq(&res, &expected);
     }
@@ -111,14 +103,8 @@ mod tests {
     fn test_subject_rref_2x2_singular() {
         // [1, 2]       [1, 2]
         // [2, 4]  -->  [0, 0]
-        let u = matrix!(
-            vec![1., 2.],
-            vec![2., 4.],
-        );
-        let expected = matrix!(
-            vec![1., 2.],
-            vec![0., 0.],
-        );
+        let u = matrix!(vec![1., 2.], vec![2., 4.],);
+        let expected = matrix!(vec![1., 2.], vec![0., 0.],);
 
         let res = u.row_echelon();
         assert_matrix_approx_eq(&res, &expected);
@@ -151,10 +137,7 @@ mod tests {
     fn test_rref_zero_matrix() {
         // [0, 0]  -->  [0, 0]
         // [0, 0]       [0, 0]
-        let u = matrix!(
-            vec![0., 0.],
-            vec![0., 0.],
-        );
+        let u = matrix!(vec![0., 0.], vec![0., 0.],);
         let res = u.row_echelon();
         assert_matrix_approx_eq(&res, &u);
     }
@@ -165,35 +148,21 @@ mod tests {
         // [1, 2]
         // [3, 4]  -->  Identity on top, zero row bottom
         // [5, 6]
-        let u = matrix!(
-            vec![1., 2.],
-            vec![3., 4.],
-            vec![5., 6.],
-        );
-        let expected = matrix!(
-            vec![1., 0.],
-            vec![0., 1.],
-            vec![0., 0.],
-        );
+        let u = matrix!(vec![1., 2.], vec![3., 4.], vec![5., 6.],);
+        let expected = matrix!(vec![1., 0.], vec![0., 1.], vec![0., 0.],);
 
         let res = u.row_echelon();
         assert_matrix_approx_eq(&res, &expected);
     }
-    
+
     #[test]
     fn test_rref_pivot_moving() {
         // Pivot shouldn't be in the first column for the second row
         // [0, 1, 2]
         // [0, 3, 6] -> [0, 1, 2] and zero row
-        let u = matrix!(
-            vec![0., 1., 2.],
-            vec![0., 3., 6.],
-        );
-        let expected = matrix!(
-            vec![0., 1., 2.],
-            vec![0., 0., 0.],
-        );
-        
+        let u = matrix!(vec![0., 1., 2.], vec![0., 3., 6.],);
+        let expected = matrix!(vec![0., 1., 2.], vec![0., 0., 0.],);
+
         let res = u.row_echelon();
         assert_matrix_approx_eq(&res, &expected);
     }

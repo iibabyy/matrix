@@ -1,12 +1,12 @@
 use crate::Vector;
 
 #[expect(unused)]
-pub(crate) trait AsRows<'a, K>: Iterator<Item = &'a Vector<K>>
+pub(crate) trait IntoRows<'a, K>: Iterator<Item = &'a Vector<K>>
 where
     K: 'a + Copy,
     Self: 'a + Sized,
 {
-    fn as_rows(self) -> impl Iterator<Item = Vec<&'a K>> {
+    fn into_rows(self) -> impl Iterator<Item = Vec<&'a K>> {
         let mut col_iter: Vec<_> = self.map(|col| col.scalars.iter()).collect();
 
         std::iter::from_fn(move || {
@@ -18,12 +18,12 @@ where
 }
 
 #[expect(unused)]
-pub(crate) trait AsRowsMut<'a, K>: Iterator<Item = &'a mut Vector<K>>
+pub(crate) trait IntoRowsMut<'a, K>: Iterator<Item = &'a mut Vector<K>>
 where
     K: 'a + Copy,
     Self: 'a + Sized,
 {
-    fn as_rows_mut(self) -> impl Iterator<Item = Vec<&'a mut K>> {
+    fn into_rows_mut(self) -> impl Iterator<Item = Vec<&'a mut K>> {
         let mut col_iter: Vec<_> = self.map(|col| col.scalars.iter_mut()).collect();
 
         std::iter::from_fn(move || {
@@ -34,14 +34,14 @@ where
     }
 }
 
-impl<'a, T, K> AsRows<'a, K> for T
+impl<'a, T, K> IntoRows<'a, K> for T
 where
     T: Iterator<Item = &'a Vector<K>> + 'a,
     K: 'a + Copy,
 {
 }
 
-impl<'a, T, K> AsRowsMut<'a, K> for T
+impl<'a, T, K> IntoRowsMut<'a, K> for T
 where
     T: Iterator<Item = &'a mut Vector<K>> + 'a,
     K: 'a + Copy,

@@ -1,8 +1,8 @@
 mod dot_product;
 mod norm;
+mod row_echelon;
 mod trace;
 mod transpose;
-mod row_echelon;
 
 mod linear_combination;
 pub use linear_combination::linear_combination;
