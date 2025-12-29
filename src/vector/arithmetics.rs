@@ -136,8 +136,7 @@ fn mul_vector_matrix<K: Copy + Neg + Mul<Output = K> + Add<Output = K>>(
     vec: &Vector<K>,
     matrix: &Matrix<K>,
 ) -> Vector<K> {
-    let combination = crate::linear_combination(&matrix.vectors, &vec.scalars);
-    combination
+    crate::linear_combination(&matrix.vectors, &vec.scalars)
 }
 
 impl_mul_ops!(
