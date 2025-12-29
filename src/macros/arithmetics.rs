@@ -420,7 +420,6 @@ mod mul {
         };
     }
     pub(crate) use impl_mul_ops;
-
 }
 
 pub(crate) use add::impl_add;
