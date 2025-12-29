@@ -3,7 +3,10 @@
 mod arithmetics;
 
 use crate::vector::Vector;
-use std::ops::{Add, Index, IndexMut, Mul, Neg, Range};
+use std::{
+    ops::{Add, Index, IndexMut, Mul, Neg},
+    slice::SliceIndex,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Matrix<K: Copy = f32> {
@@ -117,30 +120,16 @@ impl<K: Copy> Matrix<K> {
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
-impl<K: Copy> Index<usize> for Matrix<K> {
-    type Output = Vector<K>;
+impl<K: Copy, I: SliceIndex<[Vector<K>]>> Index<I> for Matrix<K> {
+    type Output = I::Output;
 
-    fn index(&self, index: usize) -> &Self::Output {
+    fn index(&self, index: I) -> &Self::Output {
         &self.vectors[index]
     }
 }
 
-impl<K: Copy> IndexMut<usize> for Matrix<K> {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        &mut self.vectors[index]
-    }
-}
-
-impl<K: Copy> Index<Range<usize>> for Matrix<K> {
-    type Output = [Vector<K>];
-
-    fn index(&self, index: Range<usize>) -> &Self::Output {
-        &self.vectors[index]
-    }
-}
-
-impl<K: Copy> std::ops::IndexMut<Range<usize>> for Matrix<K> {
-    fn index_mut(&mut self, index: Range<usize>) -> &mut <Self as Index<Range<usize>>>::Output {
+impl<K: Copy, I: SliceIndex<[Vector<K>]>> IndexMut<I> for Matrix<K> {
+    fn index_mut(&mut self, index: I) -> &mut Self::Output {
         &mut self.vectors[index]
     }
 }

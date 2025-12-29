@@ -4,7 +4,10 @@
 
 #![allow(dead_code)]
 
-use std::ops::{Add, Index, IndexMut, Mul, Neg, Range, Sub};
+use std::{
+    ops::{Add, Index, IndexMut, Mul, Neg, Sub},
+    slice::SliceIndex,
+};
 
 mod arithmetics;
 
@@ -81,30 +84,16 @@ impl<K: Copy> Vector<K> {
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
-impl<K: Copy> Index<usize> for Vector<K> {
-    type Output = K;
+impl<K: Copy, I: SliceIndex<[K]>> Index<I> for Vector<K> {
+    type Output = I::Output;
 
-    fn index(&self, index: usize) -> &Self::Output {
+    fn index(&self, index: I) -> &Self::Output {
         &self.scalars[index]
     }
 }
 
-impl<K: Copy> IndexMut<usize> for Vector<K> {
-    fn index_mut(&mut self, index: usize) -> &mut <Self as Index<usize>>::Output {
-        &mut self.scalars[index]
-    }
-}
-
-impl<K: Copy> Index<Range<usize>> for Vector<K> {
-    type Output = [K];
-
-    fn index(&self, index: Range<usize>) -> &Self::Output {
-        &self.scalars[index]
-    }
-}
-
-impl<K: Copy> std::ops::IndexMut<Range<usize>> for Vector<K> {
-    fn index_mut(&mut self, index: Range<usize>) -> &mut <Self as Index<Range<usize>>>::Output {
+impl<K: Copy, I: SliceIndex<[K]>> IndexMut<I> for Vector<K> {
+    fn index_mut(&mut self, index: I) -> &mut Self::Output {
         &mut self.scalars[index]
     }
 }
