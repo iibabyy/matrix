@@ -145,6 +145,11 @@ impl_mul_ops!(
     where K: Copy + Neg + Add<Output = K> + Mul<Output = K>,
 );
 
+impl_mul_reverse!(
+    <K> Vector<K>, Matrix<K>,
+    where K: Copy + Neg + Add<Output = K> + Mul<Output = K>,
+);
+
 // -----------------------------------------------------------------------------
 // TESTS
 // -----------------------------------------------------------------------------

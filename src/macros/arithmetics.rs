@@ -347,6 +347,60 @@ mod mul {
     }
     pub(crate) use impl_mul;
 
+    macro_rules! impl_mul_reverse {
+        (
+            <$($generic:ident),+> $for:ty, $with:ty,
+            where $($rules:tt)+
+        ) => {
+            impl<$($generic),*> Mul<$for> for $with
+            where
+                $( $rules )+
+            {
+                type Output = <$for as std::ops::Mul<Self>>::Output;
+
+                fn mul(self, other: $for) -> Self::Output {
+                    other * self
+                }
+            }
+
+            impl<$($generic),*> Mul<&$for> for $with
+            where
+                $( $rules )+
+            {
+                type Output = <$for as std::ops::Mul<Self>>::Output;
+
+                fn mul(self, other: &$for) -> Self::Output {
+                    other * self
+                }
+            }
+
+            impl<$($generic),*> Mul<$for> for &$with
+            where
+                Self: Clone,
+                $( $rules )+
+            {
+                type Output = <$for as std::ops::Mul<Self>>::Output;
+
+                fn mul(self, other: $for) -> Self::Output {
+                    other * self
+                }
+            }
+
+            impl<$($generic),*> Mul<&$for> for &$with
+            where
+                Self: Clone,
+                $( $rules )+
+            {
+                type Output = <$for as std::ops::Mul<Self>>::Output;
+
+                fn mul(self, other: &$for) -> Self::Output {
+                    other * self
+                }
+            }
+        };
+    }
+    pub(crate) use impl_mul_reverse;
+
     macro_rules! impl_mul_ops {
         (
             <$($generic:ident),+> $for:ty, $with:ty,
@@ -372,9 +426,12 @@ mod mul {
 pub(crate) use add::impl_add;
 pub(crate) use add::impl_add_assign;
 pub(crate) use add::impl_add_ops;
+
 pub(crate) use sub::impl_sub;
 pub(crate) use sub::impl_sub_assign;
 pub(crate) use sub::impl_sub_ops;
+
 pub(crate) use mul::impl_mul;
 pub(crate) use mul::impl_mul_assign;
 pub(crate) use mul::impl_mul_ops;
+pub(crate) use mul::impl_mul_reverse;
