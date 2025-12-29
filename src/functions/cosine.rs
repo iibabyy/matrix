@@ -71,7 +71,6 @@ mod tests {
     fn test_subject_cosine_3d() {
         let u = Vector::from(vec![1., 2., 3.]);
         let v = Vector::from(vec![4., 5., 6.]);
-        // The expected value from your subject
         assert_approx_eq(angle_cos(&u, &v), 0.974631846);
     }
 

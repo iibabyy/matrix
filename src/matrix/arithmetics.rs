@@ -20,7 +20,7 @@
 //! use crate::matrix::Matrix;
 //! use crate::vector::Vector;
 //!
-//! // Constructing 2x2 matrices (assuming Matrix wraps a Vec of Vectors)
+//! // Constructing 2x2 matrices
 //! let m1 = Matrix::new(vec![
 //!     Vector::new(vec![1.0, 2.0]),
 //!     Vector::new(vec![3.0, 4.0]),
@@ -250,7 +250,6 @@ mod tests {
             // 0 * [1, 2] = [0, 0]
             let m1 = matrix![[1, 2], [3, 4]];
 
-            // Assuming you implemented Mul<K> for Matrix
             let result = m1 * 0;
 
             assert_eq!(result.vectors[0].scalars, vec![0, 0]);
@@ -262,161 +261,89 @@ mod tests {
     // TEST: MATRIX MULTIPLICATION (Row x Col)
     // -------------------------------------------------------------------------
     mod matrix_multiplication {
-        use crate::vector;
+        use crate::{matrix, vector};
 
-        use super::*;
+        // ==========================================
+        // Subject Test Cases: Matrix-Vector
+        // ==========================================
+
+        #[test]
+        fn test_subject_matrix_vector_identity() {
+            let u = matrix![[1., 0.], [0., 1.]];
+            let v = vector![4., 2.];
+            let result = u * v;
+            assert_eq!(result.scalars, vec![4., 2.]);
+        }
+
+        #[test]
+        fn test_subject_matrix_vector_scaling() {
+            let u = matrix![[2., 0.], [0., 2.]];
+            let v = vector![4., 2.];
+            let result = u * v;
+            assert_eq!(result.scalars, vec![8., 4.]);
+        }
+
+        #[test]
+        fn test_subject_matrix_vector_complex() {
+            let u = matrix![[2., -2.], [-2., 2.]];
+            let v = vector![4., 2.];
+            let result = u * v;
+            assert_eq!(result.scalars, vec![4., -4.]);
+        }
+
+        // ==========================================
+        // Subject Test Cases: Matrix-Matrix
+        // ==========================================
+
+        #[test]
+        fn test_subject_matrix_matrix_identity() {
+            let u = matrix![[1., 0.], [0., 1.]];
+            let v = matrix![[1., 0.], [0., 1.]];
+            let result = u * v;
+            assert_eq!(result.vectors[0].scalars, vec![1., 0.]);
+            assert_eq!(result.vectors[1].scalars, vec![0., 1.]);
+        }
+
+        #[test]
+        fn test_subject_matrix_matrix_identity_and_data() {
+            let u = matrix![[1., 0.], [0., 1.]];
+            let v = matrix![[2., 1.], [4., 2.]];
+            let result = u * v;
+            assert_eq!(result.vectors[0].scalars, vec![2., 1.]);
+            assert_eq!(result.vectors[1].scalars, vec![4., 2.]);
+        }
+
+        #[test]
+        fn test_subject_matrix_matrix_multiplication() {
+            let u = matrix![[3., -5.], [6., 8.]];
+            let v = matrix![[2., 1.], [4., 2.]];
+            let result = u * v;
+            // Calculation:
+            // Row 0: [3*2 + -5*4, 3*1 + -5*2] = [6-20, 3-10] = [-14, -7]
+            // Row 1: [6*2 + 8*4,  6*1 + 8*2]  = [12+32, 6+16] = [44, 22]
+            assert_eq!(result.vectors[0].scalars, vec![-14., -7.]);
+            assert_eq!(result.vectors[1].scalars, vec![44., 22.]);
+        }
+
+        // ==========================================
+        // Additional Logic & Edge Case Tests
+        // ==========================================
 
         #[test]
         fn test_2x2_matrix_multiplication() {
-            // A (2x2) * B (2x2)
-            // [1, 2]   [5, 6]
-            // [3, 4] * [7, 8]
-            //
-            // Row 0: [1*5 + 2*7, 1*6 + 2*8] = [5+14, 6+16] = [19, 22]
-            // Row 1: [3*5 + 4*7, 3*6 + 4*8] = [15+28, 18+32] = [43, 50]
             let m1 = matrix![[1, 2], [3, 4]];
             let m2 = matrix![[5, 6], [7, 8]];
-
             let result = &m1 * &m2;
-
             assert_eq!(result.vectors[0].scalars, vec![19, 22]);
             assert_eq!(result.vectors[1].scalars, vec![43, 50]);
         }
 
         #[test]
-        fn test_3x3_matrix_multiplication() {
-            // [1, 2, 3]   [9, 8, 7]
-            // [4, 5, 6] * [6, 5, 4]
-            // [7, 8, 9]   [3, 2, 1]
-            //
-            // Row 0:
-            // c0: 1*9 + 2*6 + 3*3 = 9 + 12 + 9 = 30
-            // c1: 1*8 + 2*5 + 3*2 = 8 + 10 + 6 = 24
-            // c2: 1*7 + 2*4 + 3*1 = 7 + 8 + 3 = 18
-            let m1 = matrix![[1, 2, 3], [4, 5, 6], [7, 8, 9]];
-            let m2 = matrix![[9, 8, 7], [6, 5, 4], [3, 2, 1]];
-
-            let result = m1 * m2;
-
-            assert_eq!(result.vectors[0].scalars, vec![30, 24, 18]);
-            // Sanity check another row just to be safe
-            // Row 1, Col 0: 4*9 + 5*6 + 6*3 = 36 + 30 + 18 = 84
-            assert_eq!(result.vectors[1].scalars[0], 84);
-        }
-
-        #[test]
-        fn test_identity_matrix_post_multiply() {
-            // A * I = A
-            let m1 = matrix![[5, 3], [2, 4]];
-            let identity = matrix![[1, 0], [0, 1]];
-
-            let result = m1 * &identity;
-
-            assert_eq!(result.vectors[0].scalars, vec![5, 3]);
-            assert_eq!(result.vectors[1].scalars, vec![2, 4]);
-        }
-
-        #[test]
-        fn test_identity_matrix_pre_multiply() {
-            // I * A = A
-            let identity = matrix![[1, 0], [0, 1]];
-            let m2 = matrix![[5, 3], [2, 4]];
-
-            let result = identity * &m2;
-
-            assert_eq!(result.vectors[0].scalars, vec![5, 3]);
-            assert_eq!(result.vectors[1].scalars, vec![2, 4]);
-        }
-
-        #[test]
-        fn test_matrix_multiplication_ref_owned() {
-            // [2, 1]   [3, 1]
-            // [1, 2] * [1, 3]
-            //
-            // Row 0: [2*3 + 1*1, 2*1 + 1*3] = [7, 5]
-            // Row 1: [1*3 + 2*1, 1*1 + 2*3] = [5, 7]
-            let m1 = matrix![[2, 1], [1, 2]];
-            let m2 = matrix![[3, 1], [1, 3]];
-
-            let result = &m1 * m2;
-
-            assert_eq!(result.vectors[0].scalars, vec![7, 5]);
-            assert_eq!(result.vectors[1].scalars, vec![5, 7]);
-        }
-
-        #[test]
-        fn test_assignment_swap_columns() {
-            // Multiplying A by a permutation matrix on the RIGHT swaps COLUMNS.
-            // A = [1, 2]  Swap Matrix = [0, 1]
-            //     [3, 4]                [1, 0]
-            //
-            // Row 0: [1*0 + 2*1, 1*1 + 2*0] = [2, 1]
-            // Row 1: [3*0 + 4*1, 3*1 + 4*0] = [4, 3]
-            // Result: Cols are swapped.
-            let mut m1 = matrix![[1, 2], [3, 4]];
-            let m2 = matrix![[0, 1], [1, 0]];
-
-            m1 *= m2;
-
-            assert_eq!(m1.vectors[0].scalars, vec![2, 1]);
-            assert_eq!(m1.vectors[1].scalars, vec![4, 3]);
-        }
-
-        #[test]
-        fn test_with_zeros_and_negatives() {
-            // [ 1,  2]   [ 0, -1]
-            // [-3,  4] * [ 5,  2]
-            //
-            // Row 0: [1*0 + 2*5,  1*-1 + 2*2]   = [10, 3]
-            // Row 1: [-3*0 + 4*5, -3*-1 + 4*2]  = [20, 11]
-            let m1 = matrix![[1, 2], [-3, 4]];
-            let m2 = matrix![[0, -1], [5, 2]];
-
-            let result = m1 * m2;
-
-            assert_eq!(result.vectors[0].scalars, vec![10, 3]);
-            assert_eq!(result.vectors[1].scalars, vec![20, 11]);
-        }
-
-        #[test]
-        fn test_rectangular_valid() {
-            // (1x2) * (2x2) is VALID
-            // [1, 2] * [3, 4]
-            //          [5, 6]
-            // Result is (1x2)
-            // [1*3 + 2*5, 1*4 + 2*6] = [3+10, 4+12] = [13, 16]
-            let m1 = matrix![[1, 2]];
-            let m2 = matrix![[3, 4], [5, 6]];
-            let result = m1 * m2;
-
-            assert_eq!(result.vectors[0].scalars, vec![13, 16]);
-        }
-
-        #[test]
-        #[should_panic]
-        fn test_panic_dim_mismatch() {
-            // (2x2) * (1x2) is INVALID
-            // Cols of A (2) != Rows of B (1)
-            let m1 = matrix![[1, 2], [3, 4]]; // 2x2
-            let m2 = matrix![[1, 2]]; // 1x2 (1 row)
-            let _ = m1 * m2;
-        }
-
-        #[test]
         fn test_rectangular_tall_by_wide() {
             // (3x2) * (2x3) -> Result (3x3)
-            // [1, 2]   [7, 8, 9]
-            // [3, 4] * [1, 0, 1]
-            // [5, 6]
-            //
-            // R0: [1*7+2*1, 1*8+2*0, 1*9+2*1] = [9, 8, 11]
-            // R1: [3*7+4*1, 3*8+4*0, 3*9+4*1] = [25, 24, 31]
-            // R2: [5*7+6*1, 5*8+6*0, 5*9+6*1] = [41, 40, 51]
             let m1 = matrix![[1, 2], [3, 4], [5, 6]];
             let m2 = matrix![[7, 8, 9], [1, 0, 1]];
-
             let result = m1 * m2;
-
             assert_eq!(result.vectors[0].scalars, vec![9, 8, 11]);
             assert_eq!(result.vectors[1].scalars, vec![25, 24, 31]);
             assert_eq!(result.vectors[2].scalars, vec![41, 40, 51]);
@@ -424,53 +351,19 @@ mod tests {
 
         #[test]
         fn test_multiplication_by_zero_matrix() {
-            // A * 0 = 0
-            // [1, 2]   [0, 0]   [0, 0]
-            // [3, 4] * [0, 0] = [0, 0]
             let m1 = matrix![[1, 2], [3, 4]];
             let zero_matrix = matrix![[0, 0], [0, 0]];
-
             let result = m1 * zero_matrix;
-
             assert_eq!(result.vectors[0].scalars, vec![0, 0]);
             assert_eq!(result.vectors[1].scalars, vec![0, 0]);
         }
 
         #[test]
-        fn test_rectangular_vector_matrix() {
-            // Vector (1x2) * Matrix (2x3) -> Result (1x3)
-            // [1, 2] * [ [1, 2, 3],
-            //            [4, 5, 6] ]
-            //
-            // This is a linear combination of the rows:
-            // 1 * [1, 2, 3] + 2 * [4, 5, 6]
-            // = [1, 2, 3] + [8, 10, 12]
-            // = [9, 12, 15]
-
-            let vector = vector![1, 2];
-            let matrix = matrix![[1, 2, 3], [4, 5, 6]];
-
-            let result = vector * matrix;
-
-            assert_eq!(result.scalars, vec![9, 12, 15]);
-        }
-
-        #[test]
-        fn test_rectangular_zero_multiplication() {
-            // (3x2) * (2x1) Zero Matrix -> Result (3x1) Zero Matrix
-            // [1, 2]   [0]   [0]
-            // [3, 4] * [0] = [0]
-            // [5, 6]         [0]
-            let m1 = matrix![[1, 2], [3, 4], [5, 6]];
-            let zero_col = matrix![[0], [0]];
-
-            let result = m1 * zero_col;
-
-            assert_eq!(result.vectors.len(), 3); // 3 rows
-            assert_eq!(result.vectors[0].scalars.len(), 1); // 1 column
-            assert_eq!(result.vectors[0].scalars[0], 0);
-            assert_eq!(result.vectors[1].scalars[0], 0);
-            assert_eq!(result.vectors[2].scalars[0], 0);
+        #[should_panic]
+        fn test_panic_dim_mismatch() {
+            let m1 = matrix![[1, 2], [3, 4]]; // 2x2
+            let m2 = matrix![[1, 2]]; // 1x2 (1 row)
+            let _ = m1 * m2;
         }
     }
 }

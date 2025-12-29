@@ -91,7 +91,6 @@ mod tests {
 
     #[test]
     fn test_empty_vector() {
-        // Your implementation uses fold(0.0, ...), so empty should return 0.0
         let u: Vector<f32> = Vector::from(vec![]);
 
         assert_eq!(u.norm_1(), 0.0);

@@ -3,7 +3,7 @@
 mod arithmetics;
 
 use crate::vector::Vector;
-use std::ops::Neg;
+use std::ops::{Add, Mul, Neg};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Matrix<K = f32>
@@ -11,6 +11,30 @@ where
     K: Copy + Neg,
 {
     pub(crate) vectors: Vec<Vector<K>>,
+}
+
+// -----------------------------------------------------------------------------
+// BASIC OPERATIONS
+// -----------------------------------------------------------------------------
+impl<K> Matrix<K>
+where
+    K: Copy + Neg,
+{
+    /// for details, go to [crate::matrix::arithmetics]
+    fn mul_vec(&self, vec: &Vector<K>) -> Vector<K>
+    where
+        K: Mul<Output = K> + Add<Output = K>,
+    {
+        self * vec
+    }
+
+    /// for details, go to [crate::matrix::arithmetics]
+    fn mul_mat(&self, mat: &Matrix<K>) -> Matrix<K>
+    where
+        K: Mul<Output = K> + Add<Output = K>,
+    {
+        self * mat
+    }
 }
 
 // -----------------------------------------------------------------------------
