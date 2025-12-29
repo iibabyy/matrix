@@ -262,6 +262,8 @@ mod tests {
     // TEST: MATRIX MULTIPLICATION (Row x Col)
     // -------------------------------------------------------------------------
     mod matrix_multiplication {
+        use crate::vector;
+
         use super::*;
 
         #[test]
@@ -432,6 +434,25 @@ mod tests {
 
             assert_eq!(result.vectors[0].scalars, vec![0, 0]);
             assert_eq!(result.vectors[1].scalars, vec![0, 0]);
+        }
+
+        #[test]
+        fn test_rectangular_vector_matrix() {
+            // Vector (1x2) * Matrix (2x3) -> Result (1x3)
+            // [1, 2] * [ [1, 2, 3],
+            //            [4, 5, 6] ]
+            //
+            // This is a linear combination of the rows:
+            // 1 * [1, 2, 3] + 2 * [4, 5, 6]
+            // = [1, 2, 3] + [8, 10, 12]
+            // = [9, 12, 15]
+
+            let vector = vector![1, 2];
+            let matrix = matrix![[1, 2, 3], [4, 5, 6]];
+
+            let result = vector * matrix;
+
+            assert_eq!(result.scalars, vec![9, 12, 15]);
         }
 
         #[test]
