@@ -21,7 +21,7 @@ where
     K: Copy + Neg,
 {
     /// for details, go to [crate::matrix::arithmetics]
-    fn mul_vec(&self, vec: &Vector<K>) -> Vector<K>
+    pub fn mul_vec(&self, vec: &Vector<K>) -> Vector<K>
     where
         K: Mul<Output = K> + Add<Output = K>,
     {
@@ -29,7 +29,7 @@ where
     }
 
     /// for details, go to [crate::matrix::arithmetics]
-    fn mul_mat(&self, mat: &Matrix<K>) -> Matrix<K>
+    pub fn mul_mat(&self, mat: &Matrix<K>) -> Matrix<K>
     where
         K: Mul<Output = K> + Add<Output = K>,
     {

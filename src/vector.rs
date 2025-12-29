@@ -24,7 +24,7 @@ where
     K: Copy + Neg,
 {
     /// for details, go to [crate::vector::arithmetics]
-    fn add(&mut self, other: &Vector<K>)
+    pub fn add(&mut self, other: &Vector<K>)
     where
         K: Add<Output = K>,
     {
@@ -32,7 +32,7 @@ where
     }
 
     /// for details, go to [crate::vector::arithmetics]
-    fn sub(&mut self, other: &Vector<K>)
+    pub fn sub(&mut self, other: &Vector<K>)
     where
         K: Sub<Output = K>,
     {
@@ -40,7 +40,7 @@ where
     }
 
     /// for details, go to [crate::vector::arithmetics]
-    fn scl(&mut self, scale: K)
+    pub fn scl(&mut self, scale: K)
     where
         K: Mul<Output = K>,
     {
