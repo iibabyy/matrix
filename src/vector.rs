@@ -17,6 +17,38 @@ where
 }
 
 // -----------------------------------------------------------------------------
+// BASIC OPERATIONS
+// -----------------------------------------------------------------------------
+impl<K> Vector<K>
+where
+    K: Copy + Neg,
+{
+    /// for details, go to [crate::vector::arithmetics]
+    fn add(&mut self, other: &Vector<K>)
+    where
+        K: Add<Output = K>,
+    {
+        *self += other;
+    }
+
+    /// for details, go to [crate::vector::arithmetics]
+    fn sub(&mut self, other: &Vector<K>)
+    where
+        K: Sub<Output = K>,
+    {
+        *self -= other
+    }
+
+    /// for details, go to [crate::vector::arithmetics]
+    fn scl(&mut self, scale: K)
+    where
+        K: Mul<Output = K>,
+    {
+        *self *= scale
+    }
+}
+
+// -----------------------------------------------------------------------------
 // UTILS FUNCTIONS
 // -----------------------------------------------------------------------------
 impl<K> Vector<K>
@@ -52,38 +84,6 @@ where
 
     pub fn push(&mut self, value: K) {
         self.scalars.push(value)
-    }
-}
-
-// -----------------------------------------------------------------------------
-// BASIC OPERATIONS
-// -----------------------------------------------------------------------------
-impl<K> Vector<K>
-where
-    K: Copy + Neg,
-{
-    /// for details, go to [crate::vector::arithmetics]
-    fn add(&mut self, other: &Vector<K>)
-    where
-        K: Add<Output = K>,
-    {
-        *self += other;
-    }
-
-    /// for details, go to [crate::vector::arithmetics]
-    fn sub(&mut self, other: &Vector<K>)
-    where
-        K: Sub<Output = K>,
-    {
-        *self -= other
-    }
-
-    /// for details, go to [crate::vector::arithmetics]
-    fn scl(&mut self, scale: K)
-    where
-        K: Mul<Output = K>,
-    {
-        *self *= scale
     }
 }
 
