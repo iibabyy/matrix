@@ -48,10 +48,10 @@ use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 // -----------------------------------------------------------------------------
 
 fn add_vector_vector<K: Copy + Neg + Add<Output = K>>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
-    assert_eq!(a.len(), b.len());
+    assert_eq!(a.dimension(), b.dimension());
     let mut new = a.clone();
 
-    for i in 0..new.len() {
+    for i in 0..new.dimension() {
         new[i] = new[i] + b[i];
     }
 
@@ -69,11 +69,11 @@ impl_add_ops!(
 // -----------------------------------------------------------------------------
 
 fn sub_vector_vector<K: Copy + Neg + Sub<Output = K>>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
-    assert_eq!(a.len(), b.len());
+    assert_eq!(a.dimension(), b.dimension());
 
     let mut new = a.clone();
 
-    for i in 0..new.len() {
+    for i in 0..new.dimension() {
         new[i] = new[i] - b[i];
     }
 
@@ -91,10 +91,10 @@ impl_sub_ops!(
 // -----------------------------------------------------------------------------
 
 fn mul_vector_vector<K: Copy + Neg + Mul<Output = K>>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
-    assert_eq!(a.len(), b.len());
+    assert_eq!(a.dimension(), b.dimension());
     let mut new = a.clone();
 
-    for i in 0..new.len() {
+    for i in 0..new.dimension() {
         new[i] = new[i] * b[i];
     }
 
@@ -115,7 +115,7 @@ fn mul_vector_coeff<K: Copy + Neg + Mul<Output = K>>(vec: &Vector<K>, coeff: &K)
     let mut new = vec.clone();
     let coeff = *coeff;
 
-    for i in 0..new.len() {
+    for i in 0..new.dimension() {
         new[i] = new[i] * coeff;
     }
 
@@ -137,7 +137,7 @@ fn mul_vector_matrix<K: Copy + Neg + Mul<Output = K> + Add<Output = K>>(
     matrix: &Matrix<K>,
 ) -> Vector<K> {
     let combination = crate::linear_combination(&matrix.vectors, &vec.scalars);
-    debug_assert_eq!(combination.len(), vec.len());
+    debug_assert_eq!(combination.dimension(), vec.dimension());
     combination
 }
 

@@ -40,12 +40,12 @@ where
         }
     }
 
-    pub const fn len(&self) -> usize {
+    pub const fn size(&self) -> usize {
         self.vectors.len()
     }
 
     pub const fn is_empty(&self) -> bool {
-        self.len() == 0
+        self.size() == 0
     }
 
     pub fn push(&mut self, vector: Vector<K>) {
@@ -58,7 +58,7 @@ where
             return;
         }
 
-        assert_eq!(self.vectors[0].len(), vector.len());
+        assert_eq!(self.vectors[0].dimension(), vector.dimension());
     }
 
     pub const fn vectors(&self) -> &Vec<Vector<K>> {

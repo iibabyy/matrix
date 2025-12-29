@@ -38,7 +38,7 @@ where
         }
     }
 
-    pub const fn len(&self) -> usize {
+    pub const fn dimension(&self) -> usize {
         self.scalars.len()
     }
 

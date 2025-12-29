@@ -7,7 +7,7 @@ where
     K: Copy + Neg + AddAssign + Mul<Output = K>,
 {
     pub fn dot(&self, mut v: Vector<K>) -> K {
-        assert_eq!(self.len(), v.len());
+        assert_eq!(self.dimension(), v.dimension());
         debug_assert!(!self.is_empty());
 
         v *= self;

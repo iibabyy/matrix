@@ -7,7 +7,7 @@ where
     K: Copy + Neg + AddAssign + Mul<Output = K> + Into<f32>,
 {
     assert!(!u.is_empty());
-    assert_eq!(u.len(), v.len());
+    assert_eq!(u.dimension(), v.dimension());
 
     let dot_product = u.dot(v.clone()).into();
 
