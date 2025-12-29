@@ -7,7 +7,7 @@ where
     for<'a> K: Copy + Neg + AddAssign<&'a K>,
     for<'a> Vector<K>: MulAssign<&'a Vector<K>>,
 {
-    fn dot(&self, mut v: Vector<K>) -> K {
+    pub fn dot(&self, mut v: Vector<K>) -> K {
         assert_eq!(self.len(), v.len());
         debug_assert!(!self.is_empty());
 
