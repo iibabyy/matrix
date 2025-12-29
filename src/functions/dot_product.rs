@@ -1,11 +1,10 @@
-use std::ops::{AddAssign, MulAssign, Neg};
+use std::ops::{AddAssign, Mul, Neg};
 
 use crate::vector::Vector;
 
 impl<K> Vector<K>
 where
-    for<'a> K: Copy + Neg + AddAssign<&'a K>,
-    for<'a> Vector<K>: MulAssign<&'a Vector<K>>,
+    K: Copy + Neg + AddAssign + Mul<Output = K>,
 {
     pub fn dot(&self, mut v: Vector<K>) -> K {
         assert_eq!(self.len(), v.len());
@@ -16,7 +15,7 @@ where
         let mut res = v[0];
 
         for scalar in &v.scalars[1..] {
-            res += scalar;
+            res += *scalar;
         }
 
         res
