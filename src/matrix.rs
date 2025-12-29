@@ -88,6 +88,70 @@ where
     pub const fn vectors(&self) -> &Vec<Vector<K>> {
         &self.vectors
     }
+
+    pub(crate) fn swap_rows(&mut self, a: usize, b: usize) {
+        let mut temp;
+
+        for i in 0..self.size() {
+            temp = self[i][a];
+            self[i][a] = self[i][b];
+            self[i][b] = temp;
+        }
+    }
+
+    pub(crate) fn max_value_in_col(&self, col: usize, from_row: usize) -> usize
+    where
+        K: PartialOrd,
+    {
+        let mut max_value = self[col][from_row];
+        let mut max_value_row = from_row;
+
+        for i in from_row + 1..self[0].dimension() {
+            if max_value < self[col][i] {
+                max_value = self[col][i];
+                max_value_row = i;
+            }
+        }
+
+        max_value_row
+    }
+
+    pub(crate) fn rows<'a>(&'a self) -> impl Iterator<Item = Vec<&'a K>> + 'a {
+        let mut col_iter: Vec<_> = self.vectors
+            .iter()
+            .map(|col| col.scalars.iter())
+            .collect();
+
+        let rows = std::iter::from_fn(move || {
+            let column: Option<Vec<&K>> = col_iter
+                .iter_mut()
+                .map(|iter| iter.next())
+                .collect();
+
+            column
+        });
+
+        rows
+    }
+
+    pub(crate) fn rows_mut(&mut self) -> impl Iterator<Item = Vec<&mut K>> {
+        let mut vec_iter: Vec<_> = self.vectors
+            .iter_mut()
+            .map(|vec| vec.scalars.iter_mut())
+            .collect();
+
+        let rows = std::iter::from_fn(move || {
+            let column: Option<Vec<&mut K>> = vec_iter
+                .iter_mut()
+                .map(|iter| iter.next())
+                .collect();
+
+            column
+        });
+
+        rows
+    }
+
 }
 
 // -----------------------------------------------------------------------------
