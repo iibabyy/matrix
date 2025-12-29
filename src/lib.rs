@@ -22,6 +22,7 @@
 // TODO: ```
 
 mod macros;
+mod rows;
 
 mod matrix;
 pub use matrix::Matrix;
