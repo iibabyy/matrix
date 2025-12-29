@@ -2,16 +2,15 @@ use std::ops::Neg;
 
 use crate::vector::Vector;
 
-#[allow(dead_code)]
 impl<K> Vector<K>
 where
     K: Copy + Neg + Into<f32>,
 {
-    fn norm_1(&self) -> f32 {
+    pub fn norm_1(&self) -> f32 {
         self.scalars.iter().map(|&x| x.into().abs()).sum()
     }
 
-    fn norm(&self) -> f32 {
+    pub fn norm(&self) -> f32 {
         self.scalars
             .iter()
             .map(|&x| {
@@ -22,7 +21,7 @@ where
             .sqrt()
     }
 
-    fn norm_inf(&self) -> f32 {
+    pub fn norm_inf(&self) -> f32 {
         self.scalars
             .iter()
             .map(|&x| x.into().abs())
