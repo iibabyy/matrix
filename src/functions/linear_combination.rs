@@ -1,11 +1,11 @@
-use std::ops::{Add, Mul, Neg};
+use std::ops::{Add, Mul};
 
 use crate::vector::Vector;
 
 /// sum of multiple vectors, each multiplied by a coefficient (e.g., av+bw)
 pub fn linear_combination<K>(vectors: &[Vector<K>], coefs: &[K]) -> Vector<K>
 where
-    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+    K: Copy + Mul<Output = K> + Add<Output = K>,
 {
     assert!(!vectors.is_empty());
     assert_eq!(vectors.len(), coefs.len());

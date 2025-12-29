@@ -6,19 +6,16 @@ use crate::vector::Vector;
 use std::ops::{Add, Mul, Neg};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Matrix<K = f32>
-where
-    K: Copy + Neg,
-{
+pub struct Matrix<K: Copy = f32> {
     pub(crate) vectors: Vec<Vector<K>>,
 }
 
 // -----------------------------------------------------------------------------
 // BASIC OPERATIONS
 // -----------------------------------------------------------------------------
-impl<K> Matrix<K>
+impl<K: Copy> Matrix<K>
 where
-    K: Copy + Neg,
+    K: Copy,
 {
     /// for details, go to [crate::matrix::arithmetics]
     pub fn mul_vec(&self, vec: &Vector<K>) -> Vector<K>
@@ -40,10 +37,7 @@ where
 // -----------------------------------------------------------------------------
 // UTILS FUNCTIONS
 // -----------------------------------------------------------------------------
-impl<K> Matrix<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> Matrix<K> {
     pub fn new(vectors: Vec<Vector<K>>) -> Self {
         let mut matrix = Self::default();
         for vector in vectors {
@@ -89,7 +83,10 @@ where
         &self.vectors
     }
 
-    pub(crate) fn swap_rows(&mut self, a: usize, b: usize) {
+    pub(crate) fn swap_rows(&mut self, a: usize, b: usize)
+    where
+        K: Copy,
+    {
         let mut temp;
 
         for i in 0..self.size() {
@@ -101,7 +98,7 @@ where
 
     pub(crate) fn max_value_in_col(&self, col: usize, from_row: usize) -> usize
     where
-        K: PartialOrd,
+        K: PartialOrd + Copy,
     {
         let mut max_value = self[col][from_row];
         let mut max_value_row = from_row;
@@ -115,52 +112,12 @@ where
 
         max_value_row
     }
-
-    pub(crate) fn rows<'a>(&'a self) -> impl Iterator<Item = Vec<&'a K>> + 'a {
-        let mut col_iter: Vec<_> = self.vectors
-            .iter()
-            .map(|col| col.scalars.iter())
-            .collect();
-
-        let rows = std::iter::from_fn(move || {
-            let column: Option<Vec<&K>> = col_iter
-                .iter_mut()
-                .map(|iter| iter.next())
-                .collect();
-
-            column
-        });
-
-        rows
-    }
-
-    pub(crate) fn rows_mut(&mut self) -> impl Iterator<Item = Vec<&mut K>> {
-        let mut vec_iter: Vec<_> = self.vectors
-            .iter_mut()
-            .map(|vec| vec.scalars.iter_mut())
-            .collect();
-
-        let rows = std::iter::from_fn(move || {
-            let column: Option<Vec<&mut K>> = vec_iter
-                .iter_mut()
-                .map(|iter| iter.next())
-                .collect();
-
-            column
-        });
-
-        rows
-    }
-
 }
 
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
-impl<K> std::ops::Index<usize> for Matrix<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> std::ops::Index<usize> for Matrix<K> {
     type Output = Vector<K>;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -168,18 +125,15 @@ where
     }
 }
 
-impl<K> std::ops::IndexMut<usize> for Matrix<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> std::ops::IndexMut<usize> for Matrix<K> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.vectors[index]
     }
 }
 
-impl<K> std::fmt::Display for Matrix<K>
+impl<K: Copy> std::fmt::Display for Matrix<K>
 where
-    K: std::fmt::Display + Copy + Neg,
+    K: std::fmt::Display,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let vecs_fmt = self
@@ -192,19 +146,13 @@ where
     }
 }
 
-impl<T> std::default::Default for Matrix<T>
-where
-    T: Copy + Neg,
-{
+impl<T: Copy> std::default::Default for Matrix<T> {
     fn default() -> Self {
         Self { vectors: vec![] }
     }
 }
 
-impl<K> FromIterator<Vector<K>> for Matrix<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> FromIterator<Vector<K>> for Matrix<K> {
     fn from_iter<I: IntoIterator<Item = Vector<K>>>(iter: I) -> Self {
         Self {
             vectors: Vec::from_iter(iter),
@@ -212,21 +160,20 @@ where
     }
 }
 
-impl<T, K> From<T> for Matrix<K>
+impl<T, K: Copy> From<T> for Matrix<K>
 where
     T: IntoIterator<Item = Vector<K>>,
-    K: Copy + Neg,
 {
     fn from(iter: T) -> Self {
         Self::from_iter(iter)
     }
 }
 
-impl<K> Neg for Matrix<K>
+impl<K: Copy> Neg for Matrix<K>
 where
-    K: Copy + Neg,
+    K: Neg,
     Vector<K>: Neg<Output = Vector<<K as Neg>::Output>>,
-    <K as Neg>::Output: Copy + Neg,
+    <K as Neg>::Output: Copy,
 {
     type Output = Matrix<<K as Neg>::Output>;
 

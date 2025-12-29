@@ -57,7 +57,7 @@
 
 use crate::matrix::Matrix;
 use crate::{macros::*, vector::Vector};
-use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 // #[cfg(test)]
 // mod tests;
@@ -66,7 +66,7 @@ use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 // Addition
 // -----------------------------------------------------------------------------
 
-fn add_matrix_matrix<K: Copy + Neg + Add<Output = K>>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K> {
+fn add_matrix_matrix<K: Copy + Add<Output = K>>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K> {
     assert_eq!(a.size(), b.size());
     let mut new = a.clone();
 
@@ -80,14 +80,14 @@ fn add_matrix_matrix<K: Copy + Neg + Add<Output = K>>(a: &Matrix<K>, b: &Matrix<
 impl_add_ops!(
     <K> Matrix<K>, Matrix<K>,
     with add_matrix_matrix,
-    where K: Copy + Neg + Add<Output = K>
+    where K: Copy + Add<Output = K>
 );
 
 // -----------------------------------------------------------------------------
 // Substraction
 // -----------------------------------------------------------------------------
 
-fn sub_matrix_matrix<K: Copy + Neg + Sub<Output = K>>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K> {
+fn sub_matrix_matrix<K: Copy + Sub<Output = K>>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K> {
     assert_eq!(a.size(), b.size());
     let mut new = a.clone();
 
@@ -101,14 +101,14 @@ fn sub_matrix_matrix<K: Copy + Neg + Sub<Output = K>>(a: &Matrix<K>, b: &Matrix<
 impl_sub_ops!(
     <K> Matrix<K>, Matrix<K>,
     with sub_matrix_matrix,
-    where K: Copy + Neg + Sub<Output = K>
+    where K: Copy + Sub<Output = K>
 );
 
 // -----------------------------------------------------------------------------
 // Coeff Multiplication
 // -----------------------------------------------------------------------------
 
-fn mul_matrix_coeff<K: Copy + Neg + Mul<Output = K>>(matrix: &Matrix<K>, coeff: &K) -> Matrix<K> {
+fn mul_matrix_coeff<K: Copy + Mul<Output = K>>(matrix: &Matrix<K>, coeff: &K) -> Matrix<K> {
     let mut new = matrix.clone();
 
     for i in 0..new.size() {
@@ -121,7 +121,7 @@ fn mul_matrix_coeff<K: Copy + Neg + Mul<Output = K>>(matrix: &Matrix<K>, coeff: 
 impl_mul_ops!(
     <K> Matrix<K>, K,
     with mul_matrix_coeff,
-    where K: Copy + Neg + Mul<Output = K>,
+    where K: Copy + Mul<Output = K>,
 );
 
 // -----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ impl_mul_ops!(
 
 fn mul_matrix_matrix<K>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K>
 where
-    K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+    K: Copy + Mul<Output = K> + Add<Output = K>,
 {
     let mut new: Vec<Vector<K>> = Vec::with_capacity(a.size());
 
@@ -144,7 +144,7 @@ where
 impl_mul_ops!(
     <K> Matrix<K>, Matrix<K>,
     with mul_matrix_matrix,
-    where K: Copy + Neg + Mul<Output = K> + Add<Output = K>,
+    where K: Copy + Mul<Output = K> + Add<Output = K>,
 );
 #[cfg(test)]
 mod tests {

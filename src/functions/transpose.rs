@@ -1,33 +1,31 @@
-use std::ops::Neg;
-
 use crate::{Matrix, Vector};
 
-impl<K> Matrix::<K>
+impl<K> Matrix<K>
 where
-	K: Copy + Neg
+    K: Copy,
 {
-	pub fn transpose(&self) -> Matrix<K> {
-		if self.is_empty() {
-			// empty Matrix
-			return Matrix::default()
-		}
+    pub fn transpose(&self) -> Matrix<K> {
+        if self.is_empty() {
+            // empty Matrix
+            return Matrix::default();
+        }
 
-		let rows = self.size();
-		let cols = self[0].dimension();
+        let rows = self.size();
+        let cols = self[0].dimension();
 
-		// New matrix will have 'cols' rows and 'rows' columns
-        let mut transposed_vectors = Vec::with_capacity(cols);		
+        // New matrix will have 'cols' rows and 'rows' columns
+        let mut transposed_vectors = Vec::with_capacity(cols);
 
-		for j in 0..cols {
-			let mut new_row = Vec::with_capacity(rows);
-			for i in 0..rows {
-				new_row.push(self[i][j]);
-			}
-			transposed_vectors.push(Vector::new(new_row));
-		}
+        for j in 0..cols {
+            let mut new_row = Vec::with_capacity(rows);
+            for i in 0..rows {
+                new_row.push(self[i][j]);
+            }
+            transposed_vectors.push(Vector::new(new_row));
+        }
 
-		Matrix::new(transposed_vectors)
-	}
+        Matrix::new(transposed_vectors)
+    }
 }
 
 #[cfg(test)]
@@ -69,7 +67,7 @@ mod tests {
         let m = matrix![[1], [2], [3]];
         let t = m.transpose();
 
-        assert_eq!(t.vectors.len(), 1); 
+        assert_eq!(t.vectors.len(), 1);
         assert_eq!(t.vectors[0].scalars, vec![1, 2, 3]);
     }
 
@@ -87,7 +85,7 @@ mod tests {
         // (A^T)^T = A
         let m = matrix![[1, 5, 9], [2, 6, 10]];
         let t_twice = m.transpose().transpose();
-        
+
         assert_eq!(m.vectors[0].scalars, t_twice.vectors[0].scalars);
         assert_eq!(m.vectors[1].scalars, t_twice.vectors[1].scalars);
     }

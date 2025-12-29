@@ -41,13 +41,13 @@
 //! ```
 
 use crate::{macros::*, matrix::Matrix, vector::Vector};
-use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 // -----------------------------------------------------------------------------
 // Addition
 // -----------------------------------------------------------------------------
 
-fn add_vector_vector<K: Copy + Neg + Add<Output = K>>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
+fn add_vector_vector<K: Add<Output = K> + Copy>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
     assert_eq!(a.dimension(), b.dimension());
     let mut new = a.clone();
 
@@ -61,14 +61,14 @@ fn add_vector_vector<K: Copy + Neg + Add<Output = K>>(a: &Vector<K>, b: &Vector<
 impl_add_ops!(
     <K> Vector<K>, Vector<K>,
     with add_vector_vector,
-    where K: Copy + Neg + Add<Output = K>
+    where K: Add<Output = K> + Copy
 );
 
 // -----------------------------------------------------------------------------
 // Substraction
 // -----------------------------------------------------------------------------
 
-fn sub_vector_vector<K: Copy + Neg + Sub<Output = K>>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
+fn sub_vector_vector<K: Sub<Output = K> + Copy>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
     assert_eq!(a.dimension(), b.dimension());
 
     let mut new = a.clone();
@@ -83,14 +83,14 @@ fn sub_vector_vector<K: Copy + Neg + Sub<Output = K>>(a: &Vector<K>, b: &Vector<
 impl_sub_ops!(
     <K> Vector<K>, Vector<K>,
     with sub_vector_vector,
-    where K: Copy + Neg + Sub<Output = K>
+    where K: Sub<Output = K> + Copy
 );
 
 // -----------------------------------------------------------------------------
 // Vector Multiplication
 // -----------------------------------------------------------------------------
 
-fn mul_vector_vector<K: Copy + Neg + Mul<Output = K>>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
+fn mul_vector_vector<K: Mul<Output = K> + Copy>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
     assert_eq!(a.dimension(), b.dimension());
     let mut new = a.clone();
 
@@ -104,14 +104,14 @@ fn mul_vector_vector<K: Copy + Neg + Mul<Output = K>>(a: &Vector<K>, b: &Vector<
 impl_mul_ops!(
     <K> Vector<K>, Vector<K>,
     with mul_vector_vector,
-    where K: Copy + Neg + Mul<Output = K>
+    where K: Mul<Output = K> + Copy
 );
 
 // -----------------------------------------------------------------------------
 // Coeff Multiplication
 // -----------------------------------------------------------------------------
 
-fn mul_vector_coeff<K: Copy + Neg + Mul<Output = K>>(vec: &Vector<K>, coeff: &K) -> Vector<K> {
+fn mul_vector_coeff<K: Mul<Output = K> + Copy>(vec: &Vector<K>, coeff: &K) -> Vector<K> {
     let mut new = vec.clone();
     let coeff = *coeff;
 
@@ -125,14 +125,14 @@ fn mul_vector_coeff<K: Copy + Neg + Mul<Output = K>>(vec: &Vector<K>, coeff: &K)
 impl_mul_ops!(
     <K> Vector<K>, K,
     with mul_vector_coeff,
-    where K: Copy + Neg + Mul<Output = K>
+    where K: Mul<Output = K> + Copy
 );
 
 // -----------------------------------------------------------------------------
 // Matrix Multiplication
 // -----------------------------------------------------------------------------
 
-fn mul_vector_matrix<K: Copy + Neg + Mul<Output = K> + Add<Output = K>>(
+fn mul_vector_matrix<K: Mul<Output = K> + Add<Output = K> + Copy>(
     vec: &Vector<K>,
     matrix: &Matrix<K>,
 ) -> Vector<K> {
@@ -142,12 +142,12 @@ fn mul_vector_matrix<K: Copy + Neg + Mul<Output = K> + Add<Output = K>>(
 impl_mul_ops!(
     <K> Vector<K>, Matrix<K>,
     with mul_vector_matrix,
-    where K: Copy + Neg + Add<Output = K> + Mul<Output = K>,
+    where K: Add<Output = K> + Mul<Output = K> + Copy,
 );
 
 impl_mul_reverse!(
     <K> Vector<K>, Matrix<K>,
-    where K: Copy + Neg + Add<Output = K> + Mul<Output = K>,
+    where K: Add<Output = K> + Mul<Output = K> + Copy,
 );
 
 // -----------------------------------------------------------------------------

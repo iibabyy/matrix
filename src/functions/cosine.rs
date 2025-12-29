@@ -1,10 +1,10 @@
-use std::ops::{AddAssign, Mul, Neg};
+use std::ops::{AddAssign, Mul};
 
 use crate::Vector;
 
 pub fn angle_cos<K>(u: &Vector<K>, v: &Vector<K>) -> f32
 where
-    K: Copy + Neg + AddAssign + Mul<Output = K> + Into<f32>,
+    K: Copy + AddAssign + Mul<Output = K> + Into<f32>,
 {
     assert!(!u.is_empty());
     assert_eq!(u.dimension(), v.dimension());

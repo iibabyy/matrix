@@ -1,10 +1,10 @@
-use std::ops::{AddAssign, Mul, Neg};
+use std::ops::{AddAssign, Mul};
 
 use crate::vector::Vector;
 
 impl<K> Vector<K>
 where
-    K: Copy + Neg + AddAssign + Mul<Output = K>,
+    K: Copy + AddAssign + Mul<Output = K>,
 {
     pub fn dot(&self, mut v: Vector<K>) -> K {
         assert_eq!(self.dimension(), v.dimension());

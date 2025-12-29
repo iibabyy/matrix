@@ -9,20 +9,14 @@ use std::ops::{Add, Mul, Neg, Sub};
 mod arithmetics;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Vector<K = f32>
-where
-    K: Copy + Neg,
-{
+pub struct Vector<K: Copy = f32> {
     pub(crate) scalars: Vec<K>,
 }
 
 // -----------------------------------------------------------------------------
 // BASIC OPERATIONS
 // -----------------------------------------------------------------------------
-impl<K> Vector<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> Vector<K> {
     /// for details, go to [crate::vector::arithmetics]
     pub fn add(&mut self, other: &Vector<K>)
     where
@@ -46,16 +40,12 @@ where
     {
         *self *= scale
     }
-
 }
 
 // -----------------------------------------------------------------------------
 // UTILS FUNCTIONS
 // -----------------------------------------------------------------------------
-impl<K> Vector<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> Vector<K> {
     pub const fn new(scalars: Vec<K>) -> Self {
         assert!(!scalars.is_empty());
         Self { scalars }
@@ -91,10 +81,7 @@ where
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
-impl<K> std::ops::Index<usize> for Vector<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> std::ops::Index<usize> for Vector<K> {
     type Output = K;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -102,37 +89,28 @@ where
     }
 }
 
-impl<K> std::ops::IndexMut<usize> for Vector<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> std::ops::IndexMut<usize> for Vector<K> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.scalars[index]
     }
 }
 
-impl<K> std::fmt::Display for Vector<K>
+impl<K: Copy> std::fmt::Display for Vector<K>
 where
-    K: std::fmt::Display + Copy + Neg,
+    K: std::fmt::Display,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.scalars.iter().try_for_each(|c| writeln!(f, "[{c}]"))
     }
 }
 
-impl<T> std::default::Default for Vector<T>
-where
-    T: Copy + Neg,
-{
+impl<K: Copy> std::default::Default for Vector<K> {
     fn default() -> Self {
         Self::new(vec![])
     }
 }
 
-impl<K> FromIterator<K> for Vector<K>
-where
-    K: Copy + Neg,
-{
+impl<K: Copy> FromIterator<K> for Vector<K> {
     fn from_iter<I: IntoIterator<Item = K>>(iter: I) -> Self {
         Self {
             scalars: Vec::from_iter(iter),
@@ -140,20 +118,19 @@ where
     }
 }
 
-impl<T, K> From<T> for Vector<K>
+impl<T, K: Copy> From<T> for Vector<K>
 where
     T: IntoIterator<Item = K>,
-    K: Copy + Neg,
 {
     fn from(iter: T) -> Self {
         Self::from_iter(iter)
     }
 }
 
-impl<K> Neg for Vector<K>
+impl<K: Copy> Neg for Vector<K>
 where
-    K: Copy + Neg,
-    <K as Neg>::Output: Copy + Neg,
+    K: Neg,
+    <K as Neg>::Output: Copy,
 {
     type Output = Vector<<K as Neg>::Output>;
 

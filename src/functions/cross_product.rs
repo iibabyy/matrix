@@ -1,10 +1,10 @@
-use std::ops::{Mul, Neg, Sub};
+use std::ops::{Mul, Sub};
 
 use crate::Vector;
 
 pub fn cross_product<K>(u: &Vector<K>, v: &Vector<K>) -> Vector<K>
 where
-    K: Copy + Neg + Sub<Output = K> + Mul<Output = K>,
+    K: Copy + Sub<Output = K> + Mul<Output = K>,
 {
     assert_eq!(u.dimension(), 3);
     assert_eq!(v.dimension(), 3);

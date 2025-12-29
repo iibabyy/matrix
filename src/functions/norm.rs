@@ -1,10 +1,8 @@
-use std::ops::Neg;
-
 use crate::vector::Vector;
 
 impl<K> Vector<K>
 where
-    K: Copy + Neg + Into<f32>,
+    K: Copy + Into<f32>,
 {
     pub fn norm_1(&self) -> f32 {
         self.scalars.iter().map(|&x| x.into().abs()).sum()
