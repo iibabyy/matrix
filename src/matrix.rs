@@ -141,11 +141,6 @@ impl<K: Copy> Matrix<K> {
         self.vectors.iter().as_rows()
     }
 
-    pub(crate) fn as_rows_mut(&mut self) -> impl Iterator<Item = Vec<&mut K>> {
-        use crate::rows::AsRowsMut;
-        self.vectors.iter_mut().as_rows_mut()
-    }
-
 }
 
 // -----------------------------------------------------------------------------
