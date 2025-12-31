@@ -10,7 +10,7 @@ where
             return Matrix::default();
         }
 
-        let rows = self.size();
+        let rows = self.cols();
         let cols = self[0].dimension();
 
         // New matrix will have 'cols' rows and 'rows' columns

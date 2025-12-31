@@ -67,10 +67,10 @@ use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 // -----------------------------------------------------------------------------
 
 fn add_matrix_matrix<K: Copy + Add<Output = K>>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K> {
-    assert_eq!(a.size(), b.size());
+    assert_eq!(a.cols(), b.cols());
     let mut new = a.clone();
 
-    for i in 0..new.size() {
+    for i in 0..new.cols() {
         new[i] += &b[i];
     }
 
@@ -88,10 +88,10 @@ impl_add_ops!(
 // -----------------------------------------------------------------------------
 
 fn sub_matrix_matrix<K: Copy + Sub<Output = K>>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K> {
-    assert_eq!(a.size(), b.size());
+    assert_eq!(a.cols(), b.cols());
     let mut new = a.clone();
 
-    for i in 0..new.size() {
+    for i in 0..new.cols() {
         new[i] -= &b[i];
     }
 
@@ -111,7 +111,7 @@ impl_sub_ops!(
 fn mul_matrix_coeff<K: Copy + Mul<Output = K>>(matrix: &Matrix<K>, coeff: &K) -> Matrix<K> {
     let mut new = matrix.clone();
 
-    for i in 0..new.size() {
+    for i in 0..new.cols() {
         new[i] *= *coeff;
     }
 
@@ -132,9 +132,9 @@ fn mul_matrix_matrix<K>(a: &Matrix<K>, b: &Matrix<K>) -> Matrix<K>
 where
     K: Copy + Mul<Output = K> + Add<Output = K>,
 {
-    let mut new: Vec<Vector<K>> = Vec::with_capacity(a.size());
+    let mut new: Vec<Vector<K>> = Vec::with_capacity(a.cols());
 
-    for i in 0..a.size() {
+    for i in 0..a.cols() {
         new.push(&a[i] * b);
     }
 

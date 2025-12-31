@@ -61,10 +61,6 @@ impl<K: Copy> Matrix<K> {
         }
     }
 
-    pub const fn size(&self) -> usize {
-        self.vectors.len()
-    }
-
     pub fn rows(&self) -> usize {
         if self.is_empty() {
             0
@@ -74,11 +70,11 @@ impl<K: Copy> Matrix<K> {
     }
 
     pub const fn cols(&self) -> usize {
-        self.size()
+        self.vectors.len()
     }
 
     pub const fn is_empty(&self) -> bool {
-        self.size() == 0
+        self.cols() == 0
     }
 
     pub fn push(&mut self, vector: Vector<K>) {
@@ -104,7 +100,7 @@ impl<K: Copy> Matrix<K> {
     {
         let mut temp;
 
-        for i in 0..self.size() {
+        for i in 0..self.cols() {
             temp = self[i][a];
             self[i][a] = self[i][b];
             self[i][b] = temp;
