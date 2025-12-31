@@ -1,6 +1,5 @@
 use crate::Vector;
 
-#[expect(unused)]
 pub(crate) trait AsRows<'a, K>: Iterator<Item = &'a Vector<K>>
 where
     K: 'a + Copy,
@@ -17,7 +16,6 @@ where
     }
 }
 
-#[expect(unused)]
 pub(crate) trait AsRowsMut<'a, K>: Iterator<Item = &'a mut Vector<K>>
 where
     K: 'a + Copy,
