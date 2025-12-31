@@ -7,7 +7,7 @@ where
     K: Copy + AddAssign + Mul<Output = K> + Into<f32>,
 {
     assert!(!u.is_empty());
-    assert_eq!(u.dimension(), v.dimension());
+    assert_eq!(u.size(), v.size());
 
     let dot_product = u.dot(v.clone()).into();
 
@@ -87,7 +87,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cosine_high_dimension() {
+    fn test_cosine_high_size() {
         // orthogonal 5D vectors
         let u = Vector::from(vec![1.0, 0.0, 0.0, 0.0, 0.0]);
         let v = Vector::from(vec![0.0, 0.0, 0.0, 0.0, 1.0]);

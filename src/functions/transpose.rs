@@ -11,7 +11,7 @@ where
         }
 
         let rows = self.cols();
-        let cols = self[0].dimension();
+        let cols = self[0].size();
 
         // New matrix will have 'cols' rows and 'rows' columns
         let mut transposed_vectors = Vec::with_capacity(cols);

@@ -64,7 +64,7 @@ impl<K: Copy> Vector<K> {
         }
     }
 
-    pub const fn dimension(&self) -> usize {
+    pub const fn size(&self) -> usize {
         self.scalars.len()
     }
 

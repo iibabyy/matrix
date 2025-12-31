@@ -8,7 +8,7 @@ where
 {
     pub fn trace(&self) -> K {
         assert!(!self.is_empty());
-        assert_eq!(self.cols(), self[0].dimension());
+        assert_eq!(self.cols(), self[0].size());
 
         let mut sum = self[0][0];
 

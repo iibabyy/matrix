@@ -48,10 +48,10 @@ use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 // -----------------------------------------------------------------------------
 
 fn add_vector_vector<K: Add<Output = K> + Copy>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
-    assert_eq!(a.dimension(), b.dimension());
+    assert_eq!(a.size(), b.size());
     let mut new = a.clone();
 
-    for i in 0..new.dimension() {
+    for i in 0..new.size() {
         new[i] = new[i] + b[i];
     }
 
@@ -69,11 +69,11 @@ impl_add_ops!(
 // -----------------------------------------------------------------------------
 
 fn sub_vector_vector<K: Sub<Output = K> + Copy>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
-    assert_eq!(a.dimension(), b.dimension());
+    assert_eq!(a.size(), b.size());
 
     let mut new = a.clone();
 
-    for i in 0..new.dimension() {
+    for i in 0..new.size() {
         new[i] = new[i] - b[i];
     }
 
@@ -91,10 +91,10 @@ impl_sub_ops!(
 // -----------------------------------------------------------------------------
 
 fn mul_vector_vector<K: Mul<Output = K> + Copy>(a: &Vector<K>, b: &Vector<K>) -> Vector<K> {
-    assert_eq!(a.dimension(), b.dimension());
+    assert_eq!(a.size(), b.size());
     let mut new = a.clone();
 
-    for i in 0..new.dimension() {
+    for i in 0..new.size() {
         new[i] = new[i] * b[i];
     }
 
@@ -115,7 +115,7 @@ fn mul_vector_coeff<K: Mul<Output = K> + Copy>(vec: &Vector<K>, coeff: &K) -> Ve
     let mut new = vec.clone();
     let coeff = *coeff;
 
-    for i in 0..new.dimension() {
+    for i in 0..new.size() {
         new[i] = new[i] * coeff;
     }
 

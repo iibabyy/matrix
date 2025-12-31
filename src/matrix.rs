@@ -65,7 +65,7 @@ impl<K: Copy> Matrix<K> {
         if self.is_empty() {
             0
         } else {
-            self[0].dimension()
+            self[0].size()
         }
     }
 
@@ -87,7 +87,7 @@ impl<K: Copy> Matrix<K> {
             return;
         }
 
-        assert_eq!(self.vectors[0].dimension(), vector.dimension());
+        assert_eq!(self.vectors[0].size(), vector.size());
     }
 
     pub const fn vectors(&self) -> &Vec<Vector<K>> {
@@ -114,7 +114,7 @@ impl<K: Copy> Matrix<K> {
         let mut max_value = self[col_index][start_row_index];
         let mut max_value_row = start_row_index;
 
-        for i in start_row_index + 1..self[0].dimension() {
+        for i in start_row_index + 1..self[0].size() {
             if max_value < self[col_index][i] {
                 max_value = self[col_index][i];
                 max_value_row = i;

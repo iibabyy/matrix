@@ -7,7 +7,7 @@ where
     K: Copy + AddAssign + Mul<Output = K>,
 {
     pub fn dot(&self, mut v: Vector<K>) -> K {
-        assert_eq!(self.dimension(), v.dimension());
+        assert_eq!(self.size(), v.size());
         debug_assert!(!self.is_empty());
 
         v *= self;
@@ -90,7 +90,7 @@ mod tests {
     }
 
     #[test]
-    fn test_larger_dimension() {
+    fn test_larger_size() {
         // 3D vector test
         let u = vector![1., 2., 3.];
         let v = vector![4., -5., 6.];

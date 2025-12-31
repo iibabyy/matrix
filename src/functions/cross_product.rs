@@ -6,8 +6,8 @@ pub fn cross_product<K>(u: &Vector<K>, v: &Vector<K>) -> Vector<K>
 where
     K: Copy + Sub<Output = K> + Mul<Output = K>,
 {
-    assert_eq!(u.dimension(), 3);
-    assert_eq!(v.dimension(), 3);
+    assert_eq!(u.size(), 3);
+    assert_eq!(v.size(), 3);
 
     let ux = u[0];
     let uy = u[1];
