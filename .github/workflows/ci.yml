@@ -16,7 +16,8 @@ jobs:
       - name: Retrieve Rust cache
         uses: Swatinem/rust-cache@v2
 
-      - uses: taiki-e/install-action@cargo-nextest
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@cargo-nextest
 
       - name: Run cargo nextest
         run: cargo nextest run
