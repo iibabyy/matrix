@@ -18,7 +18,7 @@ jobs:
 
       - uses: taiki-e/install-action@cargo-nextest
 
-      - name: Run tests
+      - name: Run cargo nextest
         run: cargo nextest run
 
   clippy:
@@ -32,7 +32,7 @@ jobs:
       - name: Retrieve Rust cache
         uses: Swatinem/rust-cache@v2
 
-      - name: Check linting
+      - name: Run cargo clippy
         run: cargo clippy -- -D warnings
 
   fmt:
