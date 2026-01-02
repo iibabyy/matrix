@@ -83,4 +83,3 @@ mod tests {
         assert_eq!(result[2], vec![&30, &60, &90]); // Third row: [v1[2], v2[2], v3[2]]
     }
 }
-

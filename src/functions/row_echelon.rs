@@ -92,15 +92,11 @@ where
 
         // closure to get the first non-zero index in a row
         let get_first_non_zero_index = |row: Vec<&K>| -> Option<usize> {
-            if let Some(index) = row.into_iter().position(|value| *value != K::default()) {
-                Some(index)
-            } else {
-                None
-            }
+            row.into_iter().position(|value| *value != K::default())
         };
 
-        // initialize last_non_zero_index using the first row
-        let mut last_non_zero_index =
+        // initialize saved_non_zero_index using the first row
+        let mut saved_non_zero_index =
             if let Some(index) = get_first_non_zero_index(row_iter.next().unwrap()) {
                 index
             } else {
@@ -114,11 +110,11 @@ where
                 return row_iter.all(|row| row.into_iter().all(|value| *value == K::default()));
             };
 
-            if first_non_zero_index <= last_non_zero_index {
+            if first_non_zero_index <= saved_non_zero_index {
                 return false;
             }
 
-            last_non_zero_index = first_non_zero_index;
+            saved_non_zero_index = first_non_zero_index;
         }
 
         true

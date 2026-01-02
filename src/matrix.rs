@@ -62,11 +62,7 @@ impl<K: Copy> Matrix<K> {
     }
 
     pub fn rows(&self) -> usize {
-        if self.is_empty() {
-            0
-        } else {
-            self[0].size()
-        }
+        if self.is_empty() { 0 } else { self[0].size() }
     }
 
     pub const fn cols(&self) -> usize {
@@ -136,7 +132,6 @@ impl<K: Copy> Matrix<K> {
         use crate::rows::AsRows;
         self.vectors.iter().as_rows()
     }
-
 }
 
 // -----------------------------------------------------------------------------
