@@ -43,6 +43,14 @@ impl<K: Copy> Vector<K> {
     {
         *self *= scale
     }
+
+    pub fn iter(&self) -> std::slice::Iter<'_, K> {
+        self.scalars.iter()
+    }
+    
+    pub fn iter_mut(&mut self) -> std::slice::IterMut<'_, K> {
+        self.scalars.iter_mut()
+    }
 }
 
 // -----------------------------------------------------------------------------
