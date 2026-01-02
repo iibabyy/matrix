@@ -129,8 +129,8 @@ impl<K: Copy> Matrix<K> {
     }
 
     pub(crate) fn as_rows(&self) -> impl Iterator<Item = Vec<&K>> {
-        use crate::rows::AsRows;
-        self.vectors.iter().as_rows()
+        use crate::rows::IntoRows;
+        self.vectors.iter().into_rows()
     }
 }
 
