@@ -40,6 +40,43 @@ where
         matrix
     }
 
+    pub fn is_row_echelon_form(&self) -> bool {
+        if self.rows() == 0 {
+            return true;
+        }
+
+        let mut row_iter = self.as_rows();
+
+        // closure to get the first non-zero index in a row
+        let get_first_non_zero_index = |row: Vec<&K>| -> Option<usize> {
+            row.into_iter().position(|value| *value != K::default())
+        };
+
+        // initialize saved_non_zero_index using the first row
+        let mut saved_non_zero_index =
+            if let Some(index) = get_first_non_zero_index(row_iter.next().unwrap()) {
+                index
+            } else {
+                return row_iter.all(|row| row.into_iter().all(|value| *value == K::default()));
+            };
+
+        while let Some(row) = row_iter.next() {
+            let first_non_zero_index = if let Some(index) = get_first_non_zero_index(row) {
+                index
+            } else {
+                return row_iter.all(|row| row.into_iter().all(|value| *value == K::default()));
+            };
+
+            if first_non_zero_index <= saved_non_zero_index {
+                return false;
+            }
+
+            saved_non_zero_index = first_non_zero_index;
+        }
+
+        true
+    }
+
     #[doc(hidden)]
     fn nullify_rows_below_pivot(&mut self, pivot_col: usize, pivot_row: usize) {
         // we assume that pivot == 1
@@ -81,43 +118,6 @@ where
         }
 
         None
-    }
-
-    pub fn is_row_echelon_form(&self) -> bool {
-        if self.rows() == 0 {
-            return true;
-        }
-
-        let mut row_iter = self.as_rows();
-
-        // closure to get the first non-zero index in a row
-        let get_first_non_zero_index = |row: Vec<&K>| -> Option<usize> {
-            row.into_iter().position(|value| *value != K::default())
-        };
-
-        // initialize saved_non_zero_index using the first row
-        let mut saved_non_zero_index =
-            if let Some(index) = get_first_non_zero_index(row_iter.next().unwrap()) {
-                index
-            } else {
-                return row_iter.all(|row| row.into_iter().all(|value| *value == K::default()));
-            };
-
-        while let Some(row) = row_iter.next() {
-            let first_non_zero_index = if let Some(index) = get_first_non_zero_index(row) {
-                index
-            } else {
-                return row_iter.all(|row| row.into_iter().all(|value| *value == K::default()));
-            };
-
-            if first_non_zero_index <= saved_non_zero_index {
-                return false;
-            }
-
-            saved_non_zero_index = first_non_zero_index;
-        }
-
-        true
     }
 }
 
