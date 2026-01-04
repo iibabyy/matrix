@@ -40,21 +40,21 @@ where
 		assert!(self.is_square());
 		assert!(self.cols() >= 4);
 
-		let mut tracked_pivots = vec![];
-		let mut swaps = 0;
-		self.row_echelon_with_details(Some(&mut tracked_pivots), Some(&mut swaps));
+		use crate::functions::row_echelon::RowEchelonDetails;
+		let mut details = RowEchelonDetails::default();
+		self.row_echelon_with_details(Some(&mut details));
 
-		if tracked_pivots.is_empty() {
+		if details.columns_skipped || details.tracked_pivots.is_empty() {
 			return K::default();
 		}
 
-		let mut tracked_pivots = tracked_pivots.into_iter();
+		let mut tracked_pivots = details.tracked_pivots.into_iter();
 		let mut result = tracked_pivots.next().unwrap();
 		for pivot in tracked_pivots {
 			result = result * pivot;
 		}
 
-		if swaps % 2 != 0 {
+		if details.swaps % 2 != 0 {
 			result = -result;
 		}
 
@@ -65,8 +65,6 @@ where
 #[cfg(test)]
 mod tests {
 	use crate::matrix;
-
-use super::*;
 
     // Helper to compare floats
     fn assert_approx_eq(a: f64, b: f64) {

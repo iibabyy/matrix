@@ -2,6 +2,13 @@ use std::ops::{Div, Mul, Sub};
 
 use crate::Matrix;
 
+#[derive(Debug, Default)]
+pub(crate) struct RowEchelonDetails<K> {
+    pub tracked_pivots: Vec<K>,
+    pub swaps: usize,
+    pub columns_skipped: bool,
+}
+
 impl<K> Matrix<K>
 where
     K: Copy + PartialOrd + Default,
@@ -9,14 +16,13 @@ where
 {
     /// Converts the matrix to row echelon form
     pub fn row_echelon(&self) -> Matrix<K> {
-        self.row_echelon_with_details(None, None)
+        self.row_echelon_with_details(None)
     }
 
     /// Converts the matrix to row echelon form while tracking pivot values and row swaps
     pub(crate) fn row_echelon_with_details(
         &self,
-        mut tracked_pivots: Option<&mut Vec<K>>,
-        mut swaps: Option<&mut usize>,
+        mut details: Option<&mut RowEchelonDetails<K>>,
     ) -> Matrix<K> {
         let mut matrix = self.clone();
 
@@ -29,21 +35,27 @@ where
         for row_index in 0..max_row {
             let next_pivot = matrix.next_pivot(row_index);
             if next_pivot.is_none() {
-                continue;
+                break;
+            }
+            
+            let (pivot_col, mut pivot_row) = next_pivot.unwrap();
+            if pivot_col > row_index {
+                if let Some(details) = &mut details {
+                    details.columns_skipped = true;
+                }
             }
 
-            let (pivot_col, mut pivot_row) = next_pivot.unwrap();
             if pivot_row != row_index {
                 matrix.swap_rows(pivot_row, row_index);
-                if let Some(swaps) = &mut swaps {
-                    **swaps += 1;
+                if let Some(details) = &mut details {
+                    details.swaps += 1;
                 }
                 pivot_row = row_index;
             }
 
             // track the pivot if needed (useful for 'Matrix::determinant()')
-            if let Some(tracked_pivots) = &mut tracked_pivots {
-                (*tracked_pivots).push(matrix[pivot_col][pivot_row]);
+            if let Some(details) = &mut details {
+                details.tracked_pivots.push(matrix[pivot_col][pivot_row]);
             };
 
             // using elementary row operations, we transform the pivot to 1
