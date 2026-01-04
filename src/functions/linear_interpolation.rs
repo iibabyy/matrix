@@ -2,6 +2,7 @@
 
 use std::ops::{Add, Mul, Sub};
 
+/// Performs linear interpolation between two values with a generic parameter
 pub fn lerp_generic<V, K>(u: V, v: V, t: K) -> V
 where
     V: PartialOrd + Mul<K, Output = V> + Add<V, Output = V>,
@@ -15,6 +16,7 @@ where
     u + (diff * t)
 }
 
+/// Performs linear interpolation between two values
 pub fn lerp<V>(u: V, v: V, t: f32) -> V
 where
     V: PartialOrd + Mul<f32, Output = V> + Add<V, Output = V>,

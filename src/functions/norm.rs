@@ -4,10 +4,12 @@ impl<K> Vector<K>
 where
     K: Copy + Into<f32>,
 {
+    /// Calculates the L1 norm (Manhattan norm) of the vector
     pub fn norm_1(&self) -> f32 {
         self.scalars.iter().map(|&x| x.into().abs()).sum()
     }
 
+    /// Calculates the L2 norm (Euclidean norm) of the vector
     pub fn norm(&self) -> f32 {
         self.scalars
             .iter()
@@ -19,6 +21,7 @@ where
             .powf(0.5)
     }
 
+    /// Calculates the L-infinity norm (maximum norm) of the vector
     pub fn norm_inf(&self) -> f32 {
         self.scalars
             .iter()

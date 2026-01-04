@@ -2,6 +2,7 @@ use std::ops::{AddAssign, Mul};
 
 use crate::Vector;
 
+/// Calculates the cosine of the angle between two vectors
 pub fn angle_cos<K>(u: &Vector<K>, v: &Vector<K>) -> f32
 where
     K: Copy + AddAssign + Mul<Output = K> + Into<f32>,

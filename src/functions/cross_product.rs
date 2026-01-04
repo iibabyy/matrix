@@ -2,6 +2,7 @@ use std::ops::{Mul, Sub};
 
 use crate::Vector;
 
+/// Calculates the cross product of two 3D vectors
 pub fn cross_product<K>(u: &Vector<K>, v: &Vector<K>) -> Vector<K>
 where
     K: Copy + Sub<Output = K> + Mul<Output = K>,

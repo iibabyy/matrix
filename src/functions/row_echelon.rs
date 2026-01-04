@@ -7,6 +7,7 @@ where
     K: Copy + PartialOrd + Default,
     K: Div<Output = K> + Mul<Output = K> + Sub<Output = K>,
 {
+    /// Converts the matrix to row echelon form
     pub fn row_echelon(&self) -> Matrix<K> {
         let mut matrix = self.clone();
 
@@ -40,6 +41,7 @@ where
         matrix
     }
 
+    /// Checks if the matrix is in row echelon form
     pub fn is_row_echelon_form(&self) -> bool {
         if self.rows() == 0 {
             return true;
@@ -77,6 +79,7 @@ where
         true
     }
 
+    /// Uses elementary row operations to put zeros below the pivot element
     #[doc(hidden)]
     fn nullify_rows_below_pivot(&mut self, pivot_col: usize, pivot_row: usize) {
         // we assume that pivot == 1
@@ -93,7 +96,7 @@ where
         }
     }
 
-    /// Divide the pivot row by the pivot value to make the pivot equals to 1
+    /// Uses elementary row operations to make the pivot equals to 1
     #[doc(hidden)]
     fn scale_pivot_row(&mut self, pivot_col: usize, pivot_row: usize) {
         let pivot = self[pivot_col][pivot_row];

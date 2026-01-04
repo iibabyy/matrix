@@ -6,9 +6,10 @@ impl<K> Matrix<K>
 where
     K: Copy + Add<Output = K> + Default,
 {
+    /// Calculates the trace of the matrix (sum of diagonal elements)
     pub fn trace(&self) -> K {
         if self.is_empty() {
-            return K::default()
+            return K::default();
         }
 
         assert_eq!(self.cols(), self[0].size());

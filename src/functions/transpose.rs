@@ -4,6 +4,7 @@ impl<K> Matrix<K>
 where
     K: Copy,
 {
+    /// Returns the transpose of the matrix
     pub fn transpose(&self) -> Matrix<K> {
         if self.is_empty() {
             // empty Matrix

@@ -6,6 +6,7 @@ impl<K> Vector<K>
 where
     K: Copy + AddAssign + Mul<Output = K>,
 {
+    /// Calculates the dot product of two vectors
     pub fn dot(&self, mut v: Vector<K>) -> K {
         assert_eq!(self.size(), v.size());
         debug_assert!(!self.is_empty());
