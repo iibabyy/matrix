@@ -4,10 +4,13 @@ use crate::Matrix;
 
 impl<K> Matrix<K>
 where
-    K: Copy + Add<Output = K>,
+    K: Copy + Add<Output = K> + Default,
 {
     pub fn trace(&self) -> K {
-        assert!(!self.is_empty());
+        if self.is_empty() {
+            return K::default()
+        }
+
         assert_eq!(self.cols(), self[0].size());
 
         let mut sum = self[0][0];
@@ -70,6 +73,13 @@ mod tests {
     #[test]
     fn test_trace_zero_matrix() {
         let u = matrix![[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]];
+        assert_eq!(u.trace(), 0.0);
+    }
+
+    #[test]
+    fn test_trace_empty_matrix() {
+        use crate::Matrix;
+        let u: Matrix = matrix![];
         assert_eq!(u.trace(), 0.0);
     }
 
