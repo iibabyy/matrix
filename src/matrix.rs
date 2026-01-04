@@ -51,7 +51,11 @@ impl<K: Copy> Matrix<K> {
     }
 
     pub fn rows(&self) -> usize {
-        if self.is_empty() { 0 } else { self[0].size() }
+        if self.is_empty() {
+            0
+        } else {
+            self.vectors[0].size()
+        }
     }
 
     pub const fn cols(&self) -> usize {
@@ -60,6 +64,10 @@ impl<K: Copy> Matrix<K> {
 
     pub const fn is_empty(&self) -> bool {
         self.cols() == 0
+    }
+
+    pub fn is_square(&self) -> bool {
+        self.cols() == self.rows()
     }
 
     pub fn push(&mut self, vector: Vector<K>) {

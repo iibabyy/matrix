@@ -12,7 +12,7 @@ where
             return K::default();
         }
 
-        assert_eq!(self.cols(), self[0].size());
+        assert!(self.is_square());
 
         let mut sum = self[0][0];
 
