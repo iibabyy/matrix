@@ -71,16 +71,16 @@ impl<K: Copy> Matrix<K> {
     }
 
     pub fn push(&mut self, vector: Vector<K>) {
-        self.assert_valid(&vector);
+        assert!(self.is_valid_vector(&vector));
         self.vectors.push(vector);
     }
 
-    fn assert_valid(&self, vector: &Vector<K>) {
+    fn is_valid_vector(&self, vector: &Vector<K>) -> bool {
         if self.vectors.is_empty() {
-            return;
+            return true;
         }
 
-        assert_eq!(self.vectors[0].size(), vector.size());
+        self.vectors[0].size() == vector.size()
     }
 
     pub const fn vectors(&self) -> &Vec<Vector<K>> {
