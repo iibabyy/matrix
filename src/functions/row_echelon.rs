@@ -37,12 +37,12 @@ where
             if next_pivot.is_none() {
                 break;
             }
-            
+
             let (pivot_col, mut pivot_row) = next_pivot.unwrap();
-            if pivot_col > row_index {
-                if let Some(details) = &mut details {
-                    details.columns_skipped = true;
-                }
+            if pivot_col > row_index
+                && let Some(details) = &mut details
+            {
+                details.columns_skipped = true;
             }
 
             if pivot_row != row_index {
