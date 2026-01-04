@@ -81,7 +81,7 @@ where
     fn nullify_rows_below_pivot(&mut self, pivot_col: usize, pivot_row: usize) {
         // we assume that pivot == 1
 
-        for row in pivot_row + 1..self.cols() {
+        for row in pivot_row + 1..self.rows() {
             let factor = self[pivot_col][row];
             if factor == K::default() {
                 continue;
