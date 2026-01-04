@@ -13,6 +13,9 @@ macro_rules! vector {
 
 #[macro_export]
 macro_rules! matrix {
+    () => {
+        $crate::matrix::Matrix::new(vec![])
+    };
     ($elem:expr; $n:expr) => {
         $crate::matrix::Matrix::from_elem($elem, $n)
     };
