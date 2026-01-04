@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 use std::ops::{Add, Mul, Sub};
 
 /// Performs linear interpolation between two values with a generic parameter
@@ -25,6 +23,7 @@ where
     lerp_generic(u, v, t)
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::{matrix, vector};

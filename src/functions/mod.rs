@@ -1,3 +1,4 @@
+mod determinant;
 mod dot_product;
 mod norm;
 mod row_echelon;

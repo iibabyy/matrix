@@ -2,8 +2,6 @@
 //! scalars: used to scale a vector
 //! linear combination: sum of multiple vectors, each multiplied by a scalar weight (e.g., av+bw)
 
-#![allow(dead_code)]
-
 use std::{
     ops::{Add, Index, IndexMut, Mul, Neg, Sub},
     slice::SliceIndex,
@@ -60,16 +58,6 @@ impl<K: Copy> Vector<K> {
     pub const fn new(scalars: Vec<K>) -> Self {
         assert!(!scalars.is_empty());
         Self { scalars }
-    }
-
-    fn from_elem(elem: K, n: usize) -> Self
-    where
-        K: Clone,
-    {
-        assert!(n > 0);
-        Self {
-            scalars: vec![elem; n],
-        }
     }
 
     pub const fn size(&self) -> usize {

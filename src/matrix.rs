@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 mod arithmetics;
 
 use crate::vector::Vector;
@@ -52,15 +50,6 @@ impl<K: Copy> Matrix<K> {
         matrix
     }
 
-    fn from_elem(elem: Vector<K>, n: usize) -> Self
-    where
-        K: Clone,
-    {
-        Self {
-            vectors: vec![elem; n],
-        }
-    }
-
     pub fn rows(&self) -> usize {
         if self.is_empty() { 0 } else { self[0].size() }
     }
@@ -103,27 +92,12 @@ impl<K: Copy> Matrix<K> {
         }
     }
 
-    pub(crate) fn max_value_in_col(&self, col_index: usize, start_row_index: usize) -> usize
-    where
-        K: PartialOrd + Copy,
-    {
-        let mut max_value = self[col_index][start_row_index];
-        let mut max_value_row = start_row_index;
-
-        for i in start_row_index + 1..self[0].size() {
-            if max_value < self[col_index][i] {
-                max_value = self[col_index][i];
-                max_value_row = i;
-            }
-        }
-
-        max_value_row
-    }
-
+    #[expect(dead_code)]
     pub(crate) fn row(&self, index: usize) -> impl Iterator<Item = &K> {
         self.vectors.iter().map(move |vec| &vec[index])
     }
 
+    #[expect(dead_code)]
     pub(crate) fn row_mut(&mut self, index: usize) -> impl Iterator<Item = &mut K> {
         self.vectors.iter_mut().map(move |vec| &mut vec[index])
     }
