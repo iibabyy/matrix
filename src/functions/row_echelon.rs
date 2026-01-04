@@ -9,6 +9,15 @@ where
 {
     /// Converts the matrix to row echelon form
     pub fn row_echelon(&self) -> Matrix<K> {
+        self.row_echelon_with_details(None, None)
+    }
+
+    /// Converts the matrix to row echelon form while tracking pivot values and row swaps
+    pub(crate) fn row_echelon_with_details(
+        &self,
+        mut tracked_pivots: Option<&mut Vec<K>>,
+        mut swaps: Option<&mut usize>,
+    ) -> Matrix<K> {
         let mut matrix = self.clone();
 
         if self.is_empty() {
@@ -26,8 +35,16 @@ where
             let (pivot_col, mut pivot_row) = next_pivot.unwrap();
             if pivot_row != row_index {
                 matrix.swap_rows(pivot_row, row_index);
+                if let Some(swaps) = &mut swaps {
+                    **swaps += 1;
+                }
                 pivot_row = row_index;
             }
+
+            // track the pivot if needed (useful for 'Matrix::determinant()')
+            if let Some(tracked_pivots) = &mut tracked_pivots {
+                (*tracked_pivots).push(matrix[pivot_col][pivot_row]);
+            };
 
             // using elementary row operations, we transform the pivot to 1
             matrix.scale_pivot_row(pivot_col, pivot_row);
@@ -43,8 +60,7 @@ where
 
     /// Calculates the rank of the matrix (true dimension of the matrix / number of linearly independent rows)
     pub fn rank(&self) -> usize {
-        self
-            .row_echelon()
+        self.row_echelon()
             .as_rows()
             .position(|row| row.into_iter().all(|value| *value == K::default()))
             .unwrap_or(self.rows())
@@ -122,10 +138,32 @@ where
         let zero = K::default();
 
         for col in 0..self.cols() {
+            let mut saved_pivot: Option<(usize, usize)> = None;
             for row in min_row_index..self.rows() {
-                if self[col][row] != zero {
-                    return Some((col, row));
+                let current = self[col][row];
+                if self[col][row] == zero {
+                    continue;
                 }
+
+                /*  Partial Pivoting
+                    a technique used to ensure numerical stability:
+
+                    Before you clear a column, you look at the current pivot position
+                    and all the numbers below it in the same column. You find the number
+                    with the largest absolute value and swap its row with your current row.
+                */
+                if let Some((pivot_col, pivot_row)) = saved_pivot {
+                    let pivot = self[pivot_col][pivot_row];
+                    if current > pivot {
+                        saved_pivot = Some((col, row))
+                    }
+                } else {
+                    saved_pivot = Some((col, row))
+                }
+            }
+
+            if let Some(pivot) = saved_pivot {
+                return Some(pivot);
             }
         }
 
