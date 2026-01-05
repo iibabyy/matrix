@@ -8,6 +8,7 @@ use std::{
 };
 
 mod arithmetics;
+mod functions;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Vector<K: Copy = f32> {

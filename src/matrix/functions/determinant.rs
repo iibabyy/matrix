@@ -40,7 +40,7 @@ where
         assert!(self.is_square());
         assert!(self.cols() >= 4);
 
-        use crate::functions::row_echelon::RowEchelonDetails;
+        use super::row_echelon::RowEchelonDetails;
         let mut details = RowEchelonDetails::default();
         self.row_echelon_with_details(Some(&mut details));
 
