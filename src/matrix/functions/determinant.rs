@@ -40,12 +40,10 @@ where
         assert!(self.is_square());
         assert!(self.cols() >= 4);
 
-        use super::row_echelon::RowEchelonDetails;
-        let mut details = RowEchelonDetails::default();
-
         // ref: Row Echelon Form
-        let ref_has_non_zero_row = self
-            .row_echelon_with_details(Some(&mut details))
+        let (ref_matrix, details) = self.row_echelon_with_details();
+
+        let ref_has_non_zero_row = ref_matrix
             .as_rows()
             .last()
             .is_some_and(|r| r.into_iter().all(|k| *k == K::default()));

@@ -12,7 +12,7 @@ pub enum RowEchelonOperation<K> {
 }
 
 #[derive(Debug, Default)]
-pub(crate) struct RowEchelonDetails<K> {
+pub struct RowEchelonDetails<K> {
     pub tracked_pivots: Vec<K>,
     pub operations: Vec<RowEchelonOperation<K>>,
 }
@@ -24,14 +24,21 @@ where
 {
     /// Converts the matrix to row echelon form
     pub fn row_echelon(&self) -> Matrix<K> {
-        self.row_echelon_with_details(None)
+        self.row_echelon_inner(None)
+    }
+
+    pub fn row_echelon_with_details(&self) -> (Matrix<K>, RowEchelonDetails<K>) {
+        let mut details = RowEchelonDetails::default();
+        let matrix = self.row_echelon_inner(Some(&mut details));
+        (matrix, details)
     }
 
     /// Converts the matrix to row echelon form while tracking pivot values and row swaps
-    pub(crate) fn row_echelon_with_details(
-        &self,
-        mut details: Option<&mut RowEchelonDetails<K>>,
-    ) -> Matrix<K> {
+    fn row_echelon_inner(&self, mut details: Option<&mut RowEchelonDetails<K>>) -> Matrix<K> {
+        if self.is_empty() {
+            return self.clone();
+        }
+
         macro_rules! details {
             ($($arg:tt)*) => {
                 if let Some(details) = &mut details {
@@ -41,14 +48,9 @@ where
         }
 
         let mut matrix = self.clone();
+        let max_iterations = matrix.rows().min(matrix.cols());
 
-        if self.is_empty() {
-            return matrix;
-        }
-
-        let max_row = matrix.rows().min(matrix.cols());
-
-        for row_index in 0..max_row {
+        for row_index in 0..max_iterations {
             let next_pivot = matrix.next_pivot(row_index);
             if next_pivot.is_none() {
                 break;
@@ -69,7 +71,7 @@ where
             let scaling_operation = matrix.scale_pivot_row(pivot_col, pivot_row);
             details!(operations.push(scaling_operation));
 
-            if pivot_row < max_row {
+            if pivot_row < matrix.rows() - 1 {
                 // using elementary row operations, we put a 0 in values below the pivot
                 let nullifying_operations =
                     matrix.nullify_rows_below_pivot(pivot_col, pivot_row, details.is_some());
