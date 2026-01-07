@@ -117,6 +117,20 @@ impl<K: Copy> Matrix<K> {
     }
 }
 
+impl Matrix<f32> {
+    pub fn identity(length: usize) -> Self {
+        let mut matrix = Self::new(Vec::with_capacity(length));
+
+        for i in 0..length {
+            let mut vec = vec![0.; length];
+            vec[i] = 1.;
+            matrix.push(Vector::new(vec));
+        }
+
+        matrix
+    }
+}
+
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
