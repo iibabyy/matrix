@@ -14,8 +14,6 @@ pub enum RowEchelonOperation<K> {
 #[derive(Debug, Default)]
 pub(crate) struct RowEchelonDetails<K> {
     pub tracked_pivots: Vec<K>,
-    pub swaps: usize,
-    pub columns_skipped: bool,
     pub operations: Vec<RowEchelonOperation<K>>,
 }
 
@@ -57,14 +55,10 @@ where
             }
 
             let (pivot_col, mut pivot_row) = next_pivot.unwrap();
-            if pivot_col > row_index {
-                details!(columns_skipped = true);
-            }
 
             if pivot_row != row_index {
                 matrix.swap_rows(pivot_row, row_index);
                 details!(operations.push(RowEchelonOperation::Swap(pivot_row, row_index)));
-                details!(swaps += 1);
                 pivot_row = row_index;
             }
 

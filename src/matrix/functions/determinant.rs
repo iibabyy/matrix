@@ -1,6 +1,6 @@
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
-use crate::Matrix;
+use crate::{Matrix, matrix::functions::row_echelon::RowEchelonOperation};
 
 impl<K: Copy> Matrix<K>
 where
@@ -42,9 +42,15 @@ where
 
         use super::row_echelon::RowEchelonDetails;
         let mut details = RowEchelonDetails::default();
-        self.row_echelon_with_details(Some(&mut details));
 
-        if details.columns_skipped || details.tracked_pivots.is_empty() {
+        // ref: Row Echelon Form
+        let ref_has_non_zero_row = self
+            .row_echelon_with_details(Some(&mut details))
+            .as_rows()
+            .last()
+            .is_some_and(|r| r.into_iter().all(|k| *k == K::default()));
+
+        if ref_has_non_zero_row || details.tracked_pivots.is_empty() {
             return K::default();
         }
 
@@ -54,7 +60,13 @@ where
             result = result * pivot;
         }
 
-        if details.swaps % 2 != 0 {
+        let swap_count = details
+            .operations
+            .iter()
+            .filter(|op| matches!(op, RowEchelonOperation::Swap(_, _)))
+            .count();
+
+        if swap_count % 2 != 0 {
             result = -result;
         }
 
