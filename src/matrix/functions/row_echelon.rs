@@ -1,17 +1,27 @@
-use std::ops::{Div, Mul, Sub};
+use std::ops::{Div, Mul, Neg, Sub};
 
 use crate::Matrix;
+
+#[allow(dead_code)]
+#[derive(Debug)]
+pub enum RowEchelonOperation<K> {
+    Swap(usize, usize),
+    Multipication(usize, K),
+    Division(usize, K),
+    RowAddition(usize, usize, K),
+}
 
 #[derive(Debug, Default)]
 pub(crate) struct RowEchelonDetails<K> {
     pub tracked_pivots: Vec<K>,
     pub swaps: usize,
     pub columns_skipped: bool,
+    pub operations: Vec<RowEchelonOperation<K>>,
 }
 
 impl<K> Matrix<K>
 where
-    K: Copy + PartialOrd + Default,
+    K: Copy + PartialOrd + Default + Neg<Output = K>,
     K: Div<Output = K> + Mul<Output = K> + Sub<Output = K>,
 {
     /// Converts the matrix to row echelon form
@@ -24,6 +34,14 @@ where
         &self,
         mut details: Option<&mut RowEchelonDetails<K>>,
     ) -> Matrix<K> {
+        macro_rules! details {
+            ($($arg:tt)*) => {
+                if let Some(details) = &mut details {
+                    details.$($arg)*
+                }
+            };
+        }
+
         let mut matrix = self.clone();
 
         if self.is_empty() {
@@ -39,31 +57,29 @@ where
             }
 
             let (pivot_col, mut pivot_row) = next_pivot.unwrap();
-            if pivot_col > row_index
-                && let Some(details) = &mut details
-            {
-                details.columns_skipped = true;
+            if pivot_col > row_index {
+                details!(columns_skipped = true);
             }
 
             if pivot_row != row_index {
                 matrix.swap_rows(pivot_row, row_index);
-                if let Some(details) = &mut details {
-                    details.swaps += 1;
-                }
+                details!(operations.push(RowEchelonOperation::Swap(pivot_row, row_index)));
+                details!(swaps += 1);
                 pivot_row = row_index;
             }
 
             // track the pivot if needed (useful for 'Matrix::determinant()')
-            if let Some(details) = &mut details {
-                details.tracked_pivots.push(matrix[pivot_col][pivot_row]);
-            };
+            details!(tracked_pivots.push(matrix[pivot_col][pivot_row]));
 
             // using elementary row operations, we transform the pivot to 1
-            matrix.scale_pivot_row(pivot_col, pivot_row);
+            let scaling_operation = matrix.scale_pivot_row(pivot_col, pivot_row);
+            details!(operations.push(scaling_operation));
 
             if pivot_row < max_row {
                 // using elementary row operations, we put a 0 in values below the pivot
-                matrix.nullify_rows_below_pivot(pivot_col, pivot_row);
+                let nullifying_operations =
+                    matrix.nullify_rows_below_pivot(pivot_col, pivot_row, details.is_some());
+                details!(operations.extend(nullifying_operations));
             }
         }
 
@@ -118,8 +134,15 @@ where
 
     /// Uses elementary row operations to put zeros below the pivot element
     #[doc(hidden)]
-    fn nullify_rows_below_pivot(&mut self, pivot_col: usize, pivot_row: usize) {
+    fn nullify_rows_below_pivot(
+        &mut self,
+        pivot_col: usize,
+        pivot_row: usize,
+        details: bool,
+    ) -> Vec<RowEchelonOperation<K>> {
         // we assume that pivot == 1
+
+        let mut operations = vec![];
 
         for row in pivot_row + 1..self.rows() {
             let factor = self[pivot_col][row];
@@ -129,13 +152,18 @@ where
 
             for col in pivot_col..self.cols() {
                 self[col][row] = self[col][row] - self[col][pivot_row] * factor;
+                if details {
+                    operations.push(RowEchelonOperation::RowAddition(row, pivot_row, -factor));
+                }
             }
         }
+
+        operations
     }
 
     /// Uses elementary row operations to make the pivot equals to 1
     #[doc(hidden)]
-    fn scale_pivot_row(&mut self, pivot_col: usize, pivot_row: usize) {
+    fn scale_pivot_row(&mut self, pivot_col: usize, pivot_row: usize) -> RowEchelonOperation<K> {
         let pivot = self[pivot_col][pivot_row];
 
         assert!(pivot != K::default());
@@ -143,6 +171,8 @@ where
         for col in pivot_col..self.cols() {
             self[col][pivot_row] = self[col][pivot_row] / pivot;
         }
+
+        RowEchelonOperation::Division(pivot_row, pivot)
     }
 
     #[doc(hidden)]
