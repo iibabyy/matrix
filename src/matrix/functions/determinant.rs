@@ -8,7 +8,7 @@ where
     K: PartialOrd + Default,
 {
     /// Calculates the determinant of the matrix (only for square matrices up to 4x4)
-    pub fn determinant(&mut self) -> K {
+    pub fn determinant(&self) -> K {
         assert!(self.is_square());
         assert!(self.cols() <= 4);
 
@@ -36,7 +36,7 @@ where
         }
     }
 
-    fn determinant_for_dimension_4_and_more(&mut self) -> K {
+    fn determinant_for_dimension_4_and_more(&self) -> K {
         assert!(self.is_square());
         assert!(self.cols() >= 4);
 
@@ -72,23 +72,64 @@ mod tests {
         assert!((a - b).abs() < epsilon, "Expected {}, got {}", b, a);
     }
 
+    // ==========================================
+    // Subject Test Cases
+    // ==========================================
+
     #[test]
-    fn test_determinant_1x1() {
-        let mut m = matrix!([10.0]);
+    fn test_subject_case_1() {
+        let u = matrix!([1., -1.], [-1., 1.],);
+
+        assert_eq!(u.determinant(), 0.0);
+    }
+
+    #[test]
+    fn test_subject_case_2() {
+        let u = matrix!([2., 0., 0.], [0., 2., 0.], [0., 0., 2.],);
+
+        assert_eq!(u.determinant(), 8.0);
+    }
+
+    #[test]
+    fn test_subject_case_3() {
+        let u = matrix!([8., 5., -2.], [4., 7., 20.], [7., 6., 1.],);
+
+        assert_eq!(u.determinant(), -174.0);
+    }
+
+    #[test]
+    fn test_subject_case_4() {
+        let u = matrix!(
+            [8., 5., -2., 4.],
+            [4., 2.5, 20., 4.],
+            [8., 5., 1., 4.],
+            [28., -4., 17., 1.],
+        );
+
+        assert_eq!(u.determinant(), 1032.0);
+    }
+
+    // ==========================================
+    // Other Test Cases
+    // ==========================================
+
+    #[test]
+    fn test_1x1() {
+        let m = matrix!([10.0]);
         assert_approx_eq(m.determinant(), 10.0);
     }
 
     #[test]
-    fn test_determinant_2x2() {
+    fn test_2x2() {
         // | 1 2 |
         // | 3 4 |
         // Det = 1*4 - 2*3 = 4 - 6 = -2
-        let mut m = matrix!([1.0, 2.0], [3.0, 4.0]);
+        let m = matrix!([1.0, 2.0], [3.0, 4.0]);
         assert_approx_eq(m.determinant(), -2.0);
     }
 
     #[test]
-    fn test_determinant_3x3() {
+    fn test_3x3() {
         // | 6  1  1 |
         // | 4 -2  5 |
         // | 2  8  7 |
@@ -96,14 +137,14 @@ mod tests {
         // (6*-2*7) + (1*5*2) + (1*4*8) - (2*-2*1) - (8*5*6) - (7*4*1)
         // -84 + 10 + 32 - (-4) - 240 - 28
         // -42 - (-4) - 240 - 28 = -306
-        let mut m = matrix!([6.0, 1.0, 1.0], [4.0, -2.0, 5.0], [2.0, 8.0, 7.0]);
+        let m = matrix!([6.0, 1.0, 1.0], [4.0, -2.0, 5.0], [2.0, 8.0, 7.0]);
         assert_approx_eq(m.determinant(), -306.0);
     }
 
     #[test]
-    fn test_determinant_4x4_identity() {
+    fn test_4x4_identity() {
         // Identity matrix determinant is always 1
-        let mut m = matrix!(
+        let m = matrix!(
             [1.0, 0.0, 0.0, 0.0],
             [0.0, 1.0, 0.0, 0.0],
             [0.0, 0.0, 1.0, 0.0],
@@ -113,9 +154,9 @@ mod tests {
     }
 
     #[test]
-    fn test_determinant_4x4_singular() {
+    fn test_4x4_singular() {
         // Two identical rows (Row 0 and Row 1) -> Det must be 0
-        let mut m = matrix!(
+        let m = matrix!(
             [1.0, 2.0, 3.0, 4.0],
             [1.0, 2.0, 3.0, 4.0], // Duplicate
             [5.0, 6.0, 7.0, 8.0],
@@ -125,13 +166,13 @@ mod tests {
     }
 
     #[test]
-    fn test_determinant_4x4_swap_required() {
+    fn test_4x4_swap_required() {
         // | 0 1 0 0 |
         // | 1 0 0 0 |
         // | 0 0 1 0 |
         // | 0 0 0 1 |
         // One row swap needed (R1 <-> R2). Identity det is 1. Swap makes it -1.
-        let mut m = matrix!(
+        let m = matrix!(
             [0.0, 1.0, 0.0, 0.0],
             [1.0, 0.0, 0.0, 0.0],
             [0.0, 0.0, 1.0, 0.0],
@@ -141,13 +182,13 @@ mod tests {
     }
 
     #[test]
-    fn test_determinant_4x4_triangular() {
+    fn test_4x4_triangular() {
         // | 2 5 9 1 |
         // | 0 3 8 2 |
         // | 0 0 4 3 |
         // | 0 0 0 5 |
         // Det = Product of diagonal = 2 * 3 * 4 * 5 = 120
-        let mut m = matrix!(
+        let m = matrix!(
             [2.0, 5.0, 9.0, 1.0],
             [0.0, 3.0, 8.0, 2.0],
             [0.0, 0.0, 4.0, 3.0],
