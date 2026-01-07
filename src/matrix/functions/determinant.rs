@@ -31,8 +31,8 @@ where
 
             4 => self.determinant_for_dimension_4_and_more(),
 
-            // Since we checked that self.cols() <= 4 before, the program should not go here
-            _ => panic!("Program should not come go here"),
+            // Since we checked that self.cols() <= 4 before, the program should not go there
+            _ => panic!("Program should not go there"),
         }
     }
 
@@ -43,29 +43,40 @@ where
         // ref: Row Echelon Form
         let (ref_matrix, details) = self.row_echelon_with_details();
 
-        let ref_has_non_zero_row = ref_matrix
-            .as_rows()
-            .last()
-            .is_some_and(|r| r.into_iter().all(|k| *k == K::default()));
+        /* check if the determinant is 0 */
+        {
+            let ref_has_non_zero_row = ref_matrix
+                .as_rows()
+                .last()
+                .is_some_and(|r| r.into_iter().all(|k| *k == K::default()));
 
-        if ref_has_non_zero_row || details.tracked_pivots.is_empty() {
-            return K::default();
+            if ref_has_non_zero_row || details.tracked_pivots.is_empty() {
+                return K::default();
+            }
         }
 
-        let mut tracked_pivots = details.tracked_pivots.into_iter();
-        let mut result = tracked_pivots.next().unwrap();
-        for pivot in tracked_pivots {
-            result = result * pivot;
+        let mut result;
+
+        /* store the multipication of the pivots (their values before being scaled to 1) */
+        {
+            let mut tracked_pivots = details.tracked_pivots.into_iter();
+            result = tracked_pivots.next().unwrap();
+            for pivot in tracked_pivots {
+                result = result * pivot;
+            }
         }
 
-        let swap_count = details
-            .operations
-            .iter()
-            .filter(|op| matches!(op, RowEchelonOperation::Swap(_, _)))
-            .count();
+        /* negate the resut if the number of swap is odd */
+        {
+            let swap_count = details
+                .operations
+                .iter()
+                .filter(|op| matches!(op, RowEchelonOperation::Swap(_, _)))
+                .count();
 
-        if swap_count % 2 != 0 {
-            result = -result;
+            if swap_count % 2 != 0 {
+                result = -result;
+            }
         }
 
         result
