@@ -85,7 +85,10 @@ mod tests {
                 assert!(
                     (val_a - val_b).abs() < epsilon,
                     "Mismatch at Col {}, Row {}: {} != {}",
-                    i, j, val_a, val_b
+                    i,
+                    j,
+                    val_a,
+                    val_b
                 );
             }
         }
@@ -98,51 +101,31 @@ mod tests {
     #[test]
     fn test_subject_inverse_identity() {
         // Inverse of Identity is Identity
-        let mut u = matrix![
-            [1., 0., 0.],
-            [0., 1., 0.],
-            [0., 0., 1.]
-        ];
-        
+        let mut u = matrix![[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]];
+
         let result = u.inverse().expect("Matrix should be invertible");
-        let expected = matrix![
-            [1., 0., 0.],
-            [0., 1., 0.],
-            [0., 0., 1.]
-        ];
-        
+        let expected = matrix![[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]];
+
         assert_matrix_approx_eq(&result, &expected);
     }
 
     #[test]
     fn test_subject_inverse_diagonal() {
         // Inverse of scaling matrix is 1/scale
-        let mut u = matrix![
-            [2., 0., 0.],
-            [0., 2., 0.],
-            [0., 0., 2.]
-        ];
+        let mut u = matrix![[2., 0., 0.], [0., 2., 0.], [0., 0., 2.]];
 
         let result = u.inverse().expect("Matrix should be invertible");
-        let expected = matrix![
-            [0.5, 0., 0.],
-            [0., 0.5, 0.],
-            [0., 0., 0.5]
-        ];
+        let expected = matrix![[0.5, 0., 0.], [0., 0.5, 0.], [0., 0., 0.5]];
 
         assert_matrix_approx_eq(&result, &expected);
     }
 
     #[test]
     fn test_subject_inverse_complex() {
-        let mut u = matrix![
-            [8., 5., -2.],
-            [4., 7., 20.],
-            [7., 6., 1.]
-        ];
+        let mut u = matrix![[8., 5., -2.], [4., 7., 20.], [7., 6., 1.]];
 
         let result = u.inverse().expect("Matrix should be invertible");
-        
+
         // Exact values from subject
         let expected = matrix![
             [0.649425287, 0.097701149, -0.655172414],
@@ -167,7 +150,7 @@ mod tests {
         ];
 
         let result = u.inverse();
-        
+
         // Assert that we got an Error
         assert!(result.is_err());
         // Optional: Check specific error variant if accessible
@@ -177,18 +160,12 @@ mod tests {
     #[test]
     fn test_inverse_property_verification() {
         // Fundamental Property: A * A_inverse = Identity
-        let mut a = matrix![
-            [4., 7.],
-            [2., 6.]
-        ];
+        let mut a = matrix![[4., 7.], [2., 6.]];
 
         let a_inv = a.inverse().expect("Matrix should be invertible");
 
         let identity = &a * &a_inv;
-        let expected_identity = matrix![
-            [1., 0.],
-            [0., 1.]
-        ];
+        let expected_identity = matrix![[1., 0.], [0., 1.]];
 
         assert_matrix_approx_eq(&identity, &expected_identity);
     }
@@ -200,16 +177,10 @@ mod tests {
         //                          [-3, 1]
         //               = [-2, 1]
         //                 [1.5, -0.5]
-        let mut u = matrix![
-            [1., 2.],
-            [3., 4.]
-        ];
+        let mut u = matrix![[1., 2.], [3., 4.]];
 
         let result = u.inverse().expect("Invertible");
-        let expected = matrix![
-            [-2.0, 1.0],
-            [1.5, -0.5]
-        ];
+        let expected = matrix![[-2.0, 1.0], [1.5, -0.5]];
 
         assert_matrix_approx_eq(&result, &expected);
     }

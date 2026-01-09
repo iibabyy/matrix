@@ -167,14 +167,6 @@ where
         matrix
     }
 
-    /// Calculates the rank of the matrix (true dimension of the matrix / number of linearly independent rows)
-    pub fn rank(&self) -> usize {
-        self.row_echelon()
-            .as_rows()
-            .position(|row| row.into_iter().all(|value| *value == K::default()))
-            .unwrap_or(self.rows())
-    }
-
     /// Checks if the matrix is in row echelon form
     pub fn is_row_echelon_form(&self) -> bool {
         if self.rows() == 0 {
