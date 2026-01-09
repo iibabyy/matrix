@@ -88,19 +88,6 @@ impl<K: Copy> Matrix<K> {
         &self.vectors
     }
 
-    pub(crate) fn swap_rows(&mut self, a: usize, b: usize)
-    where
-        K: Copy,
-    {
-        let mut temp;
-
-        for i in 0..self.cols() {
-            temp = self[i][a];
-            self[i][a] = self[i][b];
-            self[i][b] = temp;
-        }
-    }
-
     #[expect(dead_code)]
     pub(crate) fn row(&self, index: usize) -> impl Iterator<Item = &K> {
         self.vectors.iter().map(move |vec| &vec[index])

@@ -1,14 +1,77 @@
-use std::ops::{Div, Mul, Neg, Sub};
+use std::ops::{Add, Div, Mul, Neg};
 
 use crate::Matrix;
 
 #[allow(dead_code)]
 #[derive(Debug)]
 pub enum RowEchelonOperation<K> {
+    // usize: row index
+    // K: scalar
+
+    // row_a = row_b & row_b = row_a
     Swap(usize, usize),
+
+    // row = row * k
     Multipication(usize, K),
+
+    // row = row / k
     Division(usize, K),
+
+    // row_a = row_a + row_b * k
     RowAddition(usize, usize, K),
+}
+
+impl<K: Copy> Matrix<K> {
+    pub(crate) fn swap(&mut self, row_a: usize, row_b: usize) -> RowEchelonOperation<K> {
+        let mut temp;
+
+        for i in 0..self.cols() {
+            temp = self[i][row_a];
+            self[i][row_a] = self[i][row_b];
+            self[i][row_b] = temp;
+        }
+
+        RowEchelonOperation::Swap(row_a, row_b)
+    }
+
+    #[expect(dead_code)]
+    pub(crate) fn multiply(&mut self, row: usize, scalar: K) -> RowEchelonOperation<K>
+    where
+        K: Mul<Output = K>,
+    {
+        for col in 0..self.cols() {
+            self[col][row] = self[col][row] * scalar;
+        }
+
+        RowEchelonOperation::Multipication(row, scalar)
+    }
+
+    pub(crate) fn divide(&mut self, row: usize, scalar: K) -> RowEchelonOperation<K>
+    where
+        K: Div<Output = K>,
+    {
+        for col in 0..self.cols() {
+            self[col][row] = self[col][row] / scalar;
+        }
+
+        RowEchelonOperation::Division(row, scalar)
+    }
+
+    pub(crate) fn row_add(
+        &mut self,
+        row_to_modify: usize,
+        row_to_add: usize,
+        scalar: K,
+    ) -> RowEchelonOperation<K>
+    where
+        K: Mul<Output = K> + Add<Output = K>,
+    {
+        for col in 0..self.cols() {
+            self[col][row_to_modify] = self[col][row_to_modify] + self[col][row_to_add] * scalar;
+        }
+
+        RowEchelonOperation::RowAddition(row_to_modify, row_to_add, scalar)
+    }
 }
 
 #[derive(Debug, Default)]
@@ -20,7 +83,7 @@ pub struct RowEchelonDetails<K> {
 impl<K> Matrix<K>
 where
     K: Copy + PartialOrd + Default + Neg<Output = K>,
-    K: Div<Output = K> + Mul<Output = K> + Sub<Output = K>,
+    K: Div<Output = K> + Mul<Output = K> + Add<Output = K>,
 {
     /// Converts the matrix to row echelon form
     pub fn row_echelon(&self) -> Matrix<K> {
@@ -35,16 +98,16 @@ where
 
     /// Converts the matrix to row echelon form while tracking pivot values and row swaps
     fn row_echelon_inner(&self, mut details: Option<&mut RowEchelonDetails<K>>) -> Matrix<K> {
-        if self.is_empty() {
-            return self.clone();
-        }
-
         macro_rules! details {
             ($($arg:tt)*) => {
                 if let Some(details) = &mut details {
                     details.$($arg)*
                 }
             };
+        }
+
+        if self.is_empty() {
+            return self.clone();
         }
 
         let mut matrix = self.clone();
@@ -59,8 +122,8 @@ where
             let (pivot_col, mut pivot_row) = next_pivot.unwrap();
 
             if pivot_row != row_index {
-                matrix.swap_rows(pivot_row, row_index);
-                details!(operations.push(RowEchelonOperation::Swap(pivot_row, row_index)));
+                let op = matrix.swap(pivot_row, row_index);
+                details!(operations.push(op));
                 pivot_row = row_index;
             }
 
@@ -68,14 +131,13 @@ where
             details!(tracked_pivots.push(matrix[pivot_col][pivot_row]));
 
             // using elementary row operations, we transform the pivot to 1
-            let scaling_operation = matrix.scale_pivot_row(pivot_col, pivot_row);
-            details!(operations.push(scaling_operation));
+            let op = matrix.scale_pivot_row(pivot_col, pivot_row);
+            details!(operations.push(op));
 
             if pivot_row < matrix.rows() - 1 {
                 // using elementary row operations, we put a 0 in values below the pivot
-                let nullifying_operations =
-                    matrix.nullify_rows_below_pivot(pivot_col, pivot_row);
-                details!(operations.extend(nullifying_operations));
+                let ops = matrix.nullify_rows_below_pivot(pivot_col, pivot_row);
+                details!(operations.extend(ops));
             }
         }
 
@@ -145,11 +207,7 @@ where
                 continue;
             }
 
-            for col in pivot_col..self.cols() {
-                self[col][row] = self[col][row] - self[col][pivot_row] * factor;
-            }
-
-            operations.push(RowEchelonOperation::RowAddition(row, pivot_row, -factor));
+            operations.push(self.row_add(row, pivot_row, -factor));
         }
 
         operations
@@ -162,11 +220,7 @@ where
 
         assert!(pivot != K::default());
 
-        for col in pivot_col..self.cols() {
-            self[col][pivot_row] = self[col][pivot_row] / pivot;
-        }
-
-        RowEchelonOperation::Division(pivot_row, pivot)
+        self.divide(pivot_row, pivot)
     }
 
     #[doc(hidden)]
