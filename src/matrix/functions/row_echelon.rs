@@ -117,7 +117,10 @@ where
     }
 
     /// Converts the matrix to her reduced row echelon form while tracking pivot values and row swaps
-    fn reduced_row_echelon_form(&self, mut details: Option<&mut RowEchelonDetails<K>>) -> Matrix<K> {
+    fn reduced_row_echelon_form(
+        &self,
+        mut details: Option<&mut RowEchelonDetails<K>>,
+    ) -> Matrix<K> {
         macro_rules! details {
             ($($arg:tt)*) => {
                 if let Some(details) = &mut details {
