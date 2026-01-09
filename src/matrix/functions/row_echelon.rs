@@ -74,7 +74,7 @@ where
             if pivot_row < matrix.rows() - 1 {
                 // using elementary row operations, we put a 0 in values below the pivot
                 let nullifying_operations =
-                    matrix.nullify_rows_below_pivot(pivot_col, pivot_row, details.is_some());
+                    matrix.nullify_rows_below_pivot(pivot_col, pivot_row);
                 details!(operations.extend(nullifying_operations));
             }
         }
@@ -134,7 +134,6 @@ where
         &mut self,
         pivot_col: usize,
         pivot_row: usize,
-        details: bool,
     ) -> Vec<RowEchelonOperation<K>> {
         // we assume that pivot == 1
 
@@ -148,10 +147,9 @@ where
 
             for col in pivot_col..self.cols() {
                 self[col][row] = self[col][row] - self[col][pivot_row] * factor;
-                if details {
-                    operations.push(RowEchelonOperation::RowAddition(row, pivot_row, -factor));
-                }
             }
+
+            operations.push(RowEchelonOperation::RowAddition(row, pivot_row, -factor));
         }
 
         operations
