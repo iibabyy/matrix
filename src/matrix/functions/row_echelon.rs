@@ -3,7 +3,7 @@ use std::ops::{Add, Div, Mul, Neg};
 use crate::Matrix;
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum RowEchelonOperation<K> {
     // usize: row index
     // K: scalar
@@ -34,7 +34,6 @@ impl<K: Copy> Matrix<K> {
         RowEchelonOperation::Swap(row_a, row_b)
     }
 
-    #[expect(dead_code)]
     pub(crate) fn multiply(&mut self, row: usize, scalar: K) -> RowEchelonOperation<K>
     where
         K: Mul<Output = K>,
@@ -71,6 +70,27 @@ impl<K: Copy> Matrix<K> {
         }
 
         RowEchelonOperation::RowAddition(row_to_modify, row_to_add, scalar)
+    }
+
+    pub(crate) fn apply(&mut self, op: RowEchelonOperation<K>)
+    where
+        K: Mul<Output = K> + Div<Output = K> + Add<Output = K>,
+    {
+        match op {
+            RowEchelonOperation::Swap(row_a, row_b) => self.swap(row_a, row_b),
+            RowEchelonOperation::Multipication(row, scalar) => self.multiply(row, scalar),
+            RowEchelonOperation::Division(row, scalar) => self.divide(row, scalar),
+            RowEchelonOperation::RowAddition(row_to_modify, row_to_add, scalar) => {
+                self.row_add(row_to_modify, row_to_add, scalar)
+            }
+        };
+    }
+
+    pub(crate) fn apply_multiple(&mut self, ops: Vec<RowEchelonOperation<K>>)
+    where
+        K: Mul<Output = K> + Div<Output = K> + Add<Output = K>,
+    {
+        ops.into_iter().for_each(|op| self.apply(op));
     }
 }
 
