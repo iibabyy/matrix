@@ -105,19 +105,19 @@ where
     K: Copy + PartialOrd + Default + Neg<Output = K>,
     K: Div<Output = K> + Mul<Output = K> + Add<Output = K>,
 {
-    /// Converts the matrix to row echelon form
+    /// Converts the matrix to her reduced row echelon form
     pub fn row_echelon(&self) -> Matrix<K> {
-        self.row_echelon_inner(None)
+        self.reduced_row_echelon_form(None)
     }
 
     pub fn row_echelon_with_details(&self) -> (Matrix<K>, RowEchelonDetails<K>) {
         let mut details = RowEchelonDetails::default();
-        let matrix = self.row_echelon_inner(Some(&mut details));
+        let matrix = self.reduced_row_echelon_form(Some(&mut details));
         (matrix, details)
     }
 
-    /// Converts the matrix to row echelon form while tracking pivot values and row swaps
-    fn row_echelon_inner(&self, mut details: Option<&mut RowEchelonDetails<K>>) -> Matrix<K> {
+    /// Converts the matrix to her reduced row echelon form while tracking pivot values and row swaps
+    fn reduced_row_echelon_form(&self, mut details: Option<&mut RowEchelonDetails<K>>) -> Matrix<K> {
         macro_rules! details {
             ($($arg:tt)*) => {
                 if let Some(details) = &mut details {
