@@ -1,12 +1,21 @@
 use std::ops::{Add, Mul, Sub};
 
-/// Performs linear interpolation between two values with a generic parameter
-pub fn lerp_generic<V, K>(u: V, v: V, t: K) -> V
+pub trait LerpBounds<K>:
+	Sized
+    + Mul<K, Output = Self>
+    + Add<Self, Output = Self>
+    + for<'a> Sub<&'a Self, Output = Self>
+{}
+
+impl<V, K> LerpBounds<K> for V
 where
-    V: PartialOrd + Mul<K, Output = V> + Add<V, Output = V>,
-    for<'a> V: Sub<&'a V, Output = V>,
-    K: std::cmp::PartialOrd<f32>,
-{
+    V: Mul<K, Output = V>
+        + Add<V, Output = V>
+        + for<'a> Sub<&'a V, Output = V>
+{}
+
+/// Performs linear interpolation between two values with a generic parameter
+pub fn lerp_generic<V: LerpBounds<K>, K: PartialOrd<f32>>(u: V, v: V, t: K) -> V {
     assert!(t >= 0.);
     assert!(t <= 1.);
 
@@ -15,11 +24,7 @@ where
 }
 
 /// Performs linear interpolation between two values
-pub fn lerp<V>(u: V, v: V, t: f32) -> V
-where
-    V: PartialOrd + Mul<f32, Output = V> + Add<V, Output = V>,
-    for<'a> V: Sub<&'a V, Output = V>,
-{
+pub fn lerp<V: LerpBounds<f32>>(u: V, v: V, t: f32) -> V {
     lerp_generic(u, v, t)
 }
 
