@@ -7,8 +7,8 @@ use std::{
     slice::SliceIndex,
 };
 
-mod arithmetics;
-mod functions;
+pub mod arithmetics;
+pub mod functions;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Vector<K: Copy = f32> {

@@ -1,2 +1,2 @@
-mod dot_product;
-mod norm;
+pub mod dot_product;
+pub mod norm;

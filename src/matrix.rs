@@ -1,5 +1,5 @@
-mod arithmetics;
-mod functions;
+pub mod arithmetics;
+pub mod functions;
 
 use crate::vector::Vector;
 use std::{

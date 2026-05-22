@@ -1,7 +1,7 @@
-mod determinant;
-mod inverse;
-mod projection;
-mod rank;
-mod row_echelon;
-mod trace;
-mod transpose;
+pub mod determinant;
+pub mod inverse;
+pub mod projection;
+pub mod rank;
+pub mod row_echelon;
+pub mod trace;
+pub mod transpose;

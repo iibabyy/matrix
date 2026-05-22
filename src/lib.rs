@@ -21,14 +21,14 @@
 // TODO: 	Vector::new(new)
 // TODO: ```
 
-mod macros;
-mod rows;
+pub mod macros;
+pub mod rows;
 
-mod matrix;
+pub mod matrix;
 pub use matrix::Matrix;
 
-mod vector;
+pub mod vector;
 pub use vector::Vector;
 
-mod functions;
+pub mod functions;
 pub use functions::*;
