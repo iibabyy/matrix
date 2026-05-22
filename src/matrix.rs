@@ -140,13 +140,17 @@ where
     K: std::fmt::Display,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let vecs_fmt = self
-            .vectors
-            .iter()
-            .map(ToString::to_string)
-            .collect::<Vec<_>>()
-            .join("\n");
-        write!(f, "[{vecs_fmt}]")
+    	for row in self.as_rows() {
+        	let line = row
+     			.iter()
+          		.map(ToString::to_string)
+               	.collect::<Vec<_>>()
+               	.join(", ");
+
+        	writeln!(f, "{line}")?;
+     	}
+
+      	Ok(())
     }
 }
 
