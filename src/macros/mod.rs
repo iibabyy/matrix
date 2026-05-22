@@ -11,6 +11,8 @@ macro_rules! vector {
     };
 }
 
+/// Creates a matrix from a list of elements.
+/// Note that each row is one column of the matrix.
 #[macro_export]
 macro_rules! matrix {
     () => {
