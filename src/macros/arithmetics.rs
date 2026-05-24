@@ -1,7 +1,7 @@
 mod add {
     macro_rules! impl_add_assign {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
             where $($rules:tt)+
         ) => {
@@ -31,18 +31,18 @@ mod add {
 
     macro_rules! impl_add {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             where $($rules:tt)+
         ) => {
-            impl_add!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_add!(
+                <$($generic),*> $for, $with,
                 Output = $for,
                 where $($rules)+
             );
         };
 
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             Output = $output:ty,
             where $($rules:tt)+
         ) => {
@@ -103,18 +103,18 @@ mod add {
 
     macro_rules! impl_add_ops {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
             where $($rules:tt)+
         ) => {
-            impl_add_assign!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_add_assign!(
+                <$($generic),*> $for, $with,
                 with $func,
                 where $($rules)+
             );
 
-            impl_add!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_add!(
+                <$($generic),*> $for, $with,
                 where $($rules)+
             );
         };
@@ -125,7 +125,7 @@ mod add {
 mod sub {
     macro_rules! impl_sub_assign {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
             where $($rules:tt)+
         ) => {
@@ -154,18 +154,18 @@ mod sub {
 
     macro_rules! impl_sub {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             where $($rules:tt)+
         ) => {
-            impl_sub!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_sub!(
+                <$($generic),*> $for, $with,
                 Output = $for,
                 where $($rules)+
             );
         };
 
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             Output = $output:ty,
             where $($rules:tt)+
         ) => {
@@ -226,18 +226,18 @@ mod sub {
 
     macro_rules! impl_sub_ops {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
             where $($rules:tt)+
         ) => {
-            impl_sub_assign!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_sub_assign!(
+                <$($generic),*> $for, $with,
                 with $func,
                 where $($rules)+
             );
 
-            impl_sub!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_sub!(
+                <$($generic),*> $for, $with,
                 where $($rules)+
             );
         };
@@ -248,7 +248,7 @@ mod sub {
 mod mul {
     macro_rules! impl_mul_assign {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
             where $($rules:tt)+
         ) => {
@@ -277,18 +277,18 @@ mod mul {
 
     macro_rules! impl_mul {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             where $($rules:tt)+
         ) => {
-            impl_mul!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_mul!(
+                <$($generic),*> $for, $with,
                 Output = $for,
                 where $($rules)+
             );
         };
 
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             Output = $output:ty,
             where $($rules:tt)+
         ) => {
@@ -349,7 +349,7 @@ mod mul {
 
     macro_rules! impl_mul_reverse {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             where $($rules:tt)+
         ) => {
             impl<$($generic),*> Mul<$for> for $with
@@ -403,18 +403,18 @@ mod mul {
 
     macro_rules! impl_mul_ops {
         (
-            <$($generic:ident),+> $for:ty, $with:ty,
+            <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
             where $($rules:tt)+
         ) => {
-            impl_mul_assign!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_mul_assign!(
+                <$($generic),*> $for, $with,
                 with $func,
                 where $($rules)+
             );
 
-            impl_mul!(
-                <$($generic),+> $for, $with,
+            $crate::macros::arithmetics::impl_mul!(
+                <$($generic),*> $for, $with,
                 where $($rules)+
             );
         };
