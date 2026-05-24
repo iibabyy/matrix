@@ -5,7 +5,7 @@ mod add {
             with $func:expr,
             $(where $($rules:tt)+)?
         ) => {
-            impl<$($generic),*> AddAssign<$with> for $for
+            impl<$($generic),*> std::ops::AddAssign<$with> for $for
             $(where $($rules)+)?
             {
                 fn add_assign(&mut self, other: $with) {
@@ -14,7 +14,7 @@ mod add {
                 }
             }
 
-            impl<$($generic),*> AddAssign<&$with> for $for
+            impl<$($generic),*> std::ops::AddAssign<&$with> for $for
             $(where $($rules)+)?
             {
                 fn add_assign(&mut self, other: &$with) {
@@ -44,7 +44,7 @@ mod add {
             Output = $output:ty,
             $(where $($rules:tt)+)?
         ) => {
-            impl<$($generic),*> Add<$with> for $for
+            impl<$($generic),*> std::ops::Add<$with> for $for
             $(where $($rules)+)?
             {
                 type Output = $output;
@@ -55,7 +55,7 @@ mod add {
                 }
             }
 
-            impl<$($generic),*> Add<&$with> for $for
+            impl<$($generic),*> std::ops::Add<&$with> for $for
             $(where $($rules)+)?
             {
                 type Output = $output;
@@ -66,7 +66,7 @@ mod add {
                 }
             }
 
-            impl<$($generic),*> Add<$with> for &$for
+            impl<$($generic),*> std::ops::Add<$with> for &$for
             where
                 Self: Clone,
                 $($($rules)+)?
@@ -80,7 +80,7 @@ mod add {
                 }
             }
 
-            impl<$($generic),*> Add<&$with> for &$for
+            impl<$($generic),*> std::ops::Add<&$with> for &$for
             where
                 Self: Clone,
                 $($($rules)+)?
@@ -125,7 +125,7 @@ mod sub {
             with $func:expr,
             $(where $($rules:tt)+)?
         ) => {
-            impl<$($generic),*> SubAssign<$with> for $for
+            impl<$($generic),*> std::ops::SubAssign<$with> for $for
             where
                 $($( $rules )*)?
             {
@@ -135,7 +135,7 @@ mod sub {
                 }
             }
 
-            impl<$($generic),*> SubAssign<&$with> for $for
+            impl<$($generic),*> std::ops::SubAssign<&$with> for $for
             where
                 $($( $rules )*)?
             {
@@ -165,7 +165,7 @@ mod sub {
             Output = $output:ty,
             $(where $($rules:tt)+)?
         ) => {
-            impl<$($generic),*> Sub<$with> for $for
+            impl<$($generic),*> std::ops::Sub<$with> for $for
             where
                 $($( $rules )+)?
             {
@@ -177,7 +177,7 @@ mod sub {
                 }
             }
 
-            impl<$($generic),*> Sub<&$with> for $for
+            impl<$($generic),*> std::ops::Sub<&$with> for $for
             where
                 $($( $rules )+)?
             {
@@ -189,7 +189,7 @@ mod sub {
                 }
             }
 
-            impl<$($generic),*> Sub<$with> for &$for
+            impl<$($generic),*> std::ops::Sub<$with> for &$for
             where
                 Self: Clone,
                 $($( $rules )+)?
@@ -203,7 +203,7 @@ mod sub {
                 }
             }
 
-            impl<$($generic),*> Sub<&$with> for &$for
+            impl<$($generic),*> std::ops::Sub<&$with> for &$for
             where
                 Self: Clone,
                 $($( $rules )+)?
@@ -248,7 +248,7 @@ mod mul {
             with $func:expr,
             $(where $($rules:tt)+)?
         ) => {
-            impl<$($generic),*> MulAssign<$with> for $for
+            impl<$($generic),*> std::ops::MulAssign<$with> for $for
             where
                 $($( $rules )+)?
             {
@@ -258,7 +258,7 @@ mod mul {
                 }
             }
 
-            impl<$($generic),*> MulAssign<&$with> for $for
+            impl<$($generic),*> std::ops::MulAssign<&$with> for $for
             where
                 $($( $rules )+)?
             {
@@ -288,7 +288,7 @@ mod mul {
             Output = $output:ty,
             $(where $($rules:tt)+)?
         ) => {
-            impl<$($generic),*> Mul<$with> for $for
+            impl<$($generic),*> std::ops::Mul<$with> for $for
             where
                 $($( $rules )+)?
             {
@@ -300,7 +300,7 @@ mod mul {
                 }
             }
 
-            impl<$($generic),*> Mul<&$with> for $for
+            impl<$($generic),*> std::ops::Mul<&$with> for $for
             where
                 $($( $rules )+)?
             {
@@ -312,7 +312,7 @@ mod mul {
                 }
             }
 
-            impl<$($generic),*> Mul<$with> for &$for
+            impl<$($generic),*> std::ops::Mul<$with> for &$for
             where
                 Self: Clone,
                 $($( $rules )+)?
@@ -326,7 +326,7 @@ mod mul {
                 }
             }
 
-            impl<$($generic),*> Mul<&$with> for &$for
+            impl<$($generic),*> std::ops::Mul<&$with> for &$for
             where
                 Self: Clone,
                 $($( $rules )+)?
@@ -348,7 +348,7 @@ mod mul {
             <$($generic:ident),*> $for:ty, $with:ty,
             $(where $($rules:tt)+)?
         ) => {
-            impl<$($generic),*> Mul<$for> for $with
+            impl<$($generic),*> std::ops::Mul<$for> for $with
             where
                 $($( $rules )+)?
             {
@@ -359,7 +359,7 @@ mod mul {
                 }
             }
 
-            impl<$($generic),*> Mul<&$for> for $with
+            impl<$($generic),*> std::ops::Mul<&$for> for $with
             where
                 $($( $rules )+)?
             {
@@ -370,7 +370,7 @@ mod mul {
                 }
             }
 
-            impl<$($generic),*> Mul<$for> for &$with
+            impl<$($generic),*> std::ops::Mul<$for> for &$with
             where
                 Self: Clone,
                 $($( $rules )+)?
@@ -382,7 +382,7 @@ mod mul {
                 }
             }
 
-            impl<$($generic),*> Mul<&$for> for &$with
+            impl<$($generic),*> std::ops::Mul<&$for> for &$with
             where
                 Self: Clone,
                 $($( $rules )+)?
