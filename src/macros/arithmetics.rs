@@ -3,11 +3,10 @@ mod add {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             impl<$($generic),*> AddAssign<$with> for $for
-            where
-                $($rules)+
+            $(where $($rules)+)?
             {
                 fn add_assign(&mut self, other: $with) {
                     let new_self: $for = $func(self, &other);
@@ -16,8 +15,7 @@ mod add {
             }
 
             impl<$($generic),*> AddAssign<&$with> for $for
-            where
-                $($rules)+
+            $(where $($rules)+)?
             {
                 fn add_assign(&mut self, other: &$with) {
                     let new_self: $for = $func(self, other);
@@ -32,23 +30,22 @@ mod add {
     macro_rules! impl_add {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             $crate::macros::arithmetics::impl_add!(
                 <$($generic),*> $for, $with,
                 Output = $for,
-                where $($rules)+
+                $(where $($rules)+)?
             );
         };
 
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             Output = $output:ty,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             impl<$($generic),*> Add<$with> for $for
-            where
-                $($rules)+
+            $(where $($rules)+)?
             {
                 type Output = $output;
 
@@ -59,8 +56,7 @@ mod add {
             }
 
             impl<$($generic),*> Add<&$with> for $for
-            where
-                $($rules)+
+            $(where $($rules)+)?
             {
                 type Output = $output;
 
@@ -73,7 +69,7 @@ mod add {
             impl<$($generic),*> Add<$with> for &$for
             where
                 Self: Clone,
-                $($rules)+
+                $($($rules)+)?
             {
                 type Output = $output;
 
@@ -87,7 +83,7 @@ mod add {
             impl<$($generic),*> Add<&$with> for &$for
             where
                 Self: Clone,
-                $($rules)+
+                $($($rules)+)?
             {
                 type Output = $output;
 
@@ -105,17 +101,17 @@ mod add {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             $crate::macros::arithmetics::impl_add_assign!(
                 <$($generic),*> $for, $with,
                 with $func,
-                where $($rules)+
+                $(where $($rules)+)?
             );
 
             $crate::macros::arithmetics::impl_add!(
                 <$($generic),*> $for, $with,
-                where $($rules)+
+                $(where $($rules)+)?
             );
         };
     }
@@ -127,11 +123,11 @@ mod sub {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             impl<$($generic),*> SubAssign<$with> for $for
             where
-                $( $rules )*
+                $($( $rules )*)?
             {
                 fn sub_assign(&mut self, other: $with) {
                     let new_self: $for = $func(self, &other);
@@ -141,7 +137,7 @@ mod sub {
 
             impl<$($generic),*> SubAssign<&$with> for $for
             where
-                $( $rules )*
+                $($( $rules )*)?
             {
                 fn sub_assign(&mut self, other: &$with) {
                     let new_self: $for = $func(self, other);
@@ -155,23 +151,23 @@ mod sub {
     macro_rules! impl_sub {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             $crate::macros::arithmetics::impl_sub!(
                 <$($generic),*> $for, $with,
                 Output = $for,
-                where $($rules)+
+                $(where $($rules)+)?
             );
         };
 
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             Output = $output:ty,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             impl<$($generic),*> Sub<$with> for $for
             where
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = $output;
 
@@ -183,7 +179,7 @@ mod sub {
 
             impl<$($generic),*> Sub<&$with> for $for
             where
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = $output;
 
@@ -196,7 +192,7 @@ mod sub {
             impl<$($generic),*> Sub<$with> for &$for
             where
                 Self: Clone,
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = $output;
 
@@ -210,7 +206,7 @@ mod sub {
             impl<$($generic),*> Sub<&$with> for &$for
             where
                 Self: Clone,
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = $output;
 
@@ -228,17 +224,17 @@ mod sub {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             $crate::macros::arithmetics::impl_sub_assign!(
                 <$($generic),*> $for, $with,
                 with $func,
-                where $($rules)+
+                $(where $($rules)+)?
             );
 
             $crate::macros::arithmetics::impl_sub!(
                 <$($generic),*> $for, $with,
-                where $($rules)+
+                $(where $($rules)+)?
             );
         };
     }
@@ -250,11 +246,11 @@ mod mul {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             impl<$($generic),*> MulAssign<$with> for $for
             where
-                $( $rules )+
+                $($( $rules )+)?
             {
                 fn mul_assign(&mut self, other: $with) {
                     let new_self: $for = $func(self, &other);
@@ -264,7 +260,7 @@ mod mul {
 
             impl<$($generic),*> MulAssign<&$with> for $for
             where
-                $( $rules )+
+                $($( $rules )+)?
             {
                 fn mul_assign(&mut self, other: &$with) {
                     let new_self: $for = $func(self, other);
@@ -278,23 +274,23 @@ mod mul {
     macro_rules! impl_mul {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             $crate::macros::arithmetics::impl_mul!(
                 <$($generic),*> $for, $with,
                 Output = $for,
-                where $($rules)+
+                $(where $($rules)+)?
             );
         };
 
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             Output = $output:ty,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             impl<$($generic),*> Mul<$with> for $for
             where
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = $output;
 
@@ -306,7 +302,7 @@ mod mul {
 
             impl<$($generic),*> Mul<&$with> for $for
             where
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = $output;
 
@@ -319,7 +315,7 @@ mod mul {
             impl<$($generic),*> Mul<$with> for &$for
             where
                 Self: Clone,
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = $output;
 
@@ -333,7 +329,7 @@ mod mul {
             impl<$($generic),*> Mul<&$with> for &$for
             where
                 Self: Clone,
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = $output;
 
@@ -350,11 +346,11 @@ mod mul {
     macro_rules! impl_mul_reverse {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             impl<$($generic),*> Mul<$for> for $with
             where
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = <$for as std::ops::Mul<Self>>::Output;
 
@@ -365,7 +361,7 @@ mod mul {
 
             impl<$($generic),*> Mul<&$for> for $with
             where
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = <$for as std::ops::Mul<Self>>::Output;
 
@@ -377,7 +373,7 @@ mod mul {
             impl<$($generic),*> Mul<$for> for &$with
             where
                 Self: Clone,
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = <$for as std::ops::Mul<Self>>::Output;
 
@@ -389,7 +385,7 @@ mod mul {
             impl<$($generic),*> Mul<&$for> for &$with
             where
                 Self: Clone,
-                $( $rules )+
+                $($( $rules )+)?
             {
                 type Output = <$for as std::ops::Mul<Self>>::Output;
 
@@ -405,17 +401,17 @@ mod mul {
         (
             <$($generic:ident),*> $for:ty, $with:ty,
             with $func:expr,
-            where $($rules:tt)+
+            $(where $($rules:tt)+)?
         ) => {
             $crate::macros::arithmetics::impl_mul_assign!(
                 <$($generic),*> $for, $with,
                 with $func,
-                where $($rules)+
+                $(where $($rules)+)?
             );
 
             $crate::macros::arithmetics::impl_mul!(
                 <$($generic),*> $for, $with,
-                where $($rules)+
+                $(where $($rules)+)?
             );
         };
     }
