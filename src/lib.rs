@@ -21,6 +21,7 @@
 // TODO: 	Vector::new(new)
 // TODO: ```
 
+pub mod complex;
 pub mod macros;
 pub mod rows;
 
