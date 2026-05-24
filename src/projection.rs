@@ -1,20 +1,12 @@
+use clap::Parser;
 use ::matrix::matrix::functions::projection::projection;
 
 fn main() {
-	#[cfg(feature = "clap")]
-	let matrix = {
-		use clap::Parser;
-		let args = Args::parse();
-		projection(args.fov, args.ratio, args.near, args.far)
-	};
-
-	#[cfg(not(feature = "clap"))]
-	let matrix = projection(1.0471976, 1.7777778, 0.1, 1000.0);
-
+	let args = Args::parse();
+	let matrix = projection(args.fov, args.ratio, args.near, args.far);
 	println!("{matrix}");
 }
 
-#[cfg(feature = "clap")]
 #[derive(clap::Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct Args {
