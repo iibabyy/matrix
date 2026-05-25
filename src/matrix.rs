@@ -102,6 +102,10 @@ impl<K: Copy> Matrix<K> {
         use crate::rows::IntoRows;
         self.vectors.iter().into_rows()
     }
+
+    pub fn as_cols(&self) -> impl Iterator<Item = &Vector<K>> {
+        self.vectors.iter()
+    }
 }
 
 impl Matrix<f32> {
