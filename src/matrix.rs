@@ -89,16 +89,16 @@ impl<K: Copy> Matrix<K> {
     }
 
     #[expect(dead_code)]
-    pub(crate) fn row(&self, index: usize) -> impl Iterator<Item = &K> {
+    pub fn row(&self, index: usize) -> impl Iterator<Item = &K> {
         self.vectors.iter().map(move |vec| &vec[index])
     }
 
     #[expect(dead_code)]
-    pub(crate) fn row_mut(&mut self, index: usize) -> impl Iterator<Item = &mut K> {
+    pub fn row_mut(&mut self, index: usize) -> impl Iterator<Item = &mut K> {
         self.vectors.iter_mut().map(move |vec| &mut vec[index])
     }
 
-    pub(crate) fn as_rows(&self) -> impl Iterator<Item = Vec<&K>> {
+    pub fn as_rows(&self) -> impl Iterator<Item = Vec<&K>> {
         use crate::rows::IntoRows;
         self.vectors.iter().into_rows()
     }
