@@ -4,7 +4,12 @@ use ::matrix::matrix::functions::projection::projection;
 fn main() {
 	let args = Args::parse();
 	let matrix = projection(args.fov, args.ratio, args.near, args.far);
-	println!("{matrix}");
+
+	// prints one column by line
+	for col in matrix.as_cols() {
+		let vec = col.scalars().iter().map(|s| s.to_string()).collect::<Vec<_>>().join(", ");
+		println!("{vec}");
+	}
 }
 
 #[derive(clap::Parser, Debug)]
