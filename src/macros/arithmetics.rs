@@ -472,7 +472,7 @@ mod div {
                 type Output = $output;
 
                 fn div(mut self, other: $with) -> Self::Output {
-                    self *= other;
+                    self /= other;
                     self
                 }
             }
@@ -484,7 +484,7 @@ mod div {
                 type Output = $output;
 
                 fn div(mut self, other: &$with) -> Self::Output {
-                    self *= other;
+                    self /= other;
                     self
                 }
             }
@@ -498,7 +498,7 @@ mod div {
 
                 fn div(self, other: $with) -> Self::Output {
                     let mut new = self.clone();
-                    new *= other;
+                    new /= other;
                     new
                 }
             }
@@ -512,7 +512,7 @@ mod div {
 
                 fn div(self, other: &$with) -> Self::Output {
                     let mut new = self.clone();
-                    new *= other;
+                    new /= other;
                     new
                 }
             }
