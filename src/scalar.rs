@@ -1,20 +1,26 @@
-use std::ops::*;
-
 pub trait Scalar:
 	Sized
 	+ Copy
-	+ std::fmt::Display
-	+ PartialEq + PartialOrd
+	+ PartialEq
+	+ PartialOrd
+	+ std::ops::Neg
 	+ std::iter::Sum
-	+ num_traits::Zero
+	+ num_traits::NumAssign
 	+ num_traits::Signed
 	+ num_traits::MulAdd<Output = Self>
-	+ Add<Output = Self> + AddAssign
-	+ Mul<Output = Self> + MulAssign
-	+ Sub<Output = Self> + SubAssign
-	+ Div<Output = Self> + DivAssign
-	+ Neg<Output = Self>
+	+ std::fmt::Display
 {}
 
-impl Scalar for f32 {}
-impl Scalar for i32 {}
+impl<T> Scalar for T
+where
+	T: Sized,
+	T: Copy,
+	T: PartialEq,
+	T: PartialOrd,
+	T: std::ops::Neg,
+	T: std::iter::Sum,
+	T: num_traits::NumAssign,
+	T: num_traits::Signed,
+	T: num_traits::MulAdd<Output = Self>,
+	T: std::fmt::Display,
+{}

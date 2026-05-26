@@ -418,6 +418,129 @@ mod mul {
     pub(crate) use impl_mul_ops;
 }
 
+mod div {
+    macro_rules! impl_div_assign {
+        (
+            <$($generic:ident),*> $for:ty, $with:ty,
+            with $func:expr,
+            $(where $($rules:tt)+)?
+        ) => {
+            impl<$($generic),*> std::ops::DivAssign<$with> for $for
+            where
+                $($( $rules )+)?
+            {
+                fn div_assign(&mut self, other: $with) {
+                    let new_self: $for = $func(self, &other);
+                    *self = new_self;
+                }
+            }
+
+            impl<$($generic),*> std::ops::DivAssign<&$with> for $for
+            where
+                $($( $rules )+)?
+            {
+                fn div_assign(&mut self, other: &$with) {
+                    let new_self: $for = $func(self, other);
+                    *self = new_self;
+                }
+            }
+        };
+    }
+    pub(crate) use impl_div_assign;
+
+    macro_rules! impl_div {
+        (
+            <$($generic:ident),*> $for:ty, $with:ty,
+            $(where $($rules:tt)+)?
+        ) => {
+            $crate::macros::arithmetics::impl_div!(
+                <$($generic),*> $for, $with,
+                Output = $for,
+                $(where $($rules)+)?
+            );
+        };
+
+        (
+            <$($generic:ident),*> $for:ty, $with:ty,
+            Output = $output:ty,
+            $(where $($rules:tt)+)?
+        ) => {
+            impl<$($generic),*> std::ops::Div<$with> for $for
+            where
+                $($( $rules )+)?
+            {
+                type Output = $output;
+
+                fn div(mut self, other: $with) -> Self::Output {
+                    self *= other;
+                    self
+                }
+            }
+
+            impl<$($generic),*> std::ops::Div<&$with> for $for
+            where
+                $($( $rules )+)?
+            {
+                type Output = $output;
+
+                fn div(mut self, other: &$with) -> Self::Output {
+                    self *= other;
+                    self
+                }
+            }
+
+            impl<$($generic),*> std::ops::Div<$with> for &$for
+            where
+                Self: Clone,
+                $($( $rules )+)?
+            {
+                type Output = $output;
+
+                fn div(self, other: $with) -> Self::Output {
+                    let mut new = self.clone();
+                    new *= other;
+                    new
+                }
+            }
+
+            impl<$($generic),*> std::ops::Div<&$with> for &$for
+            where
+                Self: Clone,
+                $($( $rules )+)?
+            {
+                type Output = $output;
+
+                fn div(self, other: &$with) -> Self::Output {
+                    let mut new = self.clone();
+                    new *= other;
+                    new
+                }
+            }
+        };
+    }
+    pub(crate) use impl_div;
+
+    macro_rules! impl_div_ops {
+        (
+            <$($generic:ident),*> $for:ty, $with:ty,
+            with $func:expr,
+            $(where $($rules:tt)+)?
+        ) => {
+            $crate::macros::arithmetics::impl_div_assign!(
+                <$($generic),*> $for, $with,
+                with $func,
+                $(where $($rules)+)?
+            );
+
+            $crate::macros::arithmetics::impl_div!(
+                <$($generic),*> $for, $with,
+                $(where $($rules)+)?
+            );
+        };
+    }
+    pub(crate) use impl_div_ops;
+}
+
 pub(crate) use add::impl_add;
 pub(crate) use add::impl_add_assign;
 pub(crate) use add::impl_add_ops;
@@ -430,3 +553,7 @@ pub(crate) use mul::impl_mul;
 pub(crate) use mul::impl_mul_assign;
 pub(crate) use mul::impl_mul_ops;
 pub(crate) use mul::impl_mul_reverse;
+
+pub(crate) use div::impl_div;
+pub(crate) use div::impl_div_assign;
+pub(crate) use div::impl_div_ops;
