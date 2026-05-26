@@ -1,32 +1,37 @@
-use crate::vector::Vector;
+use crate::{scalar::Scalar, vector::Vector};
 
-impl<K> Vector<K>
-where
-    K: Copy + Into<f32>,
+impl<K: Scalar> Vector<K>
 {
     /// Calculates the L1 norm (Manhattan norm) of the vector
-    pub fn norm_1(&self) -> f32 {
-        self.scalars.iter().map(|&x| x.into().abs()).sum()
+    pub fn norm_1(&self) -> K
+    where
+        K: num_traits::Signed,
+    {
+        self.scalars.iter().map(|&x| x.abs()).sum()
     }
 
     /// Calculates the L2 norm (Euclidean norm) of the vector
-    pub fn norm(&self) -> f32 {
+    pub fn norm(&self) -> K
+    where
+        K: num_traits::Pow<f32, Output = K>,
+    {
         self.scalars
             .iter()
-            .map(|&x| {
-                let val: f32 = x.into();
-                val * val
-            })
-            .sum::<f32>()
-            .powf(0.5)
+            .map(|&x| x * x)
+            .sum::<K>()
+            .pow(0.5)
     }
 
     /// Calculates the L-infinity norm (maximum norm) of the vector
-    pub fn norm_inf(&self) -> f32 {
+    pub fn norm_inf(&self) -> K
+    where
+    	K: num_traits::Signed
+    {
+    	let k_cmp = |a: &K, b: &K| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Greater);
         self.scalars
             .iter()
-            .map(|&x| x.into().abs())
-            .fold(0.0, |max, x| max.max(x))
+            .map(|&x| x.abs())
+            .fold(K::zero(), |max, x| std::cmp::max_by(max, x, k_cmp))
     }
 }
 

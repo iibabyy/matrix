@@ -1,6 +1,4 @@
-use std::ops::{Add, Div, Mul, Neg};
-
-use crate::Matrix;
+use crate::{Matrix, scalar::Scalar};
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy)]
@@ -21,7 +19,7 @@ pub enum RowEchelonOperation<K> {
     RowAddition(usize, usize, K),
 }
 
-impl<K: Copy> Matrix<K> {
+impl<K: Scalar> Matrix<K> {
     pub(crate) fn swap(&mut self, row_a: usize, row_b: usize) -> RowEchelonOperation<K> {
         let mut temp;
 
@@ -34,10 +32,7 @@ impl<K: Copy> Matrix<K> {
         RowEchelonOperation::Swap(row_a, row_b)
     }
 
-    pub(crate) fn multiply(&mut self, row: usize, scalar: K) -> RowEchelonOperation<K>
-    where
-        K: Mul<Output = K>,
-    {
+    pub(crate) fn multiply(&mut self, row: usize, scalar: K) -> RowEchelonOperation<K> {
         for col in 0..self.cols() {
             self[col][row] = self[col][row] * scalar;
         }
@@ -45,10 +40,7 @@ impl<K: Copy> Matrix<K> {
         RowEchelonOperation::Multipication(row, scalar)
     }
 
-    pub(crate) fn divide(&mut self, row: usize, scalar: K) -> RowEchelonOperation<K>
-    where
-        K: Div<Output = K>,
-    {
+    pub(crate) fn divide(&mut self, row: usize, scalar: K) -> RowEchelonOperation<K> {
         for col in 0..self.cols() {
             self[col][row] = self[col][row] / scalar;
         }
@@ -61,21 +53,16 @@ impl<K: Copy> Matrix<K> {
         row_to_modify: usize,
         row_to_add: usize,
         scalar: K,
-    ) -> RowEchelonOperation<K>
-    where
-        K: Mul<Output = K> + Add<Output = K>,
-    {
+    ) -> RowEchelonOperation<K> {
         for col in 0..self.cols() {
-            self[col][row_to_modify] = self[col][row_to_modify] + self[col][row_to_add] * scalar;
+	        let add_val = self[col][row_to_add];
+			self[col][row_to_modify] = add_val.mul_add(scalar, self[col][row_to_modify]);
         }
 
         RowEchelonOperation::RowAddition(row_to_modify, row_to_add, scalar)
     }
 
-    pub(crate) fn apply(&mut self, op: RowEchelonOperation<K>)
-    where
-        K: Mul<Output = K> + Div<Output = K> + Add<Output = K>,
-    {
+    pub(crate) fn apply(&mut self, op: RowEchelonOperation<K>) {
         match op {
             RowEchelonOperation::Swap(row_a, row_b) => self.swap(row_a, row_b),
             RowEchelonOperation::Multipication(row, scalar) => self.multiply(row, scalar),
@@ -86,25 +73,24 @@ impl<K: Copy> Matrix<K> {
         };
     }
 
-    pub(crate) fn apply_multiple(&mut self, ops: Vec<RowEchelonOperation<K>>)
-    where
-        K: Mul<Output = K> + Div<Output = K> + Add<Output = K>,
-    {
+    pub(crate) fn apply_multiple(&mut self, ops: Vec<RowEchelonOperation<K>>) {
         ops.into_iter().for_each(|op| self.apply(op));
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct RowEchelonDetails<K> {
     pub tracked_pivots: Vec<K>,
     pub operations: Vec<RowEchelonOperation<K>>,
 }
 
-impl<K> Matrix<K>
-where
-    K: Copy + PartialOrd + Default + Neg<Output = K>,
-    K: Div<Output = K> + Mul<Output = K> + Add<Output = K>,
-{
+impl<K> Default for RowEchelonDetails<K> {
+    fn default() -> Self {
+        Self { tracked_pivots: Vec::new(), operations: Vec::new() }
+    }
+}
+
+impl<K: Scalar> Matrix<K> {
     /// Converts the matrix to her reduced row echelon form
     pub fn row_echelon(&self) -> Matrix<K> {
         self.reduced_row_echelon_form(None)
@@ -177,7 +163,7 @@ where
 
         // closure to get the first non-zero index in a row
         let get_first_non_zero_index = |row: Vec<&K>| -> Option<usize> {
-            row.into_iter().position(|value| *value != K::default())
+            row.into_iter().position(|value| *value != K::zero())
         };
 
         // initialize saved_non_zero_index using the first row
@@ -185,14 +171,14 @@ where
             if let Some(index) = get_first_non_zero_index(row_iter.next().unwrap()) {
                 index
             } else {
-                return row_iter.all(|row| row.into_iter().all(|value| *value == K::default()));
+                return row_iter.all(|row| row.into_iter().all(|value| *value == K::zero()));
             };
 
         while let Some(row) = row_iter.next() {
             let first_non_zero_index = if let Some(index) = get_first_non_zero_index(row) {
                 index
             } else {
-                return row_iter.all(|row| row.into_iter().all(|value| *value == K::default()));
+                return row_iter.all(|row| row.into_iter().all(|value| *value == K::zero()));
             };
 
             if first_non_zero_index <= saved_non_zero_index {
@@ -218,7 +204,7 @@ where
 
         for row in pivot_row + 1..self.rows() {
             let factor = self[pivot_col][row];
-            if factor == K::default() {
+            if factor == K::zero() {
                 continue;
             }
 
@@ -233,14 +219,14 @@ where
     fn scale_pivot_row(&mut self, pivot_col: usize, pivot_row: usize) -> RowEchelonOperation<K> {
         let pivot = self[pivot_col][pivot_row];
 
-        assert!(pivot != K::default());
+        assert!(pivot != K::zero());
 
         self.divide(pivot_row, pivot)
     }
 
     #[doc(hidden)]
     fn next_pivot(&self, min_row_index: usize) -> Option<(usize, usize)> {
-        let zero = K::default();
+        let zero = K::zero();
 
         for col in 0..self.cols() {
             let mut saved_pivot: Option<(usize, usize)> = None;
@@ -259,7 +245,7 @@ where
                 */
                 if let Some((pivot_col, pivot_row)) = saved_pivot {
                     let pivot = self[pivot_col][pivot_row];
-                    if current > pivot {
+                    if current.abs() > pivot.abs() {
                         saved_pivot = Some((col, row))
                     }
                 } else {

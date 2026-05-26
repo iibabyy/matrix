@@ -1,9 +1,6 @@
-use crate::{Matrix, Vector};
+use crate::{Matrix, Vector, scalar::Scalar};
 
-impl<K> Matrix<K>
-where
-    K: Copy,
-{
+impl<K: Scalar> Matrix<K> {
     /// Returns the transpose of the matrix
     pub fn transpose(&self) -> Matrix<K> {
         if self.is_empty() {

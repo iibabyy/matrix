@@ -1,37 +1,29 @@
 pub mod arithmetics;
 pub mod functions;
 
-use crate::vector::Vector;
+use crate::{scalar::Scalar, vector::Vector};
 use std::{
-    ops::{Add, Index, IndexMut, Mul, Neg},
+    ops::{Index, IndexMut, Neg},
     slice::SliceIndex,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Matrix<K: Copy = f32> {
+pub struct Matrix<K: Scalar = f32> {
     pub(crate) vectors: Vec<Vector<K>>,
 }
 
 // -----------------------------------------------------------------------------
 // BASIC OPERATIONS
 // -----------------------------------------------------------------------------
-impl<K: Copy> Matrix<K>
-where
-    K: Copy,
+impl<K: Scalar> Matrix<K>
 {
     /// for details, go to [crate::matrix::arithmetics]
-    pub fn mul_vec(&self, vec: &Vector<K>) -> Vector<K>
-    where
-        K: Mul<Output = K> + Add<Output = K>,
-    {
+    pub fn mul_vec(&self, vec: &Vector<K>) -> Vector<K> {
         self * vec
     }
 
     /// for details, go to [crate::matrix::arithmetics]
-    pub fn mul_mat(&self, mat: &Matrix<K>) -> Matrix<K>
-    where
-        K: Mul<Output = K> + Add<Output = K>,
-    {
+    pub fn mul_mat(&self, mat: &Matrix<K>) -> Matrix<K> {
         self * mat
     }
 }
@@ -39,7 +31,7 @@ where
 // -----------------------------------------------------------------------------
 // UTILS FUNCTIONS
 // -----------------------------------------------------------------------------
-impl<K: Copy> Matrix<K> {
+impl<K: Scalar> Matrix<K> {
     pub fn new(vectors: Vec<Vector<K>>) -> Self {
         let mut matrix = Self::default();
         for vector in vectors {
@@ -125,7 +117,7 @@ impl Matrix<f32> {
 // -----------------------------------------------------------------------------
 // TRAITS IMPLEMENTATION
 // -----------------------------------------------------------------------------
-impl<K: Copy, I: SliceIndex<[Vector<K>]>> Index<I> for Matrix<K> {
+impl<K: Scalar, I: SliceIndex<[Vector<K>]>> Index<I> for Matrix<K> {
     type Output = I::Output;
 
     fn index(&self, index: I) -> &Self::Output {
@@ -133,16 +125,13 @@ impl<K: Copy, I: SliceIndex<[Vector<K>]>> Index<I> for Matrix<K> {
     }
 }
 
-impl<K: Copy, I: SliceIndex<[Vector<K>]>> IndexMut<I> for Matrix<K> {
+impl<K: Scalar, I: SliceIndex<[Vector<K>]>> IndexMut<I> for Matrix<K> {
     fn index_mut(&mut self, index: I) -> &mut Self::Output {
         &mut self.vectors[index]
     }
 }
 
-impl<K: Copy> std::fmt::Display for Matrix<K>
-where
-    K: std::fmt::Display,
-{
+impl<K: Scalar> std::fmt::Display for Matrix<K> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     	for row in self.as_rows() {
         	let line = row
@@ -158,13 +147,13 @@ where
     }
 }
 
-impl<T: Copy> std::default::Default for Matrix<T> {
+impl<K: Scalar> std::default::Default for Matrix<K> {
     fn default() -> Self {
         Self { vectors: vec![] }
     }
 }
 
-impl<K: Copy> FromIterator<Vector<K>> for Matrix<K> {
+impl<K: Scalar> FromIterator<Vector<K>> for Matrix<K> {
     fn from_iter<I: IntoIterator<Item = Vector<K>>>(iter: I) -> Self {
         Self {
             vectors: Vec::from_iter(iter),
@@ -172,7 +161,7 @@ impl<K: Copy> FromIterator<Vector<K>> for Matrix<K> {
     }
 }
 
-impl<T, K: Copy> From<T> for Matrix<K>
+impl<T, K: Scalar> From<T> for Matrix<K>
 where
     T: IntoIterator<Item = Vector<K>>,
 {
@@ -181,16 +170,17 @@ where
     }
 }
 
-impl<K: Copy> Neg for Matrix<K>
-where
-    K: Neg,
-    Vector<K>: Neg<Output = Vector<<K as Neg>::Output>>,
-    <K as Neg>::Output: Copy,
-{
+impl<K: Scalar> Neg for Matrix<K> {
     type Output = Matrix<<K as Neg>::Output>;
 
     fn neg(self) -> Self::Output {
-        let vec: Vec<Vector<<K as Neg>::Output>> = self.vectors.into_iter().map(Neg::neg).collect();
+    	use Neg;
+
+        let vec: Vec<Vector<<K as Neg>::Output>> = self.vectors
+         	.into_iter()
+          	.map(Neg::neg)
+          	.collect();
+
         Matrix::new(vec)
     }
 }

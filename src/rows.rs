@@ -1,8 +1,8 @@
-use crate::Vector;
+use crate::{Vector, scalar::Scalar};
 
 pub(crate) trait IntoRows<'a, K>: Iterator<Item = &'a Vector<K>>
 where
-    K: 'a + Copy,
+    K: 'a + Scalar,
     Self: 'a + Sized,
 {
     fn into_rows(self) -> impl Iterator<Item = Vec<&'a K>> {
@@ -29,7 +29,7 @@ where
 impl<'a, T, K> IntoRows<'a, K> for T
 where
     T: Iterator<Item = &'a Vector<K>> + 'a,
-    K: 'a + Copy,
+    K: 'a + Scalar,
 {
 }
 

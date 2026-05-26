@@ -1,22 +1,20 @@
-use std::ops::{AddAssign, Mul};
-
-use crate::Vector;
+use crate::{Vector, scalar::Scalar};
 
 /// Calculates the cosine of the angle between two vectors
-pub fn angle_cos<K>(u: &Vector<K>, v: &Vector<K>) -> f32
+pub fn angle_cos<K: Scalar>(u: &Vector<K>, v: &Vector<K>) -> K
 where
-    K: Copy + AddAssign + Mul<Output = K> + Into<f32>,
+    K: num_traits::Pow<f32, Output = K>,
 {
     assert!(!u.is_empty());
     assert_eq!(u.size(), v.size());
 
-    let dot_product = u.dot(v.clone()).into();
+    let dot_product = u.dot(v.clone());
 
     let u_norm = u.norm();
     let v_norm = v.norm();
 
-    assert!(u_norm > 0.);
-    assert!(v_norm > 0.);
+    assert!(u_norm > K::zero());
+    assert!(v_norm > K::zero());
 
     dot_product / (u_norm * v_norm)
 }

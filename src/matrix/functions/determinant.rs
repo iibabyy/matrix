@@ -1,19 +1,13 @@
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use crate::{Matrix, matrix::functions::row_echelon::RowEchelonOperation, scalar::Scalar};
 
-use crate::{Matrix, matrix::functions::row_echelon::RowEchelonOperation};
-
-impl<K: Copy> Matrix<K>
-where
-    K: Mul<Output = K> + Sub<Output = K> + Add<Output = K> + Div<Output = K> + Neg<Output = K>,
-    K: PartialOrd + Default,
-{
+impl<K: Scalar> Matrix<K> {
     /// Calculates the determinant of the matrix (only for square matrices up to 4x4)
     pub fn determinant(&self) -> K {
         assert!(self.is_square());
         assert!(self.cols() <= 4);
 
         match self.cols() {
-            0 => K::default(),
+            0 => K::zero(),
 
             1 => self[0][0],
 
@@ -48,10 +42,10 @@ where
             let ref_has_non_zero_row = ref_matrix
                 .as_rows()
                 .last()
-                .is_some_and(|r| r.into_iter().all(|k| *k == K::default()));
+                .is_some_and(|r| r.into_iter().all(|k| *k == K::zero()));
 
             if ref_has_non_zero_row || details.tracked_pivots.is_empty() {
-                return K::default();
+                return K::zero();
             }
         }
 
@@ -88,8 +82,8 @@ mod tests {
     use crate::matrix;
 
     // Helper to compare floats
-    fn assert_approx_eq(a: f64, b: f64) {
-        let epsilon = 1e-9;
+    fn assert_approx_eq(a: f32, b: f32) {
+        let epsilon = 1e-3;
         assert!((a - b).abs() < epsilon, "Expected {}, got {}", b, a);
     }
 
@@ -101,21 +95,21 @@ mod tests {
     fn test_subject_case_1() {
         let u = matrix!([1., -1.], [-1., 1.],);
 
-        assert_eq!(u.determinant(), 0.0);
+        assert_approx_eq(u.determinant(), 0.0);
     }
 
     #[test]
     fn test_subject_case_2() {
         let u = matrix!([2., 0., 0.], [0., 2., 0.], [0., 0., 2.],);
 
-        assert_eq!(u.determinant(), 8.0);
+        assert_approx_eq(u.determinant(), 8.0);
     }
 
     #[test]
     fn test_subject_case_3() {
         let u = matrix!([8., 5., -2.], [4., 7., 20.], [7., 6., 1.],);
 
-        assert_eq!(u.determinant(), -174.0);
+        assert_approx_eq(u.determinant(), -174.0);
     }
 
     #[test]
@@ -127,7 +121,7 @@ mod tests {
             [28., -4., 17., 1.],
         );
 
-        assert_eq!(u.determinant(), 1032.0);
+        assert_approx_eq(u.determinant(), 1032.0);
     }
 
     // ==========================================

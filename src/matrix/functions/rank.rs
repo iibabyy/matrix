@@ -1,12 +1,6 @@
-use std::ops::{Add, Div, Mul, Neg};
+use crate::{Matrix, scalar::Scalar};
 
-use crate::Matrix;
-
-impl<K> Matrix<K>
-where
-    K: Copy + PartialOrd + Default + Neg<Output = K>,
-    K: Div<Output = K> + Mul<Output = K> + Add<Output = K>,
-{
+impl<K: Scalar> Matrix<K> {
     /// Calculates the rank of the matrix (true dimension of the matrix / number of linearly independent rows)
     pub fn rank(&self) -> usize {
         let (_, ref_details) = self.row_echelon_with_details();

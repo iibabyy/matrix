@@ -1,12 +1,7 @@
-use std::ops::{Mul, Sub};
-
-use crate::Vector;
+use crate::{Vector, scalar::Scalar};
 
 /// Calculates the cross product of two 3D vectors
-pub fn cross_product<K>(u: &Vector<K>, v: &Vector<K>) -> Vector<K>
-where
-    K: Copy + Sub<Output = K> + Mul<Output = K>,
-{
+pub fn cross_product<K: Scalar>(u: &Vector<K>, v: &Vector<K>) -> Vector<K> {
     assert_eq!(u.size(), 3);
     assert_eq!(v.size(), 3);
 

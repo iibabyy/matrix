@@ -1,11 +1,6 @@
-use std::ops::{AddAssign, Mul};
+use crate::{scalar::Scalar, vector::Vector};
 
-use crate::vector::Vector;
-
-impl<K> Vector<K>
-where
-    K: Copy + AddAssign + Mul<Output = K>,
-{
+impl<K: Scalar> Vector<K> {
     /// Calculates the dot product of two vectors
     pub fn dot(&self, mut v: Vector<K>) -> K {
         assert_eq!(self.size(), v.size());

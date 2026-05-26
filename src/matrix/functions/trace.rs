@@ -1,15 +1,10 @@
-use std::ops::Add;
+use crate::{Matrix, scalar::Scalar};
 
-use crate::Matrix;
-
-impl<K> Matrix<K>
-where
-    K: Copy + Add<Output = K> + Default,
-{
+impl<K: Scalar> Matrix<K> {
     /// Calculates the trace of the matrix (sum of diagonal elements)
     pub fn trace(&self) -> K {
         if self.is_empty() {
-            return K::default();
+            return K::zero();
         }
 
         assert!(self.is_square());
