@@ -2,8 +2,13 @@ use std::{iter::Sum, ops::Neg};
 
 use num_traits::Zero;
 
-use crate::complex::ComplexNumber;
+use crate::{complex::ComplexNumber, traits::modulus::Modulus};
 
+impl Modulus for ComplexNumber {
+    fn modulus(&self) -> f32 {
+        self.magnitude()
+    }
+}
 
 impl Eq for ComplexNumber {}
 impl PartialEq for ComplexNumber {

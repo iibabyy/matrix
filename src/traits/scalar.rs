@@ -9,6 +9,7 @@ pub trait Scalar:
 	+ num_traits::Signed
 	+ num_traits::MulAdd<Output = Self>
 	+ std::fmt::Display
+	+ crate::traits::modulus::Modulus
 {}
 
 impl<T> Scalar for T
@@ -23,4 +24,5 @@ where
 	T: num_traits::Signed,
 	T: num_traits::MulAdd<Output = Self>,
 	T: std::fmt::Display,
+	T: crate::traits::modulus::Modulus
 {}
