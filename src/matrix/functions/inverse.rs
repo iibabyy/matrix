@@ -1,11 +1,11 @@
-use crate::{Matrix, matrix::functions::row_echelon::RowEchelonOperation};
+use crate::{Matrix, matrix::functions::row_echelon::RowEchelonOperation, traits::scalar::Scalar};
 
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
     SingularMatrix,
 }
 
-impl Matrix<f32> {
+impl<K: Scalar> Matrix<K> {
     pub fn inverse(&mut self) -> Result<Self, Error> {
         assert!(self.is_square());
 
@@ -18,7 +18,7 @@ impl Matrix<f32> {
         let mut ops = details.operations;
         ops.extend(matrix.back_substitution());
 
-        let mut identity_matrix = Matrix::identity(self.cols());
+        let mut identity_matrix = Self::identity(self.cols());
         identity_matrix.apply_multiple(ops);
 
         Ok(identity_matrix)
@@ -26,7 +26,7 @@ impl Matrix<f32> {
 
     /// Uses elementary row operations to put zeros above the all the pivots
     #[doc(hidden)]
-    pub fn back_substitution(&mut self) -> Vec<RowEchelonOperation<f32>> {
+    pub fn back_substitution(&mut self) -> Vec<RowEchelonOperation<K>> {
         assert!(self.is_row_echelon_form());
 
         let mut matrix = self.clone();
@@ -46,14 +46,14 @@ impl Matrix<f32> {
         &mut self,
         pivot_col: usize,
         pivot_row: usize,
-    ) -> Vec<RowEchelonOperation<f32>> {
+    ) -> Vec<RowEchelonOperation<K>> {
         // we assume that pivot == 1
 
         let mut operations = vec![];
 
         for row in 0..pivot_row {
             let factor = self[pivot_col][row];
-            if factor == 0. {
+            if factor == K::zero() {
                 continue;
             }
 
