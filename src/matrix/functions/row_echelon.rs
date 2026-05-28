@@ -245,7 +245,7 @@ impl<K: Scalar> Matrix<K> {
                 */
                 if let Some((pivot_col, pivot_row)) = saved_pivot {
                     let pivot = self[pivot_col][pivot_row];
-                    if current.abs() > pivot.abs() {
+                    if current.modulus() > pivot.modulus() {
                         saved_pivot = Some((col, row))
                     }
                 } else {
