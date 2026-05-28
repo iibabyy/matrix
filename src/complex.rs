@@ -19,7 +19,7 @@ impl ComplexNumber {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::functions::{cross_product, linear_combination};
+	use crate::functions::{cross_product, lerp, linear_combination};
 	use crate::matrix::Matrix;
 	use crate::vector::Vector;
 	use crate::{vector};
@@ -60,6 +60,18 @@ mod tests {
 			cols.push(Vector::new(col));
 		}
 		Matrix::new(cols)
+	}
+
+	// Element-wise tolerance comparison of two complex matrices (matrix indexing
+	// is column-major: `m[col][row]`).
+	fn approx_eq_matrix(a: &Matrix<ComplexNumber>, b: &Matrix<ComplexNumber>) {
+		assert_eq!(a.cols(), b.cols(), "column count differs");
+		assert_eq!(a.rows(), b.rows(), "row count differs");
+		for col in 0..a.cols() {
+			for row in 0..a.rows() {
+				approx_eq_complex(a[col][row], b[col][row]);
+			}
+		}
 	}
 
 	// =========================================================================
@@ -436,5 +448,99 @@ mod tests {
 		let r = a.row_echelon();
 		assert_eq!(r.rows(), 3);
 		assert_eq!(r.cols(), 3);
+	}
+
+	#[test]
+	fn matrix_scl_by_imaginary() {
+		// Matrix scaling is the `Mul<K>` operator (Matrix has no `scl` method, unlike
+		// Vector). Scaling by i rotates every entry 90° in the complex plane.
+		let a = from_rows(vec![
+			vec![c(1., 0.), c(0., 1.)],
+			vec![c(2., 0.), c(0., 2.)],
+		]);
+		let scaled = a * c(0., 1.);
+		let expected = from_rows(vec![
+			vec![c(0., 1.), c(-1., 0.)],
+			vec![c(0., 2.), c(-2., 0.)],
+		]);
+		approx_eq_matrix(&scaled, &expected);
+	}
+
+	// =========================================================================
+	// lerp over ℂ (Ex02): values are complex scalars, the blend factor t stays real
+	// =========================================================================
+
+	#[test]
+	fn lerp_complex_midpoint() {
+		approx_eq_complex(lerp(c(0., 0.), c(2., 4.), 0.5), c(1., 2.));
+	}
+
+	#[test]
+	fn lerp_complex_endpoints() {
+		approx_eq_complex(lerp(c(1., 1.), c(3., 5.), 0.), c(1., 1.));
+		approx_eq_complex(lerp(c(1., 1.), c(3., 5.), 1.), c(3., 5.));
+	}
+
+	// =========================================================================
+	// norm over ℂ (Ex04): always returns a real f32, computed from component moduli
+	// =========================================================================
+
+	#[test]
+	fn norm_of_complex_vector() {
+		// moduli: |3+4i| = 5, |0+5i| = 5
+		let v = vector![c(3., 4.), c(0., 5.)];
+		approx_eq_f32(v.norm_1(), 10.0); // 5 + 5
+		approx_eq_f32(v.norm(), 50.0_f32.sqrt()); // sqrt(25 + 25)
+		approx_eq_f32(v.norm_inf(), 5.0); // max(5, 5)
+	}
+
+	// =========================================================================
+	// inverse over ℂ (Ex12): verified by the defining property A·A⁻¹ = A⁻¹·A = I
+	// =========================================================================
+
+	#[test]
+	fn inverse_of_identity_is_identity() {
+		let id = Matrix::<ComplexNumber>::identity(3);
+		let inv = id.clone().inverse().unwrap();
+		approx_eq_matrix(&inv, &id);
+	}
+
+	#[test]
+	fn inverse_of_diagonal_complex() {
+		// diag(2, 4i)⁻¹ = diag(1/2, 1/(4i)) = diag(0.5, -0.25i) — exactly representable.
+		let a = from_rows(vec![
+			vec![c(2., 0.), c(0., 0.)],
+			vec![c(0., 0.), c(0., 4.)],
+		]);
+		let inv = a.clone().inverse().unwrap();
+		let expected = from_rows(vec![
+			vec![c(0.5, 0.), c(0., 0.)],
+			vec![c(0., 0.), c(0., -0.25)],
+		]);
+		approx_eq_matrix(&inv, &expected);
+		approx_eq_matrix(&a.clone().mul_mat(&inv), &Matrix::identity(2));
+	}
+
+	#[test]
+	fn inverse_general_2x2_complex_multiply_back() {
+		// det = (1+i)(4-i) − 2·3 = -1 + 3i ≠ 0, so A is invertible.
+		let a = from_rows(vec![
+			vec![c(1., 1.), c(2., 0.)],
+			vec![c(3., 0.), c(4., -1.)],
+		]);
+		let inv = a.clone().inverse().unwrap();
+		let id = Matrix::<ComplexNumber>::identity(2);
+		approx_eq_matrix(&a.clone().mul_mat(&inv), &id);
+		approx_eq_matrix(&inv.clone().mul_mat(&a), &id);
+	}
+
+	#[test]
+	fn inverse_of_singular_complex_is_err() {
+		// Row 1 = i · Row 0  →  rows are linearly dependent, matrix is singular.
+		let mut a = from_rows(vec![
+			vec![c(1., 0.), c(2., 0.)],
+			vec![c(0., 1.), c(0., 2.)],
+		]);
+		assert!(a.inverse().is_err());
 	}
 }
