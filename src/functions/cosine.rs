@@ -1,9 +1,9 @@
 use crate::{Vector, traits::scalar::Scalar};
 
 /// Calculates the cosine of the angle between two vectors
-pub fn angle_cos<K: Scalar>(u: &Vector<K>, v: &Vector<K>) -> K
+pub fn angle_cos<K: Scalar>(u: &Vector<K>, v: &Vector<K>) -> f32
 where
-    K: num_traits::Pow<f32, Output = K>,
+    K: std::ops::Div<f32, Output = f32>,
 {
     assert!(!u.is_empty());
     assert_eq!(u.size(), v.size());
@@ -13,8 +13,8 @@ where
     let u_norm = u.norm();
     let v_norm = v.norm();
 
-    assert!(u_norm > K::zero());
-    assert!(v_norm > K::zero());
+    assert!(u_norm > 0.);
+    assert!(v_norm > 0.);
 
     dot_product / (u_norm * v_norm)
 }

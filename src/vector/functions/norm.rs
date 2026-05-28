@@ -3,35 +3,27 @@ use crate::{traits::scalar::Scalar, vector::Vector};
 impl<K: Scalar> Vector<K>
 {
     /// Calculates the L1 norm (Manhattan norm) of the vector
-    pub fn norm_1(&self) -> K
-    where
-        K: num_traits::Signed,
-    {
-        self.scalars.iter().map(|&x| x.abs()).sum()
+    pub fn norm_1(&self) -> f32 {
+        self.scalars.iter().map(|&x| x.modulus()).sum()
     }
 
     /// Calculates the L2 norm (Euclidean norm) of the vector
-    pub fn norm(&self) -> K
-    where
-        K: num_traits::Pow<f32, Output = K>,
-    {
+    pub fn norm(&self) -> f32 {
         self.scalars
             .iter()
-            .map(|&x| x * x)
-            .sum::<K>()
-            .pow(0.5)
+            .map(|&x| { let m = x.modulus(); m * m })
+            .reduce(|a, b| a + b)
+            .unwrap_or(0.0)
+            .powf(0.5)
     }
 
     /// Calculates the L-infinity norm (maximum norm) of the vector
-    pub fn norm_inf(&self) -> K
-    where
-    	K: num_traits::Signed
-    {
-    	let k_cmp = |a: &K, b: &K| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Greater);
+    pub fn norm_inf(&self) -> f32 {
         self.scalars
             .iter()
-            .map(|&x| x.abs())
-            .fold(K::zero(), |max, x| std::cmp::max_by(max, x, k_cmp))
+            .map(|&x| x.modulus())
+            .max_by(f32::total_cmp)
+            .unwrap_or(0.0)
     }
 }
 
