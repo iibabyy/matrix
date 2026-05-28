@@ -1,4 +1,4 @@
-use crate::{Matrix, scalar::Scalar};
+use crate::{Matrix, traits::scalar::Scalar};
 
 impl<K: Scalar> Matrix<K> {
     /// Calculates the trace of the matrix (sum of diagonal elements)

@@ -1,4 +1,4 @@
-use crate::{scalar::Scalar, vector::Vector};
+use crate::{traits::scalar::Scalar, vector::Vector};
 
 impl<K: Scalar> Vector<K> {
     /// Calculates the dot product of two vectors

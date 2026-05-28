@@ -7,7 +7,7 @@ use std::{
     slice::SliceIndex,
 };
 
-use crate::scalar::Scalar;
+use crate::traits::scalar::Scalar;
 
 pub mod arithmetics;
 pub mod functions;

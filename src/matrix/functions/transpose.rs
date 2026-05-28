@@ -1,4 +1,4 @@
-use crate::{Matrix, Vector, scalar::Scalar};
+use crate::{Matrix, Vector, traits::scalar::Scalar};
 
 impl<K: Scalar> Matrix<K> {
     /// Returns the transpose of the matrix

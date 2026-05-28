@@ -24,7 +24,7 @@
 pub mod complex;
 pub mod macros;
 pub mod rows;
-pub mod scalar;
+pub mod traits;
 
 pub mod matrix;
 pub use matrix::Matrix;

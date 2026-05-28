@@ -1,4 +1,4 @@
-use crate::{Vector, scalar::Scalar};
+use crate::{Vector, traits::scalar::Scalar};
 
 pub(crate) trait IntoRows<'a, K>: Iterator<Item = &'a Vector<K>>
 where

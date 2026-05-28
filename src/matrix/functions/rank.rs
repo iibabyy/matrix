@@ -1,4 +1,4 @@
-use crate::{Matrix, scalar::Scalar};
+use crate::{Matrix, traits::scalar::Scalar};
 
 impl<K: Scalar> Matrix<K> {
     /// Calculates the rank of the matrix (true dimension of the matrix / number of linearly independent rows)

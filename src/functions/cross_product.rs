@@ -1,4 +1,4 @@
-use crate::{Vector, scalar::Scalar};
+use crate::{Vector, traits::scalar::Scalar};
 
 /// Calculates the cross product of two 3D vectors
 pub fn cross_product<K: Scalar>(u: &Vector<K>, v: &Vector<K>) -> Vector<K> {

@@ -1,4 +1,4 @@
-use crate::{Vector, scalar::Scalar};
+use crate::{Vector, traits::scalar::Scalar};
 
 /// Calculates the cosine of the angle between two vectors
 pub fn angle_cos<K: Scalar>(u: &Vector<K>, v: &Vector<K>) -> K

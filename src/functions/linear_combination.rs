@@ -1,4 +1,4 @@
-use crate::{scalar::Scalar, vector::Vector};
+use crate::{traits::scalar::Scalar, vector::Vector};
 
 /// sum of multiple vectors, each multiplied by a coefficient (e.g., av+bw)
 pub fn linear_combination<K: Scalar>(vectors: &[Vector<K>], coefs: &[K]) -> Vector<K> {

@@ -1,4 +1,4 @@
-use crate::{Matrix, matrix::functions::row_echelon::RowEchelonOperation, scalar::Scalar};
+use crate::{Matrix, matrix::functions::row_echelon::RowEchelonOperation, traits::scalar::Scalar};
 
 impl<K: Scalar> Matrix<K> {
     /// Calculates the determinant of the matrix (only for square matrices up to 4x4)

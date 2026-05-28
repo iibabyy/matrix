@@ -40,7 +40,7 @@
 //! assert_eq!(v_mut, Vector::new(vec![15.0, 15.0]));
 //! ```
 
-use crate::{macros::*, matrix::Matrix, scalar::Scalar, vector::Vector};
+use crate::{macros::*, matrix::Matrix, traits::scalar::Scalar, vector::Vector};
 
 // -----------------------------------------------------------------------------
 // Addition

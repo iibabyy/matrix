@@ -1,4 +1,4 @@
-use crate::scalar::Scalar;
+use crate::traits::scalar::Scalar;
 
 mod arithmetics;
 mod num_traits;

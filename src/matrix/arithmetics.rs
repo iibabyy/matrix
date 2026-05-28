@@ -55,7 +55,7 @@
 //! // Result: [[15.0, 15.0], [15.0, 15.0]]
 //! ```
 
-use crate::{macros::*, Matrix, scalar::Scalar, vector::Vector};
+use crate::{macros::*, Matrix, traits::scalar::Scalar, vector::Vector};
 
 // #[cfg(test)]
 // mod tests;

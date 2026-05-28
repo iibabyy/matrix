@@ -1,4 +1,4 @@
-use crate::{Matrix, scalar::Scalar};
+use crate::{Matrix, traits::scalar::Scalar};
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy)]

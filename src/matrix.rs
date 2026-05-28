@@ -1,7 +1,7 @@
 pub mod arithmetics;
 pub mod functions;
 
-use crate::{scalar::Scalar, vector::Vector};
+use crate::{traits::scalar::Scalar, vector::Vector};
 use std::{
     ops::{Index, IndexMut, Neg},
     slice::SliceIndex,
